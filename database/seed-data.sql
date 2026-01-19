@@ -69,7 +69,7 @@ INSERT INTO `Option_Value` (TenGiaTri, GiaThem, HinhAnh, MaOptionGroup) VALUES
 ('Thạch dừa', 5000, 'assets/img/products/topping/topping-thachdua.png', 3),
 ('Pudding trứng', 10000, 'assets/img/products/topping/topping-pudding.png', 3),
 ('Sương sáo', 5000, 'assets/img/products/topping/topping-suongsao.png', 3),
-('Cù năng', 5000, 'assets/img/products/topping/toppingcunang.png', 3);
+('Củ năng', 5000, 'assets/img/products/topping/toppingcunang.png', 3);
 
 -- 7. Insert SanPham (GiaNiemYet = giá thật/tính toán, GiaCoBan = giá gạch ngang/tham khảo)
 -- Cà phê truyền thống (MaCategory = 1)
@@ -81,24 +81,24 @@ INSERT INTO `SanPham` (TenSP, GiaNiemYet, GiaCoBan, HinhAnh, Rating, SoLuotRatin
 
 -- Trà sữa (MaCategory = 2)
 INSERT INTO `SanPham` (TenSP, GiaNiemYet, GiaCoBan, HinhAnh, Rating, SoLuotRating, MaCategory) VALUES
-('Trà sữa dâu tây', 45000, 50000, 'assets/img/products/trasua/trasua-dautay.png', 4.85, 512, 2),
-('Trà sữa flan', 49000, 52000, 'assets/img/products/trasua/trasua-flan.png', 4.90, 645, 2),
+('Trà sữa Dâu tây', 45000, 50000, 'assets/img/products/trasua/trasua-dautay.png', 4.85, 512, 2),
+('Trà sữa Flan', 49000, 52000, 'assets/img/products/trasua/trasua-flan.png', 4.90, 645, 2),
 ('Trà sữa Matcha', 48000, 50000, 'assets/img/products/trasua/trasua-mathca.png', 4.70, 432, 2),
-('Trà sữa socola', 38000, 48000, 'assets/img/products/trasua/trasua-socola.png', 4.65, 298, 2),
-('Trà sữa thái xanh', 45000, 49000, 'assets/img/products/trasua/trasua-thaixanh.png', 4.75, 356, 2),
-('Trà sữa việt quất', 45000, 50000, 'assets/img/products/trasua/trasua-vietquat.png', 4.80, 421, 2);
+('Trà sữa Socola', 38000, 48000, 'assets/img/products/trasua/trasua-socola.png', 4.65, 298, 2),
+('Trà sữa Thái xanh', 45000, 49000, 'assets/img/products/trasua/trasua-thaixanh.png', 4.75, 356, 2),
+('Trà sữa Việt quất', 45000, 50000, 'assets/img/products/trasua/trasua-vietquat.png', 4.80, 421, 2);
 
 -- Trà trái cây (MaCategory = 3)
 INSERT INTO `SanPham` (TenSP, GiaNiemYet, GiaCoBan, HinhAnh, Rating, SoLuotRating, MaCategory) VALUES
-('Trà trái cây đào', 39000, 45000, 'assets/img/products/tratraicay/tratc-dao.png', 4.60, 234, 3),
-('Trà trái cây khóm', 39000, 45000, 'assets/img/products/tratraicay/tratc-khom.png', 4.55, 198, 3),
-('Trà trái cây sen vàng', 39000, 46000, 'assets/img/products/tratraicay/tratc-senvang.png', 4.70, 267, 3),
-('Trà trái cây vải', 42000, 45000, 'assets/img/products/tratraicay/tratc-vai.png', 4.65, 189, 3);
+('Trà Đào', 39000, 45000, 'assets/img/products/tratraicay/tratc-dao.png', 4.60, 234, 3),
+('Trà Khóm', 39000, 45000, 'assets/img/products/tratraicay/tratc-khom.png', 4.55, 198, 3),
+('Trà Sen vàng', 39000, 46000, 'assets/img/products/tratraicay/tratc-senvang.png', 4.70, 267, 3),
+('Trà Vải', 42000, 45000, 'assets/img/products/tratraicay/tratc-vai.png', 4.65, 189, 3);
 
 -- Yogurt (MaCategory = 4)
 INSERT INTO `SanPham` (TenSP, GiaNiemYet, GiaCoBan, HinhAnh, Rating, SoLuotRating, MaCategory) VALUES
-('Yogurt truyền thống', 38000, 40000, 'assets/img/products/yogurt/truyenthong.png', 4.75, 312, 4),
-('Yogurt dâu tây', 40000, 45000, 'assets/img/products/yogurt/dautay.png', 4.80, 278, 4);
+('Yogurt Truyền thống', 38000, 40000, 'assets/img/products/yogurt/truyenthong.png', 4.75, 312, 4),
+('Yogurt Dâu tây', 40000, 45000, 'assets/img/products/yogurt/dautay.png', 4.80, 278, 4);
 
 -- 8. Link SanPham với Option Group (Product_Option_Group)
 -- Cà phê (SP 1-4): Đường (1) và Đá (2)

@@ -14,6 +14,7 @@
 @import url('news-card.css');
 @import url('buttons.css');
 @import url('pagination.css');
+@import url('snack-bar.css');
 
 /* Import page-specific styles */
 @import url('home.css');

@@ -40,24 +40,12 @@ $(document).ready(function () {
       dataType: "json",
       success: function (response) {
         if (response.success) {
-          // Show success message
-          $message
-            .addClass("success")
-            .text(response.message || "Đăng nhập thành công!")
-            .show();
-
-          // Redirect after 1 second
+          showSnackBar('success', response.message || "Đăng nhập thành công!");
           setTimeout(function () {
             window.location.href = "../../index.php";
-          }, 1000);
+          }, 1500);
         } else {
-          // Show error message
-          $message
-            .addClass("error")
-            .text(response.message || "Đăng nhập thất bại. Vui lòng thử lại.")
-            .show();
-
-          // Re-enable button
+          showSnackBar('failed', response.message || "Đăng nhập thất bại. Vui lòng thử lại.");
           $btn.prop("disabled", false);
           $btnText.show();
           $btnLoading.hide();
@@ -65,12 +53,7 @@ $(document).ready(function () {
       },
       error: function (xhr, status, error) {
         console.error("Login error:", error);
-        $message
-          .addClass("error")
-          .text("Có lỗi xảy ra. Vui lòng thử lại sau.")
-          .show();
-
-        // Re-enable button
+        showSnackBar('failed', "Có lỗi xảy ra. Vui lòng thử lại sau.");
         $btn.prop("disabled", false);
         $btnText.show();
         $btnLoading.hide();
@@ -80,10 +63,10 @@ $(document).ready(function () {
 
   // Social login buttons (placeholder)
   $("#facebookLogin").on("click", function () {
-    alert("Tính năng đăng nhập bằng Facebook sẽ được triển khai sau.");
+    showSnackBar('information', "Tính năng đăng nhập bằng Facebook sẽ được triển khai sau.");
   });
 
   $("#googleLogin").on("click", function () {
-    alert("Tính năng đăng nhập bằng Google sẽ được triển khai sau.");
+    showSnackBar('information', "Tính năng đăng nhập bằng Google sẽ được triển khai sau.");
   });
 });
