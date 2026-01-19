@@ -255,32 +255,52 @@ $(document).ready(function () {
   $("#pay-now-btn").on("click", function () {
     // Validate form
     if (!$("#agree-terms").is(":checked")) {
-      alert("Vui lòng đồng ý với điều khoản mua hàng");
+      if (typeof showSnackBar === 'function') {
+        showSnackBar('warm', "Vui lòng đồng ý với điều khoản mua hàng");
+      } else {
+        alert("Vui lòng đồng ý với điều khoản mua hàng");
+      }
       return;
     }
 
     const deliveryAddr = $("#delivery-address").val().trim();
     if (!deliveryAddr) {
-      alert("Vui lòng nhập địa chỉ giao hàng");
+      if (typeof showSnackBar === 'function') {
+        showSnackBar('warm', "Vui lòng nhập địa chỉ giao hàng");
+      } else {
+        alert("Vui lòng nhập địa chỉ giao hàng");
+      }
       $("#change-address-btn").trigger("click");
       return;
     }
 
     const province = $("#province-select").val();
     if (!province) {
-      alert("Vui lòng chọn Tỉnh/Thành phố");
+      if (typeof showSnackBar === 'function') {
+        showSnackBar('warm', "Vui lòng chọn Tỉnh/Thành phố");
+      } else {
+        alert("Vui lòng chọn Tỉnh/Thành phố");
+      }
       return;
     }
 
     const storeId = $("#store-select").val();
     if (!storeId) {
-      alert("Vui lòng chọn cửa hàng");
+      if (typeof showSnackBar === 'function') {
+        showSnackBar('warm', "Vui lòng chọn cửa hàng");
+      } else {
+        alert("Vui lòng chọn cửa hàng");
+      }
       return;
     }
 
     const paymentMethod = $("input[name='payment_method']:checked").val();
     if (!paymentMethod) {
-      alert("Vui lòng chọn phương thức thanh toán");
+      if (typeof showSnackBar === 'function') {
+        showSnackBar('warm', "Vui lòng chọn phương thức thanh toán");
+      } else {
+        alert("Vui lòng chọn phương thức thanh toán");
+      }
       return;
     }
 
@@ -292,7 +312,11 @@ $(document).ready(function () {
       const vatAddress = $("input[name='vat_address']").val();
 
       if (!vatEmail || !vatTaxId || !vatCompany || !vatAddress) {
-        alert("Vui lòng điền đầy đủ thông tin hóa đơn VAT");
+        if (typeof showSnackBar === 'function') {
+          showSnackBar('warm', "Vui lòng điền đầy đủ thông tin hóa đơn VAT");
+        } else {
+          alert("Vui lòng điền đầy đủ thông tin hóa đơn VAT");
+        }
         return;
       }
     }
@@ -330,14 +354,36 @@ $(document).ready(function () {
           window.location.href =
             "order_result.php?order_id=" + response.order_id;
         } else {
-          alert("Có lỗi xảy ra: " + (response.message || "Vui lòng thử lại"));
-          $("#pay-now-btn").prop("disabled", false).text("Thanh toán ngay");
+          if (typeof showModalBox === 'function') {
+            showModalBox({
+              type: 'acknowledge',
+              title: 'Lỗi',
+              message: "Có lỗi xảy ra: " + (response.message || "Vui lòng thử lại"),
+              onConfirm: function() {
+                $("#pay-now-btn").prop("disabled", false).text("Thanh toán ngay");
+              }
+            });
+          } else {
+            alert("Có lỗi xảy ra: " + (response.message || "Vui lòng thử lại"));
+            $("#pay-now-btn").prop("disabled", false).text("Thanh toán ngay");
+          }
         }
       },
       error: function (xhr, status, error) {
         console.error("Error:", error);
-        alert("Có lỗi xảy ra. Vui lòng thử lại.");
-        $("#pay-now-btn").prop("disabled", false).text("Thanh toán ngay");
+        if (typeof showModalBox === 'function') {
+          showModalBox({
+            type: 'acknowledge',
+            title: 'Lỗi',
+            message: "Có lỗi xảy ra. Vui lòng thử lại.",
+            onConfirm: function() {
+              $("#pay-now-btn").prop("disabled", false).text("Thanh toán ngay");
+            }
+          });
+        } else {
+          alert("Có lỗi xảy ra. Vui lòng thử lại.");
+          $("#pay-now-btn").prop("disabled", false).text("Thanh toán ngay");
+        }
       },
     });
   });

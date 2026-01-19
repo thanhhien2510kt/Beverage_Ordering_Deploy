@@ -172,8 +172,11 @@ $totalStores = countStores($searchKeyword, $searchProvince, $searchWard);
 
     <?php include '../../components/footer.php'; ?>
 
+    <?php include '../../components/snack-bar.php'; ?>
+
     <script src="../../assets/js/common.js"></script>
     <script src="../../assets/js/main.js"></script>
+    <script src="../../assets/js/snack-bar.js"></script>
     <script src="../../assets/js/stores.js"></script>
 </body>
 </html>

@@ -89,8 +89,11 @@ if (!$order) {
 
         <?php include '../../components/footer.php'; ?>
 
+        <?php include '../../components/snack-bar.php'; ?>
+
         <script src="<?php echo $basePath; ?>assets/js/common.js"></script>
         <script src="<?php echo $basePath; ?>assets/js/main.js"></script>
+        <script src="<?php echo $basePath; ?>assets/js/snack-bar.js"></script>
     </body>
     </html>
     <?php
@@ -306,7 +309,10 @@ $iconPath = $basePath . 'assets/img/cart/order_result/';
 
     <?php include '../../components/footer.php'; ?>
 
+    <?php include '../../components/snack-bar.php'; ?>
+
     <script src="<?php echo $basePath; ?>assets/js/common.js"></script>
     <script src="<?php echo $basePath; ?>assets/js/main.js"></script>
+    <script src="<?php echo $basePath; ?>assets/js/snack-bar.js"></script>
 </body>
 </html>

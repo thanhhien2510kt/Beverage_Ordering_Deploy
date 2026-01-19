@@ -52,11 +52,19 @@ $(document).ready(function () {
           // Reload page to reflect changes
           location.reload();
         } else {
-          alert("Có lỗi xảy ra: " + (response.message || "Vui lòng thử lại"));
+          if (typeof showSnackBar === 'function') {
+            showSnackBar('failed', "Có lỗi xảy ra: " + (response.message || "Vui lòng thử lại"));
+          } else {
+            alert("Có lỗi xảy ra: " + (response.message || "Vui lòng thử lại"));
+          }
         }
       },
       error: function () {
-        alert("Có lỗi xảy ra. Vui lòng thử lại.");
+        if (typeof showSnackBar === 'function') {
+          showSnackBar('failed', "Có lỗi xảy ra. Vui lòng thử lại.");
+        } else {
+          alert("Có lỗi xảy ra. Vui lòng thử lại.");
+        }
       },
     });
   }
@@ -71,14 +79,31 @@ $(document).ready(function () {
     // Validate item index exists in DOM
     const $item = $(".cart-item[data-item-index='" + itemIndex + "']");
     if ($item.length === 0) {
-      alert("Sản phẩm không tồn tại trong giỏ hàng");
+      showModalBox({
+        title: 'Lỗi',
+        message: 'Sản phẩm không tồn tại trong giỏ hàng',
+        type: 'acknowledge'
+      });
       return;
     }
 
-    if (!confirm("Bạn có chắc chắn muốn xóa sản phẩm này khỏi giỏ hàng?")) {
-      return;
-    }
+    // Show confirmation modal
+    showModalBox({
+      title: 'Xóa sản phẩm',
+      message: 'Bạn có chắc chắn muốn xóa sản phẩm này khỏi giỏ hàng?',
+      type: 'yesno',
+      onConfirm: function() {
+        // Continue with deletion
+        proceedWithDeletion(itemIndex);
+      },
+      onCancel: function() {
+        // User cancelled, do nothing
+      }
+    });
+  }
 
+  // Proceed with deletion after confirmation
+  function proceedWithDeletion(itemIndex) {
     // Set deleting flag and disable all delete buttons
     isDeleting = true;
     $(".delete-btn").prop("disabled", true);
@@ -95,14 +120,22 @@ $(document).ready(function () {
           // Reload page to reflect changes and update item indices
           location.reload();
         } else {
-          alert("Có lỗi xảy ra: " + (response.message || "Vui lòng thử lại"));
+          showModalBox({
+            title: 'Lỗi',
+            message: 'Có lỗi xảy ra: ' + (response.message || "Vui lòng thử lại"),
+            type: 'acknowledge'
+          });
           // Re-enable buttons on error
           isDeleting = false;
           $(".delete-btn").prop("disabled", false);
         }
       },
       error: function () {
-        alert("Có lỗi xảy ra. Vui lòng thử lại.");
+        showModalBox({
+          title: 'Lỗi',
+          message: 'Có lỗi xảy ra. Vui lòng thử lại.',
+          type: 'acknowledge'
+        });
         // Re-enable buttons on error
         isDeleting = false;
         $(".delete-btn").prop("disabled", false);
@@ -221,8 +254,9 @@ $(document).ready(function () {
     const checkedItems = $(".item-checkbox:checked");
 
     if (checkedItems.length === 0) {
-      alert("Vui lòng chọn ít nhất một sản phẩm để đặt hàng");
-      return;
+      
+        showSnackBar('warm', "Vui lòng chọn ít nhất một sản phẩm để đặt hàng");
+      
     }
 
     // Get selected item indices

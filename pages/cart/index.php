@@ -200,8 +200,13 @@ $basePath = '../../';
 
     <?php include '../../components/footer.php'; ?>
 
+    <?php include '../../components/modal-box.php'; ?>
+    <?php include '../../components/snack-bar.php'; ?>
+
     <script src="<?php echo $basePath; ?>assets/js/common.js"></script>
     <script src="<?php echo $basePath; ?>assets/js/main.js"></script>
+    <script src="<?php echo $basePath; ?>assets/js/modal-box.js"></script>
+    <script src="<?php echo $basePath; ?>assets/js/snack-bar.js"></script>
     <script src="<?php echo $basePath; ?>assets/js/cart.js"></script>
 </body>
 </html>

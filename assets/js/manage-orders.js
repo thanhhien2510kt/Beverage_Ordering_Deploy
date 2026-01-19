@@ -343,16 +343,28 @@ $(document).ready(function() {
             dataType: 'json',
             success: function(res) {
                 if (res.success) {
-                    alert(res.message || 'Cập nhật trạng thái thành công!');
+                    if (typeof showSnackBar === 'function') {
+                        showSnackBar('success', res.message || 'Cập nhật trạng thái thành công!');
+                    } else {
+                        alert(res.message || 'Cập nhật trạng thái thành công!');
+                    }
                     $('#manageOrderDetailModal').hide();
                     // Reload manage orders list
                     loadManageOrders(1);
                 } else {
-                    alert(res.message || 'Cập nhật trạng thái thất bại!');
+                    if (typeof showSnackBar === 'function') {
+                        showSnackBar('failed', res.message || 'Cập nhật trạng thái thất bại!');
+                    } else {
+                        alert(res.message || 'Cập nhật trạng thái thất bại!');
+                    }
                 }
             },
             error: function() {
-                alert('Có lỗi xảy ra. Vui lòng thử lại.');
+                if (typeof showSnackBar === 'function') {
+                    showSnackBar('failed', 'Có lỗi xảy ra. Vui lòng thử lại.');
+                } else {
+                    alert('Có lỗi xảy ra. Vui lòng thử lại.');
+                }
             }
         });
     }

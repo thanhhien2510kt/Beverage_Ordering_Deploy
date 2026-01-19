@@ -287,6 +287,7 @@
 }
 
 .form-group {
+  margin-top: 20px;
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -295,6 +296,7 @@
 .form-label {
   font-size: 14px;
   font-weight: 600;
+  padding-left: 10px;
   color: var(--text-dark);
   display: inline-flex;
   align-items: center;

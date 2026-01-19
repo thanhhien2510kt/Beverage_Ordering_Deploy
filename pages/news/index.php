@@ -78,8 +78,11 @@ $news = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     <?php include '../../components/footer.php'; ?>
 
+    <?php include '../../components/snack-bar.php'; ?>
+
     <script src="../../assets/js/common.js"></script>
     <script src="../../assets/js/main.js"></script>
+    <script src="../../assets/js/snack-bar.js"></script>
     <script src="../../assets/js/news.js"></script>
 </body>
 </html>

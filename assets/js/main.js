@@ -84,17 +84,25 @@ $(document).ready(function () {
           renderProductModal(response.data);
           $content.show();
         } else {
-          alert(
-            "Không thể tải thông tin sản phẩm: " +
-              (response.message || "Lỗi không xác định")
-          );
+          if (typeof showSnackBar === 'function') {
+            showSnackBar('failed', "Không thể tải thông tin sản phẩm: " + (response.message || "Lỗi không xác định"));
+          } else {
+            alert(
+              "Không thể tải thông tin sản phẩm: " +
+                (response.message || "Lỗi không xác định")
+            );
+          }
           closeProductModal();
         }
       },
       error: function (xhr, status, error) {
         $loading.hide();
         console.error("Error loading product:", error);
-        alert("Có lỗi xảy ra khi tải sản phẩm. Vui lòng thử lại.");
+        if (typeof showSnackBar === 'function') {
+          showSnackBar('failed', "Có lỗi xảy ra khi tải sản phẩm. Vui lòng thử lại.");
+        } else {
+          alert("Có lỗi xảy ra khi tải sản phẩm. Vui lòng thử lại.");
+        }
         closeProductModal();
       },
     });
