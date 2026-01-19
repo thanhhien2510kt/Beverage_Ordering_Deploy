@@ -250,6 +250,13 @@ if ($showBestSeller) {
     <div id="product-customize-modal" class="product-customize-modal">
         <div class="modal-overlay"></div>
         <div class="modal-side-panel">
+            <!-- Close Button -->
+            <button type="button" id="close-modal-btn" class="modal-close-btn" aria-label="Đóng">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+            </button>
+            
             <div class="modal-content">
                 <div id="modal-loading" class="modal-loading">
                     <p>Đang tải...</p>
@@ -333,8 +340,10 @@ if ($showBestSeller) {
     </div>
 
     <?php include '../../components/footer.php'; ?>
+    <?php include '../../components/snack-bar.php'; ?>
 
     <script src="../../assets/js/common.js"></script>
     <script src="../../assets/js/main.js"></script>
+    <script src="../../assets/js/snack-bar.js"></script>
 </body>
 </html>

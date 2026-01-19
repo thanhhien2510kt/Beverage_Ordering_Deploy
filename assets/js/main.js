@@ -337,17 +337,25 @@ $(document).ready(function () {
           dataType: "json",
           success: function (response) {
             if (response.success) {
-              closeProductModal();
               updateCartCount();
+              if (typeof showSnackBar === 'function') {
+                showSnackBar('success', response.message || 'Đã thêm vào giỏ hàng thành công!');
+              }
             } else {
-              alert(
-                "Có lỗi xảy ra: " + (response.message || "Vui lòng thử lại")
-              );
+              if (typeof showSnackBar === 'function') {
+                showSnackBar('failed', response.message || 'Có lỗi xảy ra. Vui lòng thử lại.');
+              } else {
+                alert("Có lỗi xảy ra: " + (response.message || "Vui lòng thử lại"));
+              }
             }
           },
           error: function (xhr, status, error) {
             console.error("Error:", error);
-            alert("Có lỗi xảy ra. Vui lòng thử lại.");
+            if (typeof showSnackBar === 'function') {
+              showSnackBar('failed', 'Có lỗi xảy ra. Vui lòng thử lại.');
+            } else {
+              alert("Có lỗi xảy ra. Vui lòng thử lại.");
+            }
           },
         });
       });
