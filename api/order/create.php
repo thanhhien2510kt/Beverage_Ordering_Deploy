@@ -189,6 +189,32 @@ try {
             }
         }
 
+        // Remove all stored carts in database for this user to keep state in sync with session
+        $stmt = $pdo->prepare("SELECT MaCart FROM Cart WHERE MaUser = ?");
+        $stmt->execute([$userId]);
+        $cartIds = $stmt->fetchAll(PDO::FETCH_COLUMN);
+
+        if (!empty($cartIds)) {
+            $placeholders = implode(',', array_fill(0, count($cartIds), '?'));
+
+            // Delete cart item options first (FK safety)
+            $stmt = $pdo->prepare("
+                DELETE FROM Cart_Item_Option 
+                WHERE MaCartItem IN (
+                    SELECT MaCartItem FROM Cart_Item WHERE MaCart IN ($placeholders)
+                )
+            ");
+            $stmt->execute($cartIds);
+
+            // Delete cart items
+            $stmt = $pdo->prepare("DELETE FROM Cart_Item WHERE MaCart IN ($placeholders)");
+            $stmt->execute($cartIds);
+
+            // Delete carts
+            $stmt = $pdo->prepare("DELETE FROM Cart WHERE MaCart IN ($placeholders)");
+            $stmt->execute($cartIds);
+        }
+
         // Commit transaction
         $pdo->commit();
 
