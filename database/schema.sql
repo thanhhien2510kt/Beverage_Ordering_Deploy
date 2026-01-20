@@ -136,7 +136,7 @@ CREATE TABLE `Cart_Item_Option` (
     CONSTRAINT `FK_CIO_Value` FOREIGN KEY (`MaOptionValue`) REFERENCES `Option_Value` (`MaOptionValue`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- MOVED UP: Bảng PROMOTION (Must exist before Orders)
+-- 13. Bảng PROMOTION
 DROP TABLE IF EXISTS `Promotion`;
 CREATE TABLE `Promotion` (
     `MaPromotion` INT AUTO_INCREMENT PRIMARY KEY,
@@ -149,21 +149,14 @@ CREATE TABLE `Promotion` (
     `TrangThai` TINYINT(1) DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- MOVED UP: Bảng PAYMENT_METHOD (If Orders needs to reference it in the future)
+-- 14. Bảng PAYMENT_METHOD
 DROP TABLE IF EXISTS `Payment_Method`;
 CREATE TABLE `Payment_Method` (
     `MaPayment` INT AUTO_INCREMENT PRIMARY KEY,
     `TenPayment` VARCHAR(100) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- 13. Bảng ORDERS
--- TrangThai values: 
---   - Pending / Payment_Received: Đã nhận thanh toán (chờ xác nhận)
---   - Processing: Đã nhận đơn (đã xác nhận)
---   - Delivering: Đang giao hàng
---   - Completed: Hoàn thành
---   - Cancelled: Khách hàng hủy
---   - Store_Cancelled: Cửa hàng hủy
+-- 15. Bảng ORDERS
 DROP TABLE IF EXISTS `Orders`;
 CREATE TABLE `Orders` (
     `MaOrder` INT AUTO_INCREMENT PRIMARY KEY,
@@ -179,13 +172,17 @@ CREATE TABLE `Orders` (
     `TongTien` DECIMAL(15, 0) NOT NULL,
     `TrangThai` VARCHAR(50) DEFAULT 'Pending',
     `NgayTao` DATETIME DEFAULT CURRENT_TIMESTAMP,
+    `ThoiDiemNhanDon` DATETIME NULL DEFAULT NULL,
+    `ThoiDiemGiaoHang` DATETIME NULL DEFAULT NULL,
+    `ThoiDiemNhanHang` DATETIME NULL DEFAULT NULL,
+    `ThoiDiemHuyDon` DATETIME NULL DEFAULT NULL,
     CONSTRAINT `FK_Order_User` FOREIGN KEY (`MaUser`) REFERENCES `User` (`MaUser`),
     CONSTRAINT `FK_Order_Store` FOREIGN KEY (`MaStore`) REFERENCES `Store` (`MaStore`),
     CONSTRAINT `FK_Order_Promotion` FOREIGN KEY (`MaPromotion`) REFERENCES `Promotion` (`MaPromotion`),
     CONSTRAINT `FK_Order_Payment` FOREIGN KEY (`MaPayment`) REFERENCES `Payment_Method` (`MaPayment`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- 14. Bảng ORDER_ITEM
+-- 16. Bảng ORDER_ITEM
 DROP TABLE IF EXISTS `Order_Item`;
 CREATE TABLE `Order_Item` (
     `MaOrderItem` INT AUTO_INCREMENT PRIMARY KEY,
@@ -197,7 +194,7 @@ CREATE TABLE `Order_Item` (
     CONSTRAINT `FK_OI_SP` FOREIGN KEY (`MaSP`) REFERENCES `SanPham` (`MaSP`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- 15. Bảng ORDER_ITEM_OPTION
+-- 17. Bảng ORDER_ITEM_OPTION
 DROP TABLE IF EXISTS `Order_Item_Option`;
 CREATE TABLE `Order_Item_Option` (
     `MaOrderItem` INT NOT NULL,
@@ -208,7 +205,7 @@ CREATE TABLE `Order_Item_Option` (
     CONSTRAINT `FK_OIO_Value` FOREIGN KEY (`MaOptionValue`) REFERENCES `Option_Value` (`MaOptionValue`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- 16. Bảng NEWS
+-- 18. Bảng NEWS
 DROP TABLE IF EXISTS `News`;
 CREATE TABLE `News` (
     `MaNews` INT AUTO_INCREMENT PRIMARY KEY,

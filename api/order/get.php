@@ -31,6 +31,27 @@ try {
     }
 
     $pdo = getDBConnection();
+    
+    // Automatically progress orders based on scheduled timestamps
+    try {
+        $pdo->exec("
+            UPDATE Orders
+            SET TrangThai = 'Delivering'
+            WHERE TrangThai IN ('Processing', 'Order_Received')
+              AND ThoiDiemGiaoHang IS NOT NULL
+              AND ThoiDiemGiaoHang <= NOW()
+        ");
+
+        $pdo->exec("
+            UPDATE Orders
+            SET TrangThai = 'Completed'
+            WHERE TrangThai = 'Delivering'
+              AND ThoiDiemNhanHang IS NOT NULL
+              AND ThoiDiemNhanHang <= NOW()
+        ");
+    } catch (Exception $e) {
+        error_log("Auto-progress error: " . $e->getMessage());
+    }
 
     $where = ["o.MaUser = ?"];
     $params = [$userId];

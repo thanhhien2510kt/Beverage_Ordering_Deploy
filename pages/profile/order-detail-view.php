@@ -102,6 +102,19 @@ $orderStatus = $order['TrangThai'] ?? 'Payment_Received';
 $orderDate = $order['NgayTao'] ?? date('Y-m-d H:i:s');
 $orderDateFormatted = date('d/m/Y H:i:s', strtotime($orderDate));
 
+// Get timeline timestamps
+$thoiDiemNhanDon = $order['ThoiDiemNhanDon'] ?? null;
+$thoiDiemGiaoHang = $order['ThoiDiemGiaoHang'] ?? null;
+$thoiDiemNhanHang = $order['ThoiDiemNhanHang'] ?? null;
+$thoiDiemHuyDon = $order['ThoiDiemHuyDon'] ?? null;
+
+// Format timestamps
+$step1Date = $orderDateFormatted; // Always show order creation date
+$step2Date = $thoiDiemNhanDon ? date('d/m/Y H:i:s', strtotime($thoiDiemNhanDon)) : null;
+$step3Date = $thoiDiemGiaoHang ? date('d/m/Y H:i:s', strtotime($thoiDiemGiaoHang)) : null;
+$step4Date = $thoiDiemNhanHang ? date('d/m/Y H:i:s', strtotime($thoiDiemNhanHang)) : null;
+$cancelDate = $thoiDiemHuyDon ? date('d/m/Y H:i:s', strtotime($thoiDiemHuyDon)) : $orderDateFormatted;
+
 // Determine which steps are completed based on order status
 $step1Completed = in_array($orderStatus, ['Payment_Received', 'Pending', 'Processing', 'Order_Received', 'Delivering', 'Completed']);
 $step2Completed = in_array($orderStatus, ['Processing', 'Order_Received', 'Delivering', 'Completed']);
@@ -158,7 +171,7 @@ $statusClass = getStatusClass($orderStatus);
                 <line x1="9" y1="9" x2="15" y2="15"/>
             </svg>
             <p style="color: #dc3545; font-weight: 600; font-size: 16px; margin: 0;">Đơn hàng đã bị hủy</p>
-            <p style="color: #666; font-size: 14px; margin-top: 8px;"><?php echo e($orderDateFormatted); ?></p>
+            <p style="color: #666; font-size: 14px; margin-top: 8px;"><?php echo e($cancelDate); ?></p>
         </div>
     <?php else: ?>
         <div class="order-progress-steps">
@@ -177,8 +190,8 @@ $statusClass = getStatusClass($orderStatus);
                     <img src="<?php echo $iconPath . ($step1Completed ? 'paid.png' : 'green/order_accepted.png'); ?>" alt="Đã nhận thanh toán">
                 </div>
                 <div class="order-progress-label">Đã nhận thanh toán</div>
-                <?php if ($step1Completed): ?>
-                    <div class="order-progress-date"><?php echo e($orderDateFormatted); ?></div>
+                <?php if ($step1Completed && $step1Date): ?>
+                    <div class="order-progress-date"><?php echo e($step1Date); ?></div>
                 <?php endif; ?>
             </div>
             
@@ -189,8 +202,8 @@ $statusClass = getStatusClass($orderStatus);
                          alt="Đã nhận đơn">
                 </div>
                 <div class="order-progress-label">Đã nhận đơn</div>
-                <?php if ($step2Completed && !$step3Completed): ?>
-                    <div class="order-progress-date"><?php echo e($orderDateFormatted); ?></div>
+                <?php if ($step2Completed && $step2Date): ?>
+                    <div class="order-progress-date"><?php echo e($step2Date); ?></div>
                 <?php endif; ?>
             </div>
             
@@ -201,8 +214,8 @@ $statusClass = getStatusClass($orderStatus);
                          alt="Đang giao hàng">
                 </div>
                 <div class="order-progress-label">Đang giao hàng</div>
-                <?php if ($step3Completed && !$step4Completed): ?>
-                    <div class="order-progress-date"><?php echo e($orderDateFormatted); ?></div>
+                <?php if ($step3Completed && $step3Date): ?>
+                    <div class="order-progress-date"><?php echo e($step3Date); ?></div>
                 <?php endif; ?>
             </div>
             
@@ -213,8 +226,8 @@ $statusClass = getStatusClass($orderStatus);
                          alt="Hoàn thành">
                 </div>
                 <div class="order-progress-label">Hoàn thành</div>
-                <?php if ($step4Completed): ?>
-                    <div class="order-progress-date"><?php echo e($orderDateFormatted); ?></div>
+                <?php if ($step4Completed && $step4Date): ?>
+                    <div class="order-progress-date"><?php echo e($step4Date); ?></div>
                 <?php endif; ?>
             </div>
         </div>

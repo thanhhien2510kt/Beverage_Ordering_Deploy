@@ -60,26 +60,69 @@ try {
         throw new Exception('Chỉ có thể cập nhật trạng thái đơn hàng đang ở trạng thái "Đã nhận thanh toán"');
     }
 
-    // Determine new status based on action
-    $newStatus = '';
+    $now = new DateTime();
+    $deliverAt = (clone $now)->add(new DateInterval('PT' . rand(15, 20) . 'M'));
+    $completeAt = (clone $deliverAt)->add(new DateInterval('PT' . rand(10, 15) . 'M'));
+    
+    $pdo->beginTransaction();
+
+    // Determine new status and timestamps
     if ($action === 'accept') {
-        $newStatus = 'Processing'; // Đã nhận đơn
-    } else if ($action === 'cancel') {
-        $newStatus = 'Store_Cancelled'; // Cửa hàng hủy
+        $stmt = $pdo->prepare("
+            UPDATE Orders 
+            SET TrangThai = 'Processing',
+                ThoiDiemNhanDon = ?,
+                ThoiDiemGiaoHang = ?,
+                ThoiDiemNhanHang = ?,
+                ThoiDiemHuyDon = NULL
+            WHERE MaOrder = ?
+        ");
+        $stmt->execute([
+            $now->format('Y-m-d H:i:s'),
+            $deliverAt->format('Y-m-d H:i:s'),
+            $completeAt->format('Y-m-d H:i:s'),
+            $orderId
+        ]);
+        $statusText = 'Đã nhận đơn';
+        $newStatus = 'Processing';
+    } else { // cancel
+        $stmt = $pdo->prepare("
+            UPDATE Orders 
+            SET TrangThai = 'Store_Cancelled',
+                ThoiDiemHuyDon = ?,
+                ThoiDiemGiaoHang = NULL,
+                ThoiDiemNhanHang = NULL,
+                ThoiDiemNhanDon = NULL
+            WHERE MaOrder = ?
+        ");
+        $stmt->execute([
+            $now->format('Y-m-d H:i:s'),
+            $orderId
+        ]);
+        $statusText = 'Đã hủy đơn';
+        $newStatus = 'Store_Cancelled';
     }
 
-    // Update order status
-    $stmt = $pdo->prepare("UPDATE Orders SET TrangThai = ? WHERE MaOrder = ?");
-    $stmt->execute([$newStatus, $orderId]);
+    $pdo->commit();
 
-    $statusText = $action === 'accept' ? 'Đã nhận đơn' : 'Đã hủy đơn';
     $response = [
         'success' => true,
         'message' => "Cập nhật trạng thái đơn hàng thành công: $statusText",
         'new_status' => $newStatus
     ];
 
+    if ($action === 'accept') {
+        $response['thoi_diem_nhan_don'] = $now->format('Y-m-d H:i:s');
+        $response['thoi_diem_giao_hang'] = $deliverAt->format('Y-m-d H:i:s');
+        $response['thoi_diem_nhan_hang'] = $completeAt->format('Y-m-d H:i:s');
+    } else {
+        $response['thoi_diem_huy_don'] = $now->format('Y-m-d H:i:s');
+    }
+
 } catch (Exception $e) {
+    if (isset($pdo) && $pdo->inTransaction()) {
+        $pdo->rollBack();
+    }
     $response['message'] = $e->getMessage();
 }
 
