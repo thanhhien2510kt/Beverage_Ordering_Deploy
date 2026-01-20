@@ -1,0 +1,136 @@
+<?php
+/**
+ * Menu Search API
+ * Tìm kiếm sản phẩm theo từ khóa / category / chế độ hiển thị
+ */
+
+header('Content-Type: application/json');
+require_once '../../functions.php';
+
+$response = [
+    'success' => false,
+    'headingHtml' => '',
+    'contentHtml' => '',
+];
+
+try {
+    // Parameters giống menu/index.php
+    $categoryId = isset($_GET['category']) ? (int)$_GET['category'] : null;
+    $keyword = isset($_GET['search']) ? trim($_GET['search']) : '';
+    $showBestSeller = isset($_GET['bestseller']) && $_GET['bestseller'] == '1';
+    $showTopping = isset($_GET['topping']) && $_GET['topping'] == '1';
+    $page = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
+    $perPage = 12;
+
+    $categories = getCategories();
+    $bestSellers = getBestSellerProducts(2);
+    $toppings = $showTopping ? getToppings() : [];
+    $products = !$showTopping ? searchProducts($keyword, $categoryId, $page, $perPage) : [];
+    $totalProducts = !$showTopping ? countProducts($keyword, $categoryId) : count($toppings);
+    $totalPages = !$showTopping ? ceil($totalProducts / $perPage) : 1;
+
+    $selectedCategoryName = 'Tất cả';
+    if ($showBestSeller) {
+        $selectedCategoryName = 'Best Seller';
+    } elseif ($showTopping) {
+        $selectedCategoryName = 'Topping';
+    } elseif ($categoryId) {
+        foreach ($categories as $cat) {
+            if ($cat['MaCategory'] == $categoryId) {
+                $selectedCategoryName = $cat['TenCategory'];
+                break;
+            }
+        }
+    }
+
+    // Build heading HTML
+    ob_start();
+    ?>
+    <h2 class="section-heading" id="menu-section-heading">
+        <?php echo e($selectedCategoryName); ?>
+        <?php if ($showBestSeller && !empty($bestSellers)): ?>
+            <span class="product-count">(<?php echo count($bestSellers); ?> sản phẩm)</span>
+        <?php elseif ($showTopping && !empty($toppings)): ?>
+            <span class="product-count">(<?php echo count($toppings); ?> topping)</span>
+        <?php elseif (!$showBestSeller && !$showTopping && $totalProducts > 0): ?>
+            <span class="product-count">(<?php echo $totalProducts; ?> sản phẩm)</span>
+        <?php endif; ?>
+    </h2>
+    <?php
+    $headingHtml = ob_get_clean();
+
+    // Build products wrapper HTML, dùng lại đúng cấu trúc trong menu/index.php
+    ob_start();
+    ?>
+    <?php if ($showBestSeller && !empty($bestSellers)): ?>
+        <!-- Render Best Sellers -->
+        <div class="products-grid">
+            <?php foreach ($bestSellers as $product): ?>
+                <?php 
+                    $product = $product;
+                    $basePath = '../../'; // Từ api/menu/ về root
+                    include '../../components/product-card.php'; 
+                ?>
+            <?php endforeach; ?>
+        </div>
+    <?php elseif ($showTopping && !empty($toppings)): ?>
+        <!-- Render Toppings -->
+        <div class="products-grid">
+            <?php foreach ($toppings as $topping): ?>
+                <?php 
+                    $product = $topping;
+                    $basePath = '../../'; // Từ api/menu/ về root
+                    include '../../components/product-card.php'; 
+                ?>
+            <?php endforeach; ?>
+        </div>
+    <?php elseif (!$showBestSeller && !$showTopping && !empty($products)): ?>
+        <!-- Render Regular Products -->
+        <div class="products-grid">
+            <?php foreach ($products as $product): ?>
+                <?php 
+                    $product = $product;
+                    $basePath = '../../'; // Từ api/menu/ về root
+                    include '../../components/product-card.php'; 
+                ?>
+            <?php endforeach; ?>
+        </div>
+    <?php else: ?>
+        <div class="no-products">
+            <p>Không tìm thấy sản phẩm nào.</p>
+            <?php 
+                $text = 'Xem tất cả sản phẩm';
+                $type = 'primary';
+                $href = 'index.php';
+                $width = 'auto';
+                include '../../components/button.php';
+            ?>
+        </div>
+    <?php endif; ?>
+
+    <!-- Pagination -->
+    <?php if (!$showBestSeller && !$showTopping && $totalPages > 0): ?>
+        <?php
+            $queryParams = [];
+            if ($categoryId) {
+                $queryParams['category'] = $categoryId;
+            }
+            if ($keyword) {
+                $queryParams['search'] = $keyword;
+            }
+            include '../../components/pagination.php';
+        ?>
+    <?php endif; ?>
+    <?php
+    $contentHtml = ob_get_clean();
+
+    $response['success'] = true;
+    $response['headingHtml'] = $headingHtml;
+    $response['contentHtml'] = $contentHtml;
+
+} catch (Exception $e) {
+    $response['success'] = false;
+    $response['message'] = $e->getMessage();
+}
+
+echo json_encode($response, JSON_UNESCAPED_UNICODE);

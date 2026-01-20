@@ -66,12 +66,12 @@ if ($showBestSeller) {
 <body>
     <?php include '../../components/header.php'; ?>
 
-    <!-- Hero Banner Section
-    <!-- <section class="menu-hero" id="menu-hero-section">
+    <!-- Hero Banner Section -->
+    <section class="menu-hero" id="menu-hero-section">
         <div class="menu-hero-image">
             <img src="../../assets/img/products/product_banner.png" alt="Fresh Juice">
         </div>
-    </section> -->
+    </section>
 
     <!-- Menu Content -->
     <section class="menu-content-section" id="menu-content-section">
@@ -165,7 +165,7 @@ if ($showBestSeller) {
 
                     <!-- Products Grid -->
                     <div class="menu-products-section">
-                        <h2 class="section-heading">
+                        <h2 class="section-heading" id="menu-section-heading">
                             <?php echo e($selectedCategoryName); ?>
                             <?php if ($showBestSeller && !empty($bestSellers)): ?>
                                 <span class="product-count">(<?php echo count($bestSellers); ?> sản phẩm)</span>
@@ -175,66 +175,73 @@ if ($showBestSeller) {
                                 <span class="product-count">(<?php echo $totalProducts; ?> sản phẩm)</span>
                             <?php endif; ?>
                         </h2>
-                        
-                        <?php if ($showBestSeller && !empty($bestSellers)): ?>
-                            <!-- Render Best Sellers -->
-                            <div class="products-grid">
-                                <?php foreach ($bestSellers as $product): ?>
-                                    <?php 
-                                        $product = $product;
-                                        $basePath = '../../'; // Từ pages/menu/ về root
-                                        include '../../components/product-card.php'; 
-                                    ?>
-                                <?php endforeach; ?>
-                            </div>
-                        <?php elseif ($showTopping && !empty($toppings)): ?>
-                            <!-- Render Toppings -->
-                            <div class="products-grid">
-                                <?php foreach ($toppings as $topping): ?>
-                                    <?php 
-                                        $product = $topping;
-                                        $basePath = '../../'; // Từ pages/menu/ về root
-                                        include '../../components/product-card.php'; 
-                                    ?>
-                                <?php endforeach; ?>
-                            </div>
-                        <?php elseif (!$showBestSeller && !$showTopping && !empty($products)): ?>
-                            <!-- Render Regular Products -->
-                            <div class="products-grid">
-                                <?php foreach ($products as $product): ?>
-                                    <?php 
-                                        $product = $product;
-                                        $basePath = '../../'; // Từ pages/menu/ về root
-                                        include '../../components/product-card.php'; 
-                                    ?>
-                                <?php endforeach; ?>
-                            </div>
-                        <?php else: ?>
-                            <div class="no-products">
-                                <p>Không tìm thấy sản phẩm nào.</p>
-                                <?php 
-                                    $text = 'Xem tất cả sản phẩm';
-                                    $type = 'primary';
-                                    $href = 'index.php';
-                                    $width = 'auto';
-                                    include '../../components/button.php';
-                                ?>
-                            </div>
-                        <?php endif; ?>
 
-                        <!-- Pagination -->
-                        <?php if (!$showBestSeller && !$showTopping && $totalPages > 0): ?>
-                            <?php
-                                $queryParams = [];
-                                if ($categoryId) {
-                                    $queryParams['category'] = $categoryId;
-                                }
-                                if ($keyword) {
-                                    $queryParams['search'] = $keyword;
-                                }
-                                include '../../components/pagination.php';
-                            ?>
-                        <?php endif; ?>
+                        <div id="menu-products-wrapper"
+                             data-category-id="<?php echo $categoryId ?: ''; ?>"
+                             data-bestseller="<?php echo $showBestSeller ? '1' : '0'; ?>"
+                             data-topping="<?php echo $showTopping ? '1' : '0'; ?>"
+                             data-page="<?php echo $page; ?>"
+                             data-per-page="<?php echo $perPage; ?>">
+                            <?php if ($showBestSeller && !empty($bestSellers)): ?>
+                                <!-- Render Best Sellers -->
+                                <div class="products-grid">
+                                    <?php foreach ($bestSellers as $product): ?>
+                                        <?php 
+                                            $product = $product;
+                                            $basePath = '../../'; // Từ pages/menu/ về root
+                                            include '../../components/product-card.php'; 
+                                        ?>
+                                    <?php endforeach; ?>
+                                </div>
+                            <?php elseif ($showTopping && !empty($toppings)): ?>
+                                <!-- Render Toppings -->
+                                <div class="products-grid">
+                                    <?php foreach ($toppings as $topping): ?>
+                                        <?php 
+                                            $product = $topping;
+                                            $basePath = '../../'; // Từ pages/menu/ về root
+                                            include '../../components/product-card.php'; 
+                                        ?>
+                                    <?php endforeach; ?>
+                                </div>
+                            <?php elseif (!$showBestSeller && !$showTopping && !empty($products)): ?>
+                                <!-- Render Regular Products -->
+                                <div class="products-grid">
+                                    <?php foreach ($products as $product): ?>
+                                        <?php 
+                                            $product = $product;
+                                            $basePath = '../../'; // Từ pages/menu/ về root
+                                            include '../../components/product-card.php'; 
+                                        ?>
+                                    <?php endforeach; ?>
+                                </div>
+                            <?php else: ?>
+                                <div class="no-products">
+                                    <p>Không tìm thấy sản phẩm nào.</p>
+                                    <?php 
+                                        $text = 'Xem tất cả sản phẩm';
+                                        $type = 'primary';
+                                        $href = 'index.php';
+                                        $width = 'auto';
+                                        include '../../components/button.php';
+                                    ?>
+                                </div>
+                            <?php endif; ?>
+
+                            <!-- Pagination -->
+                            <?php if (!$showBestSeller && !$showTopping && $totalPages > 0): ?>
+                                <?php
+                                    $queryParams = [];
+                                    if ($categoryId) {
+                                        $queryParams['category'] = $categoryId;
+                                    }
+                                    if ($keyword) {
+                                        $queryParams['search'] = $keyword;
+                                    }
+                                    include '../../components/pagination.php';
+                                ?>
+                            <?php endif; ?>
+                        </div>
                     </div>
                 </main>
             </div>
@@ -345,5 +352,6 @@ if ($showBestSeller) {
     <script src="../../assets/js/common.js"></script>
     <script src="../../assets/js/main.js"></script>
     <script src="../../assets/js/snack-bar.js"></script>
+    <script src="../../assets/js/menu.js"></script>
 </body>
 </html>
