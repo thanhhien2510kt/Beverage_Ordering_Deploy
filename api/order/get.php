@@ -25,6 +25,7 @@ try {
     $page = max(1, (int)($_GET['page'] ?? 1));
     $perPage = min(20, max(1, (int)($_GET['per_page'] ?? 10)));
     $status = trim($_GET['status'] ?? '');
+    $search = trim($_GET['search'] ?? '');
     $days = (int)($_GET['days'] ?? 30);
     if (!in_array($days, [7, 30, 90], true)) {
         $days = 30;
@@ -63,8 +64,10 @@ try {
 
     if ($status !== '') {
         $statusMap = [
+            'payment_received' => ['Payment_Received', 'Pending'],
             'received' => ['Payment_Received', 'Pending'],
-            'delivering' => ['Delivering', 'Processing'],
+            'processing' => ['Processing', 'Order_Received'],
+            'delivering' => ['Delivering'],
             'completed' => ['Completed'],
             'cancelled' => ['Cancelled', 'Store_Cancelled']
         ];
@@ -72,6 +75,21 @@ try {
             $placeholders = implode(',', array_fill(0, count($statusMap[$status]), '?'));
             $where[] = "o.TrangThai IN ($placeholders)";
             $params = array_merge($params, $statusMap[$status]);
+        }
+    }
+
+    // Search by order code (MaOrder)
+    if ($search !== '') {
+        // Remove #MTF prefix if present and extract order ID
+        $searchClean = preg_replace('/^#?MTF?/i', '', $search);
+        $searchClean = ltrim($searchClean, '0');
+        if (is_numeric($searchClean) && (int)$searchClean > 0) {
+            $where[] = "o.MaOrder = ?";
+            $params[] = (int)$searchClean;
+        } else {
+            // Search by partial match on order code
+            $where[] = "o.MaOrder LIKE ?";
+            $params[] = '%' . $search . '%';
         }
     }
 

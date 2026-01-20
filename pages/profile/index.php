@@ -73,20 +73,6 @@ $basePath = '../../';
                             </svg>
                             <span>Thông tin cá nhân</span>
                         </a>
-                        <?php
-                        // Only show Orders menu for customers
-                        $userRoleLower = strtolower($userRole);
-                        if ($userRoleLower === 'customer'):
-                        ?>
-                        <a href="#orders" class="profile-nav-item" data-tab="orders">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/>
-                                <rect x="8" y="2" width="8" height="4" rx="1" ry="1"/>
-                                <path d="M9 12l2 2 4-4"/>
-                            </svg>
-                            <span>Đơn hàng</span>
-                        </a>
-                        <?php endif; ?>
                         <a href="#password" class="profile-nav-item" data-tab="password">
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
@@ -108,12 +94,6 @@ $basePath = '../../';
                 <!-- Profile Content -->
                 <div class="profile-content">
                     <?php include 'profile-info.php'; ?>
-                    <?php 
-                    // Only include orders tab for customers
-                    if ($userRoleLower === 'customer') {
-                        include 'profile-orders.php'; 
-                    }
-                    ?>
                     <?php include 'profile-password.php'; ?>
                 </div>
             </div>
