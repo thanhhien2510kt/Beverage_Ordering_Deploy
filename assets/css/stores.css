@@ -262,6 +262,11 @@
   font-size: 18px;
 }
 
+.stores-grid .no-stores {
+  grid-column: 1 / -1;
+  justify-self: center;
+}
+
 /* Responsive Design */
 @media (max-width: 992px) {
   .stores-grid {
