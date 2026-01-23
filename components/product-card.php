@@ -1,11 +1,4 @@
 <?php
-/**
- * Product Card Component
- * Reusable product card với hình ảnh, tên, giá, rating
- * 
- * @param array $product - Product data from database
- * @param string $basePath - Base path prefix (optional, auto-detect if not provided)
- */
 if (!isset($product)) return;
 
 $productName = e($product['TenSP']);

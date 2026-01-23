@@ -1,9 +1,3 @@
-/**
- * Cart Page JavaScript
- * Xử lý các tương tác trên trang giỏ hàng
- * Requires: common.js
- */
-
 $(document).ready(function () {
 
   let isDeleting = false;

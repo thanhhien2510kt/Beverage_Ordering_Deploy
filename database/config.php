@@ -1,9 +1,4 @@
 <?php
-/**
- * Database Configuration
- * Kết nối tới MySQL database sử dụng XAMPP
- */
-
 
 define('DB_HOST', 'localhost');
 define('DB_USER', 'root');
@@ -11,10 +6,6 @@ define('DB_PASS', '');
 define('DB_NAME', 'meowtea_schema');
 define('DB_CHARSET', 'utf8mb4');
 
-/**
- * Get database connection
- * @return PDO|null
- */
 function getDBConnection() {
     static $pdo = null;
     
@@ -37,9 +28,6 @@ function getDBConnection() {
     return $pdo;
 }
 
-/**
- * Test database connection
- */
 function testDBConnection() {
     try {
         $pdo = getDBConnection();

@@ -1,8 +1,4 @@
 <?php
-/**
- * Management Create Promotion API
- * Create new promotion (Admin only)
- */
 
 header('Content-Type: application/json');
 require_once '../../functions.php';

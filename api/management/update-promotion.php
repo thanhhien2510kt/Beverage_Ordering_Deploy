@@ -1,8 +1,4 @@
 <?php
-/**
- * Management Update Promotion API
- * Update promotion (Admin only)
- */
 
 header('Content-Type: application/json');
 require_once '../../functions.php';

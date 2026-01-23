@@ -1,9 +1,3 @@
-/**
- * Main JavaScript for MeowTea Fresh
- * jQuery và AJAX functions
- * Requires: common.js
- */
-
 $(document).ready(function () {
 
   $(".back-to-top-link").on("click", function (e) {

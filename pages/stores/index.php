@@ -1,8 +1,4 @@
 <?php
-/**
- * Stores Page - Hệ thống cửa hàng
- * Trang danh sách và tìm kiếm cửa hàng
- */
 
 require_once '../../functions.php';
 

@@ -1,20 +1,4 @@
 <?php
-/**
- * Modal Box Component
- * Reusable confirmation/acknowledgment modal dialog
- * 
- * Usage:
- * 1. Include this component in your page: include 'components/modal-box.php';
- * 2. Include modal-box.js script tag
- * 3. Call showModalBox function from JavaScript with options:
- *    - title: string
- *    - message: string  
- *    - type: 'yesno' or 'acknowledge'
- *    - onConfirm: callback function
- *    - onCancel: callback function (optional, for yesno type)
- */
-
-
 
 ?>
 
@@ -27,7 +11,6 @@
             <p class="modal-box-message" id="modal-box-message"></p>
         </div>
         <div class="modal-box-footer" id="modal-box-footer">
-            <!-- Buttons will be dynamically added here by JavaScript -->
         </div>
     </div>
 </div>

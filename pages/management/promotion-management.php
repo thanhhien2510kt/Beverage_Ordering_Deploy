@@ -1,8 +1,4 @@
 <?php
-/**
- * Promotion Management Page
- * Quản lý khuyến mãi - chỉ dành cho Admin
- */
 
 require_once '../../functions.php';
 

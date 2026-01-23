@@ -1,8 +1,4 @@
 <?php
-/**
- * Header Component
- * Reusable header với logo, navigation, cart, login
- */
 
 require_once __DIR__ . '/../functions.php';
 

@@ -1,8 +1,4 @@
 <?php
-/**
- * Management Categories API
- * Get all categories for dropdown
- */
 
 header('Content-Type: application/json');
 require_once '../../functions.php';

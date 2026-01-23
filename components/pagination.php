@@ -1,14 +1,4 @@
 <?php
-/**
- * Pagination Component
- * Reusable pagination component với button component và số trang hình tròn
- * 
- * @param int $page - Current page number
- * @param int $totalPages - Total number of pages
- * @param string $baseUrl - Base URL for pagination links (default: current URL without page param)
- * @param array $queryParams - Additional query parameters to preserve (e.g., ['category' => '1', 'search' => 'keyword'])
- * @param bool $ajaxMode - If true, render buttons with data-page for AJAX (no full page reload)
- */
 if (!isset($page)) $page = 1;
 if (!isset($totalPages)) $totalPages = 1;
 if (!isset($queryParams)) $queryParams = [];

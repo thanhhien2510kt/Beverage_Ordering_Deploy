@@ -1,8 +1,4 @@
 <?php
-/**
- * Management Create Product API
- * Create new product (Admin only)
- */
 
 header('Content-Type: application/json');
 require_once '../../functions.php';

@@ -1,8 +1,4 @@
 <?php
-/**
- * Management Delete Topping API
- * Delete topping (Admin only) - Hard delete from Option_Value
- */
 
 header('Content-Type: application/json');
 require_once '../../functions.php';

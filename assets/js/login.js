@@ -1,9 +1,3 @@
-/**
- * Login Page JavaScript
- * Handles password toggle, form submission, and social login
- * Requires: common.js
- */
-
 $(document).ready(function () {
 
   setupPasswordToggle("#passwordToggle", "#password");

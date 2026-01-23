@@ -1,8 +1,4 @@
 <?php
-/**
- * Order Management Page
- * Quản lý đơn hàng - chỉ dành cho Staff và Admin
- */
 
 require_once '../../functions.php';
 

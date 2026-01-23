@@ -1,22 +1,4 @@
 <?php
-/**
- * Button Component
- * Reusable button với các style khác nhau và CSS chung
- * 
- * @param string $text - Button text
- * @param string $type - Button type: primary, secondary, outline
- * @param string $href - Link URL (optional, nếu có sẽ render thành <a>)
- * @param string $class - Additional CSS classes
- * @param string $id - Button ID
- * @param string $buttonType - Button type attribute: button, submit, reset (default: button)
- * @param string $onclick - onclick handler
- * @param array $data - Data attributes array (e.g., ['product-id' => '123'])
- * @param bool $disabled - Disabled state
- * @param string $width - Width CSS value (e.g., '200px', 'auto', '100%')
- * @param string $icon - Icon HTML/SVG (optional)
- * @param string $iconPosition - Icon position: 'left' or 'right' (default: 'left')
- * @param string $target - Target attribute for links (e.g., '_blank')
- */
 if (!isset($text)) $text = 'Button';
 if (!isset($type)) $type = 'primary';
 if (!isset($class)) $class = '';

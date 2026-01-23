@@ -1,9 +1,3 @@
-/**
- * Menu Page JavaScript
- * Xử lý search + đổi category theo kiểu AJAX,
- * tránh reload và giữ nguyên vị trí scroll
- */
-
 $(document).ready(function () {
   const $searchForm = $(".search-form");
   const $searchInput = $searchForm.find('input[name="search"]');

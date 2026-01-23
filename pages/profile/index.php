@@ -1,8 +1,4 @@
 <?php
-/**
- * Profile Page
- * Trang thông tin tài khoản và đổi mật khẩu
- */
 
 require_once '../../functions.php';
 

@@ -1,8 +1,4 @@
 <?php
-/**
- * Management Page
- * Quản lý sản phẩm - chỉ dành cho Staff và Admin
- */
 
 require_once '../../functions.php';
 

@@ -1,15 +1,3 @@
-/**
- * Common Utility Functions
- * Shared JavaScript utilities for MeowTea Fresh
- */
-
-
-/**
- * Get API path based on current page location
- * @param {string} endpoint - API endpoint (e.g., "cart/add.php")
- * @param {string} basePath - Base API path (default: "api/")
- * @returns {string} Full API path
- */
 function getApiPath(endpoint, basePath = "api/") {
   const currentPath = window.location.pathname;
   let apiPath = basePath + endpoint;
@@ -26,29 +14,14 @@ function getApiPath(endpoint, basePath = "api/") {
   return apiPath;
 }
 
-/**
- * Get API base path for management endpoints
- * @returns {string} API base path
- */
 function getApiBasePath() {
   return getApiPath("", "api/management/");
 }
 
-
-/**
- * Format currency to Vietnamese format
- * @param {number} amount - Amount to format
- * @returns {string} Formatted currency string
- */
 function formatCurrency(amount) {
   return new Intl.NumberFormat("vi-VN").format(amount) + "₫";
 }
 
-/**
- * Format currency with currency style (for management pages)
- * @param {number} amount - Amount to format
- * @returns {string} Formatted currency string
- */
 function formatCurrencyWithStyle(amount) {
   return new Intl.NumberFormat("vi-VN", {
     style: "currency",
@@ -57,11 +30,6 @@ function formatCurrencyWithStyle(amount) {
   }).format(amount);
 }
 
-/**
- * Escape HTML to prevent XSS attacks
- * @param {string} text - Text to escape
- * @returns {string} Escaped HTML string
- */
 function escapeHtml(text) {
   if (!text) return "";
   const map = {
@@ -76,10 +44,6 @@ function escapeHtml(text) {
   });
 }
 
-
-/**
- * Update cart count in header
- */
 function updateCartCount() {
   $.ajax({
     url: getApiPath("cart/count.php"),
@@ -96,14 +60,6 @@ function updateCartCount() {
   });
 }
 
-
-/**
- * Show alert message
- * @param {string} message - Alert message
- * @param {string} type - Alert type: "success" or "error"
- * @param {string} containerSelector - Container selector (default: ".management-content")
- * @param {number} autoHideDelay - Auto hide delay in ms (default: 5000)
- */
 function showAlert(
   message,
   type,
@@ -137,12 +93,6 @@ function showAlert(
   }
 }
 
-
-/**
- * Setup password toggle visibility
- * @param {string} toggleId - Toggle button selector
- * @param {string} inputId - Password input selector
- */
 function setupPasswordToggle(toggleId, inputId) {
   $(toggleId).on("click", function () {
     const passwordInput = $(inputId);
@@ -161,18 +111,6 @@ function setupPasswordToggle(toggleId, inputId) {
   });
 }
 
-
-/**
- * Handle form submission with loading state
- * @param {Object} options - Configuration options
- * @param {string} options.formSelector - Form selector
- * @param {string} options.buttonSelector - Submit button selector
- * @param {string} options.messageSelector - Message container selector
- * @param {string} options.apiUrl - API endpoint URL
- * @param {Function} options.onSuccess - Success callback
- * @param {Function} options.onError - Error callback
- * @param {Function} options.getFormData - Function to get form data
- */
 function handleFormSubmission(options) {
   const {
     formSelector,
@@ -273,13 +211,6 @@ function handleFormSubmission(options) {
   });
 }
 
-
-/**
- * Debounce function to limit function calls
- * @param {Function} func - Function to debounce
- * @param {number} wait - Wait time in milliseconds
- * @returns {Function} Debounced function
- */
 function debounce(func, wait) {
   let timeout;
   return function executedFunction(...args) {
@@ -292,13 +223,6 @@ function debounce(func, wait) {
   };
 }
 
-
-/**
- * Handle window resize with debounce
- * @param {Function} callback - Callback function
- * @param {number} delay - Delay in milliseconds (default: 250)
- * @returns {Function} Resize handler function
- */
 function handleResize(callback, delay = 250) {
   let resizeTimeout;
   return function () {

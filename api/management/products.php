@@ -1,8 +1,4 @@
 <?php
-/**
- * Management Products API
- * List all products for management page
- */
 
 header('Content-Type: application/json');
 require_once '../../functions.php';

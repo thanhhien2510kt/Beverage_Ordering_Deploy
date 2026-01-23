@@ -1,9 +1,3 @@
-/**
- * Stores Page JavaScript
- * Xử lý tìm kiếm cửa hàng
- * Requires: common.js
- */
-
 $(document).ready(function () {
 
   function setStoresHeroHeight() {

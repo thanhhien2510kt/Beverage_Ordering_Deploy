@@ -1,8 +1,4 @@
 <?php
-/**
- * Cart Page - Trang giỏ hàng
- * Hiển thị và quản lý sản phẩm trong giỏ hàng
- */
 
 require_once '../../functions.php';
 

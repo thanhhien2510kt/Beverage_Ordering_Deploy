@@ -1,8 +1,4 @@
 <?php
-/**
- * News Page - Danh sách tin tức
- * Hiển thị news từ database với pagination
- */
 
 require_once '../../functions.php';
 

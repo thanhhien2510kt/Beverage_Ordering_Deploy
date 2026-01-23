@@ -1,8 +1,4 @@
 <?php
-/**
- * Checkout Page - Trang xác nhận đơn hàng
- * Hiển thị form xác nhận đơn hàng và thông tin thanh toán
- */
 
 require_once '../../functions.php';
 

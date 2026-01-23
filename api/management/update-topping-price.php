@@ -1,8 +1,4 @@
 <?php
-/**
- * Management Update Topping Price API
- * Update topping price (Admin only)
- */
 
 header('Content-Type: application/json');
 require_once '../../functions.php';

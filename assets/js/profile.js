@@ -1,9 +1,3 @@
-/**
- * Profile Page JavaScript
- * Handles tab switching, password change, and order loading
- * Requires: common.js
- */
-
 $(document).ready(function() {
 
     $('.collapsible-header').on('click', function() {

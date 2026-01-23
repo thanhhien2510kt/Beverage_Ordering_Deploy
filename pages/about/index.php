@@ -1,8 +1,4 @@
 <?php
-/**
- * About Page - Về MeowTea Fresh
- * Trang giới thiệu về công ty
- */
 
 require_once '../../functions.php';
 ?>

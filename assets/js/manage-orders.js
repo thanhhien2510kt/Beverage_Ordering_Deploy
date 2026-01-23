@@ -1,9 +1,3 @@
-/**
- * Manage Orders JavaScript (Admin/Staff Only)
- * Handles order management, filters, and status updates
- * Requires: common.js (for escapeHtml and formatCurrency)
- */
-
 $(document).ready(function() {
 
     loadManageOrders(1);

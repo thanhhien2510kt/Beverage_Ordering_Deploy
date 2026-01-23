@@ -1,8 +1,4 @@
 <?php
-/**
- * Menu Page - Danh sách sản phẩm
- * Hiển thị products từ database với filter theo category và search
- */
 
 require_once '../../functions.php';
 

@@ -1,8 +1,3 @@
-/**
- * Snack Bar Component JavaScript
- * Handles display, auto-close, and manual close functionality
- */
-
 (function() {
     'use strict';
 
@@ -32,10 +27,6 @@
         }
     };
 
-    /**
-     * Get or create snack-bar container
-     * @returns {jQuery} Container element
-     */
     function getContainer() {
         let $container = $('#snack-bar-container');
         if ($container.length === 0) {
@@ -45,11 +36,6 @@
         return $container;
     }
 
-    /**
-     * Escape HTML to prevent XSS
-     * @param {string} text - Text to escape
-     * @returns {string} Escaped HTML
-     */
     function escapeHtml(text) {
         if (!text) return '';
         const map = {
@@ -64,12 +50,6 @@
         });
     }
 
-    /**
-     * Create snack-bar HTML element
-     * @param {string} type - Snack-bar type: warm, success, failed, information
-     * @param {string} message - Message content
-     * @returns {jQuery} Snack-bar element
-     */
     function createSnackBar(type, message) {
         const config = TYPE_CONFIG[type] || TYPE_CONFIG.success;
         const escapedMessage = escapeHtml(message);
@@ -99,10 +79,6 @@
         return $snackBar;
     }
 
-    /**
-     * Close snack-bar with animation
-     * @param {jQuery} $snackBar - Snack-bar element to close
-     */
     function closeSnackBar($snackBar) {
         if (!$snackBar || $snackBar.length === 0) return;
         
@@ -115,11 +91,6 @@
         }, CONFIG.ANIMATION_DURATION);
     }
 
-    /**
-     * Show snack-bar notification
-     * @param {string} type - Snack-bar type: warm, success, failed, information
-     * @param {string} message - Message content
-     */
     function showSnackBar(type, message) {
 
         if (!TYPE_CONFIG[type]) {

@@ -1,8 +1,4 @@
 <?php
-/**
- * Management Delete Product API
- * Delete product (Admin only) - Soft delete by setting TrangThai = 0
- */
 
 header('Content-Type: application/json');
 require_once '../../functions.php';

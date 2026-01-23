@@ -1,7 +1,4 @@
 <?php
-/**
- * Order Detail View - Render order detail modal content
- */
 
 require_once '../../functions.php';
 

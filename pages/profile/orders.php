@@ -1,9 +1,4 @@
 <?php
-/**
- * My Orders Page
- * Trang đơn hàng của tôi (dành cho customer)
- * Layout giống trang quản lý đơn hàng
- */
 
 require_once '../../functions.php';
 

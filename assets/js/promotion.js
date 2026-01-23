@@ -1,9 +1,3 @@
-/**
- * Promotion Management Page JavaScript
- * AJAX CRUD operations for promotion management
- * Requires: common.js
- */
-
 $(document).ready(function () {
   const apiBasePath = getApiBasePath();
 

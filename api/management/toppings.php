@@ -1,8 +1,4 @@
 <?php
-/**
- * Management Toppings API
- * List all toppings for management page
- */
 
 header('Content-Type: application/json');
 require_once '../../functions.php';

@@ -1,9 +1,4 @@
 <?php
-/**
- * Carousel Component - Simple slide transition
- * @param array $images - Array of image paths
- * @param string $carouselId - Unique carousel ID
- */
 if (!isset($images) || empty($images)) {
     return;
 }

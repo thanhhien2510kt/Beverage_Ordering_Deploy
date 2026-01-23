@@ -1,11 +1,4 @@
 <?php
-/**
- * News Card Component
- * Reusable news card với hình ảnh, ngày, tiêu đề, mô tả
- * 
- * @param array $news - News data from database
- * @param string $basePath - Base path prefix (optional, auto-detect if not provided)
- */
 if (!isset($news)) return;
 
 require_once __DIR__ . '/../functions.php';

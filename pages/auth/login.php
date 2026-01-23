@@ -1,8 +1,4 @@
 <?php
-/**
- * Login Page
- * Trang đăng nhập người dùng
- */
 
 require_once '../../functions.php';
 

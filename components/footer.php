@@ -1,9 +1,4 @@
 <?php
-/**
- * Footer Component
- * Reusable footer với 3 cột: About Us, Contact, Support
- */
-
 
 $backtrace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1);
 $callerFile = isset($backtrace[0]['file']) ? $backtrace[0]['file'] : __FILE__;

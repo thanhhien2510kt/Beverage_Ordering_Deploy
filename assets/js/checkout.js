@@ -1,9 +1,3 @@
-/**
- * Checkout Page JavaScript
- * Xử lý các tương tác trên trang checkout
- * Requires: common.js
- */
-
 $(document).ready(function () {
 
   $("#order-note").on("input", function () {

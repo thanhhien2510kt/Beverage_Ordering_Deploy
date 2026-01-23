@@ -1,8 +1,4 @@
 <?php
-/**
- * Management Create Topping API
- * Create new topping (Admin only)
- */
 
 header('Content-Type: application/json');
 require_once '../../functions.php';

@@ -1,8 +1,4 @@
 <?php
-/**
- * Order Result Page - Trang kết quả đơn hàng
- * Hiển thị thông tin đơn hàng sau khi đặt hàng thành công
- */
 
 require_once '../../functions.php';
 

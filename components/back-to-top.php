@@ -1,12 +1,4 @@
 <?php
-/**
- * Back to Top Component
- * Reusable back to top button với background có thể tùy chỉnh
- * 
- * @param string $href - Link target (default: "#top")
- * @param string $text - Button text (default: "Lên đầu trang")
- * @param string $bgType - Background type: 'light-green', 'white', 'transparent' (default: 'transparent')
- */
 if (!isset($href)) $href = "#top";
 if (!isset($text)) $text = "Lên đầu trang";
 if (!isset($bgType)) $bgType = "transparent";

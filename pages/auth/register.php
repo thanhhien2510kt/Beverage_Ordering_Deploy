@@ -1,8 +1,4 @@
 <?php
-/**
- * Register Page
- * Trang đăng ký người dùng mới
- */
 
 require_once '../../functions.php';
 

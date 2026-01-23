@@ -1,9 +1,3 @@
-/**
- * News Page JavaScript
- * Xử lý banner height và các tính năng trang tin tức
- * Requires: common.js
- */
-
 $(document).ready(function () {
 
   function setNewsBannerHeight() {

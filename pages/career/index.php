@@ -1,8 +1,4 @@
 <?php
-/**
- * Career Page - Tuyển dụng
- * Trang thông báo tuyển dụng
- */
 
 require_once '../../functions.php';
 ?>

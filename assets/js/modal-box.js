@@ -12,11 +12,6 @@
     let currentOnConfirm = null;
     let currentOnCancel = null;
 
-    /**
-     * Escape HTML to prevent XSS
-     * @param {string} text - Text to escape
-     * @returns {string} Escaped HTML
-     */
     function escapeHtml(text) {
         if (!text) return '';
         const map = {
@@ -31,9 +26,6 @@
         });
     }
 
-    /**
-     * Close modal box
-     */
     function closeModalBox() {
         $overlay.removeClass('active');
         $('body').css('overflow', '');
@@ -43,9 +35,6 @@
         currentOnCancel = null;
     }
 
-    /**
-     * Handle confirm button click
-     */
     function handleConfirm() {
         if (typeof currentOnConfirm === 'function') {
             currentOnConfirm();
@@ -53,9 +42,6 @@
         closeModalBox();
     }
 
-    /**
-     * Handle cancel button click
-     */
     function handleCancel() {
         if (typeof currentOnCancel === 'function') {
             currentOnCancel();
@@ -63,15 +49,6 @@
         closeModalBox();
     }
 
-    /**
-     * Show modal box
-     * @param {Object} options - Configuration object
-     * @param {string} options.title - Modal title
-     * @param {string} options.message - Modal message content
-     * @param {string} options.type - Modal type: 'yesno' or 'acknowledge'
-     * @param {Function} options.onConfirm - Callback function when OK/Confirm is clicked
-     * @param {Function} [options.onCancel] - Callback function when Cancel is clicked (only for yesno type)
-     */
     function showModalBox(options) {
 
         if (!options || typeof options !== 'object') {

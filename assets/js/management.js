@@ -1,9 +1,3 @@
-/**
- * Management Page JavaScript
- * AJAX CRUD operations for product management
- * Requires: common.js
- */
-
 $(document).ready(function () {
   const apiBasePath = getApiBasePath();
   const isAdmin = $("#btn-add-product").length > 0; // Check if add button exists

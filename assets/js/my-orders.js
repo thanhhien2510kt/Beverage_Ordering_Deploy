@@ -1,9 +1,3 @@
-/**
- * My Orders JavaScript (Customer Only)
- * Handles customer's own orders display and filters
- * Requires: common.js (for escapeHtml and formatCurrency)
- */
-
 $(document).ready(function() {
 
     loadMyOrders(1);

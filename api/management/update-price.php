@@ -1,8 +1,4 @@
 <?php
-/**
- * Management Update Price API
- * Update product price (Admin only)
- */
 
 header('Content-Type: application/json');
 require_once '../../functions.php';

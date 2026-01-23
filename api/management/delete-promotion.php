@@ -1,8 +1,4 @@
 <?php
-/**
- * Management Delete Promotion API
- * Delete promotion (Admin only)
- */
 
 header('Content-Type: application/json');
 require_once '../../functions.php';

@@ -1,8 +1,4 @@
 <?php
-/**
- * Home Page - MeowTea Fresh
- * Trang chủ với hero section, categories, best sellers, news
- */
 
 require_once 'functions.php';
 

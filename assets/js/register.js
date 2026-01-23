@@ -1,10 +1,3 @@
-/**
- * Register Page JavaScript
- * Handles password toggle, validation, OTP verification, and form submission
- * Requires: common.js
- */
-
-
 let otpTimer = null;
 let otpCountdown = 60;
 let registrationData = null;
@@ -77,9 +70,6 @@ $(document).ready(function () {
   });
 });
 
-/**
- * Show OTP verification screen
- */
 function showOTPScreen(email) {
 
   $("#registerFormWrapper").hide();
@@ -97,9 +87,6 @@ function showOTPScreen(email) {
   $(".otp-input").first().focus();
 }
 
-/**
- * Setup OTP inputs behavior
- */
 function setupOTPInputs() {
   const $otpInputs = $(".otp-input");
 
@@ -153,9 +140,6 @@ function setupOTPInputs() {
   });
 }
 
-/**
- * Start OTP countdown timer
- */
 function startOTPTimer() {
   otpCountdown = 60;
   updateTimerDisplay();
@@ -171,16 +155,10 @@ function startOTPTimer() {
   }, 1000);
 }
 
-/**
- * Update timer display
- */
 function updateTimerDisplay() {
   $("#otpTimer").text(otpCountdown);
 }
 
-/**
- * Show resend OTP link
- */
 function showResendLink() {
   $(".otp-resend-wrapper").html(
     '<a href="#" class="otp-resend-link" id="resendOTPLink">Gửi lại mã</a>'
@@ -192,9 +170,6 @@ function showResendLink() {
   });
 }
 
-/**
- * Resend OTP
- */
 function resendOTP() {
 
   $(".otp-input").val("").removeClass("error");
@@ -212,9 +187,6 @@ function resendOTP() {
   $(".otp-input").first().focus();
 }
 
-/**
- * Verify OTP
- */
 function verifyOTP() {
   const $btn = $("#otpVerifyBtn");
   const $btnText = $btn.find(".btn-text");
@@ -259,9 +231,6 @@ function verifyOTP() {
   }
 }
 
-/**
- * Register user after OTP verification
- */
 function registerUser() {
   const $btn = $("#otpVerifyBtn");
   const $btnText = $btn.find(".btn-text");
@@ -311,9 +280,6 @@ function registerUser() {
   });
 }
 
-/**
- * Show success screen
- */
 function showSuccessScreen() {
 
   $("#otpVerifyWrapper").hide();

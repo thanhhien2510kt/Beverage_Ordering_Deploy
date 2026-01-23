@@ -1,8 +1,4 @@
 <?php
-/**
- * Management Promotions API
- * List all promotions for management page
- */
 
 header('Content-Type: application/json');
 require_once '../../functions.php';
