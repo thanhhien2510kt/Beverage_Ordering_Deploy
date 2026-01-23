@@ -6,14 +6,14 @@
 
 require_once '../../functions.php';
 
-// Redirect if already logged in
+
 session_start();
 if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true) {
     header('Location: ../../index.php');
     exit;
 }
 
-// Calculate base path
+
 $basePath = '../../';
 ?>
 <!DOCTYPE html>

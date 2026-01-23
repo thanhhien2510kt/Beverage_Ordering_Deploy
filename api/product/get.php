@@ -1,14 +1,8 @@
 <?php
-/**
- * Get Product Data API
- * Lấy thông tin sản phẩm và options để hiển thị trong modal
- */
-
 header('Content-Type: application/json');
 require_once '../../functions.php';
 
 $response = ['success' => false, 'data' => null, 'message' => ''];
-
 try {
     $productId = isset($_GET['id']) ? (int)$_GET['id'] : 0;
     
@@ -16,16 +10,13 @@ try {
         throw new Exception('Mã sản phẩm không hợp lệ');
     }
     
-    // Get product data
     $product = getProductById($productId);
     if (!$product) {
         throw new Exception('Sản phẩm không tồn tại');
     }
     
-    // Get product options
     $optionsData = getProductOptions($productId);
     
-    // Group options by option group
     $optionGroups = [];
     foreach ($optionsData as $option) {
         $groupId = $option['MaOptionGroup'];
@@ -44,7 +35,6 @@ try {
         ];
     }
     
-    // Format response: GiaNiemYet = price for calculation, GiaCoBan = reference (strikethrough)
     $response = [
         'success' => true,
         'data' => [

@@ -14,18 +14,18 @@ if (session_status() === PHP_SESSION_NONE) {
 $response = ['success' => false, 'message' => ''];
 
 try {
-    // Check if user is logged in
+
     if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
         throw new Exception('Bạn cần đăng nhập để thực hiện thao tác này');
     }
 
-    // Check if user has Admin role
+
     $userRole = $_SESSION['user_role_name'] ?? '';
     if ($userRole !== 'Admin') {
         throw new Exception('Chỉ Admin mới có quyền cập nhật khuyến mãi');
     }
 
-    // Get POST data
+
     $promotionId = isset($_POST['promotion_id']) ? (int)$_POST['promotion_id'] : 0;
     $code = isset($_POST['code']) ? trim($_POST['code']) : '';
     $loaiGiamGia = isset($_POST['loai_giam_gia']) ? trim($_POST['loai_giam_gia']) : 'Percentage';
@@ -35,7 +35,7 @@ try {
     $ngayKetThuc = isset($_POST['ngay_ket_thuc']) ? trim($_POST['ngay_ket_thuc']) : null;
     $trangThai = isset($_POST['trang_thai']) ? (int)$_POST['trang_thai'] : 1;
 
-    // Validation
+
     if (!$promotionId) {
         throw new Exception('Mã khuyến mãi không hợp lệ');
     }
@@ -52,7 +52,7 @@ try {
         throw new Exception('Phần trăm giảm giá phải từ 0 đến 100');
     }
 
-    // Validate maximum value for percentage discount
+
     if ($loaiGiamGia === 'Percentage' && $giaTriToiDa !== null) {
         $giaTriToiDaFloat = (float)$giaTriToiDa;
         if ($giaTriToiDaFloat < 0) {
@@ -60,12 +60,12 @@ try {
         }
     }
 
-    // If not percentage, clear maximum value
+
     if ($loaiGiamGia !== 'Percentage') {
         $giaTriToiDa = null;
     }
 
-    // Validate dates
+
     if (!empty($ngayBatDau) && !empty($ngayKetThuc)) {
         $startDate = strtotime($ngayBatDau);
         $endDate = strtotime($ngayKetThuc);
@@ -77,31 +77,31 @@ try {
         }
     }
 
-    // Get database connection
+
     $pdo = getDBConnection();
 
-    // Check if promotion exists
+
     $stmt = $pdo->prepare("SELECT MaPromotion FROM Promotion WHERE MaPromotion = ?");
     $stmt->execute([$promotionId]);
     if (!$stmt->fetch()) {
         throw new Exception('Không tìm thấy khuyến mãi');
     }
 
-    // Check if code already exists (excluding current promotion)
+
     $stmt = $pdo->prepare("SELECT MaPromotion FROM Promotion WHERE Code = ? AND MaPromotion != ?");
     $stmt->execute([$code, $promotionId]);
     if ($stmt->fetch()) {
         throw new Exception('Mã khuyến mãi đã tồn tại');
     }
 
-    // Convert dates to proper format
+
     $ngayBatDauFormatted = !empty($ngayBatDau) ? date('Y-m-d H:i:s', strtotime($ngayBatDau)) : null;
     $ngayKetThucFormatted = !empty($ngayKetThuc) ? date('Y-m-d H:i:s', strtotime($ngayKetThuc)) : null;
 
-    // Convert maximum value to proper format
+
     $giaTriToiDaFormatted = ($giaTriToiDa !== null && $loaiGiamGia === 'Percentage') ? (float)$giaTriToiDa : null;
 
-    // Update promotion
+
     $sql = "UPDATE Promotion 
             SET Code = ?, LoaiGiamGia = ?, GiaTri = ?, GiaTriToiDa = ?, NgayBatDau = ?, NgayKetThuc = ?, TrangThai = ?
             WHERE MaPromotion = ?";

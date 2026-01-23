@@ -6,18 +6,18 @@
 
 require_once '../../functions.php';
 
-// Start session
+
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// Check if user is logged in
+
 if (!isLoggedIn()) {
     header('Location: ../auth/login.php?redirect=cart/checkout.php');
     exit;
 }
 
-// Check if user is admin or staff - redirect to homepage if true
+
 if (isset($_SESSION['user_role_name'])) {
     $userRoleLower = strtolower($_SESSION['user_role_name']);
     if ($userRoleLower === 'admin' || $userRoleLower === 'staff') {
@@ -26,7 +26,7 @@ if (isset($_SESSION['user_role_name'])) {
     }
 }
 
-// Get cart items from session
+
 $cartItems = isset($_SESSION['cart']) && is_array($_SESSION['cart']) ? $_SESSION['cart'] : [];
 
 if (empty($cartItems)) {
@@ -34,18 +34,18 @@ if (empty($cartItems)) {
     exit;
 }
 
-// Get user info
+
 $user = getCurrentUser();
 $userFullName = getFullName($user['ho'] ?? '', $user['ten'] ?? '');
 $userPhone = $user['phone'] ?? '';
 $userEmail = $user['email'] ?? '';
 $userAddress = $_SESSION['user_dia_chi'] ?? '';
 
-// Get stores and payment methods
+
 $stores = getStores();
 $paymentMethods = getPaymentMethods();
 
-// Calculate totals
+
 $subtotal = 0;
 foreach ($cartItems as $item) {
     $subtotal += isset($item['total_price']) ? (float)$item['total_price'] : 0;
@@ -54,7 +54,7 @@ $shippingFee = 30000; // Default shipping fee
 $promotionDiscount = 0;
 $totalAmount = $subtotal + $shippingFee - $promotionDiscount;
 
-// Base path for assets
+
 $basePath = '../../';
 ?>
 <!DOCTYPE html>
@@ -121,7 +121,7 @@ $basePath = '../../';
                             <select class="store-select dropdown-select" id="store-select" name="store_id" required disabled>
                                 <option value="">Chọn cửa hàng</option>
                                 <?php 
-                                // Map stores to provinces based on address
+
                                 $provinceOptions = ['Hồ Chí Minh', 'Hà Nội', 'Đà Nẵng', 'Cần Thơ'];
                                 foreach ($stores as $store): 
                                     $address = $store['DiaChi'] ?? '';
@@ -242,7 +242,7 @@ $basePath = '../../';
                                 $quantity = isset($item['quantity']) ? (int)$item['quantity'] : 1;
                                 $itemTotal = isset($item['total_price']) ? (float)$item['total_price'] : $basePrice * $quantity;
                                 $options = isset($item['options']) ? $item['options'] : [];
-                                // Calculate price per unit including options
+
                                 $pricePerUnit = $quantity > 0 ? ($itemTotal / $quantity) : $basePrice;
                             ?>
                                 <div class="summary-item">

@@ -1,10 +1,4 @@
 <?php
-/**
- * Update Order Status API (Admin/Staff Only)
- * Update order status (accept or cancel)
- * POST: order_id, action (accept|cancel)
- */
-
 header('Content-Type: application/json');
 require_once '../../functions.php';
 
@@ -13,7 +7,6 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 
 $response = ['success' => false, 'message' => ''];
-
 try {
     if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
         throw new Exception('Phương thức yêu cầu không hợp lệ');
@@ -26,7 +19,6 @@ try {
     $currentUser = getCurrentUser();
     $userRole = $currentUser['role_name'] ?? '';
     
-    // Check if user is admin or staff
     if (strtolower($userRole) !== 'admin' && strtolower($userRole) !== 'staff') {
         throw new Exception('Bạn không có quyền thực hiện thao tác này');
     }
@@ -43,8 +35,6 @@ try {
     }
 
     $pdo = getDBConnection();
-
-    // Get current order status
     $stmt = $pdo->prepare("SELECT TrangThai FROM Orders WHERE MaOrder = ?");
     $stmt->execute([$orderId]);
     $order = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -55,7 +45,7 @@ try {
 
     $currentStatus = strtolower($order['TrangThai']);
 
-    // Only allow status update if current status is Payment_Received or Pending
+
     if ($currentStatus !== 'payment_received' && $currentStatus !== 'pending') {
         throw new Exception('Chỉ có thể cập nhật trạng thái đơn hàng đang ở trạng thái "Đã nhận thanh toán"');
     }
@@ -66,7 +56,7 @@ try {
     
     $pdo->beginTransaction();
 
-    // Determine new status and timestamps
+
     if ($action === 'accept') {
         $stmt = $pdo->prepare("
             UPDATE Orders 

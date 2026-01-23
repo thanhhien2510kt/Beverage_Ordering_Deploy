@@ -1,10 +1,4 @@
 <?php
-/**
- * Get Single Order Detail API
- * For "Xem chi tiết" order modal
- * Query: id (MaOrder)
- */
-
 header('Content-Type: application/json');
 require_once '../../functions.php';
 
@@ -13,7 +7,6 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 
 $response = ['success' => false, 'message' => '', 'order' => null];
-
 try {
     if (!isLoggedIn()) {
         throw new Exception('Bạn cần đăng nhập để xem đơn hàng');
@@ -31,7 +24,6 @@ try {
     }
 
     $pdo = getDBConnection();
-
     $sql = "SELECT o.*, s.TenStore
             FROM Orders o
             INNER JOIN Store s ON o.MaStore = s.MaStore
@@ -58,7 +50,6 @@ try {
         }
     }
     $order['PaymentMethod'] = $paymentMethodName;
-
     if (empty($order['NguoiNhan']) || empty($order['DienThoaiGiao'])) {
         $st = $pdo->prepare("SELECT Ho, Ten, DienThoai FROM User WHERE MaUser = ?");
         $st->execute([$order['MaUser']]);
@@ -90,9 +81,7 @@ try {
                 WHERE oio.MaOrderItem = ?");
         $st->execute([$item['MaOrderItem']]);
         $item['options'] = $st->fetchAll(PDO::FETCH_ASSOC);
-
-        // Use GiaNiemYet (price at time of order) instead of GiaCoBan
-        $item['GiaCoBan'] = $item['GiaNiemYet']; // For compatibility with frontend
+        $item['GiaCoBan'] = $item['GiaNiemYet'];
         $itemTotal = (float)$item['GiaNiemYet'] * (int)$item['SoLuong'];
         foreach ($item['options'] as $opt) {
             $itemTotal += (float)$opt['GiaThem'] * (int)$item['SoLuong'];

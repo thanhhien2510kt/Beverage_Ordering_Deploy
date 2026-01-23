@@ -14,29 +14,29 @@ if (session_status() === PHP_SESSION_NONE) {
 $response = ['success' => false, 'message' => ''];
 
 try {
-    // Check if user is logged in
+
     if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
         throw new Exception('Bạn cần đăng nhập để thực hiện thao tác này');
     }
 
-    // Check if user has Admin role
+
     $userRole = $_SESSION['user_role_name'] ?? '';
     if ($userRole !== 'Admin') {
         throw new Exception('Chỉ Admin mới có quyền xóa khuyến mãi');
     }
 
-    // Get POST data
+
     $promotionId = isset($_POST['promotion_id']) ? (int)$_POST['promotion_id'] : 0;
 
-    // Validation
+
     if (!$promotionId) {
         throw new Exception('Mã khuyến mãi không hợp lệ');
     }
 
-    // Get database connection
+
     $pdo = getDBConnection();
 
-    // Check if promotion exists
+
     $stmt = $pdo->prepare("SELECT Code FROM Promotion WHERE MaPromotion = ?");
     $stmt->execute([$promotionId]);
     $promotion = $stmt->fetch();
@@ -45,7 +45,7 @@ try {
         throw new Exception('Không tìm thấy khuyến mãi');
     }
 
-    // Delete promotion
+
     $sql = "DELETE FROM Promotion WHERE MaPromotion = ?";
     $stmt = $pdo->prepare($sql);
     $stmt->execute([$promotionId]);

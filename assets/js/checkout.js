@@ -5,7 +5,7 @@
  */
 
 $(document).ready(function () {
-  // Update note counter
+
   $("#order-note").on("input", function () {
     const length = $(this).val().length;
     $(this)
@@ -13,7 +13,7 @@ $(document).ready(function () {
       .text(length + "/52 ký tự");
   });
 
-  // Address: show edit block
+
   $("#change-address-btn").on("click", function (e) {
     e.preventDefault();
     $("#delivery-address-input").val($("#delivery-address").val());
@@ -25,7 +25,7 @@ $(document).ready(function () {
     $("#address-edit-block").slideUp(300);
   });
 
-  // Save delivery address for this order only (does not update User.DiaChi)
+
   $("#btn-save-address").on("click", function () {
     const val = $("#delivery-address-input").val().trim();
     $("#delivery-address").val(val);
@@ -34,41 +34,41 @@ $(document).ready(function () {
     $("#address-edit-block").slideUp(300);
   });
 
-  // VAT invoice checkbox
+
   $("#vat-invoice").on("change", function () {
     if ($(this).is(":checked")) {
       $("#vat-fields").slideDown(300);
-      // Make VAT fields required
+
       $("#vat-fields input").prop("required", true);
     } else {
       $("#vat-fields").slideUp(300);
-      // Remove required
+
       $("#vat-fields input").prop("required", false);
     }
   });
 
-  // Province selection
+
   $("#province-select").on("change", function () {
     const selectedProvince = $(this).val();
     const $storeSelect = $("#store-select");
 
-    // Reset store select and store info
+
     $storeSelect.val("");
     $("#store-info").slideUp(200);
 
     if (!selectedProvince) {
       $storeSelect.prop("disabled", true);
-      // Show all options when disabled (only placeholder visible to user)
+
       $storeSelect.find("option").show();
       return;
     }
 
-    // Enable store select and filter options by province
+
     $storeSelect.prop("disabled", false);
     $storeSelect.find("option").each(function () {
       const value = $(this).attr("value");
       if (!value) {
-        // Always show placeholder
+
         $(this).show();
         return;
       }
@@ -82,7 +82,7 @@ $(document).ready(function () {
     });
   });
 
-  // Store selection
+
   $("#store-select").on("change", function () {
     const selectedOption = $(this).find(":selected");
     const phone = selectedOption.data("phone");
@@ -97,15 +97,15 @@ $(document).ready(function () {
     }
   });
 
-  // Promotion code variables
+
   let appliedPromotion = null;
 
-  // Toggle clear button visibility based on input value
+
   function toggleClearButton() {
     const value = $("#promotion-code").val().trim();
     const $clearBtn = $("#promotion-clear-btn");
     
-    // Show clear button if input has value (even when disabled after applying)
+
     if (value) {
       $clearBtn.show();
     } else {
@@ -113,30 +113,30 @@ $(document).ready(function () {
     }
   }
 
-  // Show/hide clear button on input change
+
   $("#promotion-code").on("input", function () {
     toggleClearButton();
   });
 
-  // Clear promotion code when clicking X button
+
   $("#promotion-clear-btn").on("click", function () {
-    // If promotion is applied, remove it
+
     if (appliedPromotion) {
       removePromotionCode();
     } else {
-      // Just clear the input
+
       $("#promotion-code").val("").focus();
       toggleClearButton();
       $("#promotion-message").removeClass("promotion-success promotion-error").text("");
     }
   });
 
-  // Apply promotion code
+
   $("#btn-apply-promotion").on("click", function () {
     applyPromotionCode();
   });
 
-  // Apply on Enter key
+
   $("#promotion-code").on("keypress", function (e) {
     if (e.which === 13) {
       e.preventDefault();
@@ -149,7 +149,7 @@ $(document).ready(function () {
     const $message = $("#promotion-message");
     const $btnApply = $("#btn-apply-promotion");
 
-    // Clear previous message
+
     $message.removeClass("promotion-success promotion-error").text("");
 
     if (!code) {
@@ -158,14 +158,14 @@ $(document).ready(function () {
       return;
     }
 
-    // Disable button while validating
+
     $btnApply.prop("disabled", true).text("Đang kiểm tra...");
 
-    // Get subtotal
+
     const subtotal =
       parseFloat($("#subtotal").text().replace(/[^\d]/g, "")) || 0;
 
-    // Validate promotion code via API
+
     $.ajax({
       url: getApiPath("promotion/validate.php"),
       method: "POST",
@@ -176,16 +176,16 @@ $(document).ready(function () {
       dataType: "json",
       success: function (response) {
         if (response.success) {
-          // Store applied promotion
+
           appliedPromotion = response.promotion;
 
-          // Update UI
+
           $message.addClass("promotion-success").text(response.message);
           $("#promotion-code").prop("disabled", true);
           $btnApply.hide();
           toggleClearButton(); // Show clear button since input has value
 
-          // Update discount and total
+
           updatePromotionDiscount(response.discount);
           updateTotals();
         } else {
@@ -215,14 +215,14 @@ $(document).ready(function () {
     const $message = $("#promotion-message");
     const $btnApply = $("#btn-apply-promotion");
 
-    // Clear promotion
+
     appliedPromotion = null;
     $("#promotion-code").val("").prop("disabled", false).focus();
     $message.removeClass("promotion-success promotion-error").text("");
     $btnApply.show();
     toggleClearButton();
 
-    // Update discount and total
+
     updatePromotionDiscount(0);
     updateTotals();
   }
@@ -237,7 +237,7 @@ $(document).ready(function () {
     }
   }
 
-  // Calculate totals
+
   function updateTotals() {
     const subtotal =
       parseFloat($("#subtotal").text().replace(/[^\d]/g, "")) || 0;
@@ -250,9 +250,9 @@ $(document).ready(function () {
     $("#total-amount").text(formatCurrency(total));
   }
 
-  // Pay now button
+
   $("#pay-now-btn").on("click", function () {
-    // Validate form
+
     if (!$("#agree-terms").is(":checked")) {
       showSnackBar("warm", "Vui lòng đồng ý với điều khoản mua hàng");
       return;
@@ -283,7 +283,7 @@ $(document).ready(function () {
       return;
     }
 
-    // Check VAT fields if VAT invoice is checked
+
     if ($("#vat-invoice").is(":checked")) {
       const vatEmail = $("input[name='vat_email']").val();
       const vatTaxId = $("input[name='vat_tax_id']").val();
@@ -296,10 +296,10 @@ $(document).ready(function () {
       }
     }
 
-    // Disable button
+
     $(this).prop("disabled", true).text("Đang xử lý...");
 
-    // Prepare order data
+
     const orderData = {
       store_id: storeId,
       payment_method: paymentMethod,
@@ -317,7 +317,7 @@ $(document).ready(function () {
         : 0,
     };
 
-    // Submit order
+
     $.ajax({
       url: getApiPath("order/create.php"),
       method: "POST",
@@ -325,7 +325,7 @@ $(document).ready(function () {
       dataType: "json",
       success: function (response) {
         if (response.success) {
-          // Redirect to order result page
+
           window.location.href =
             "order_result.php?order_id=" + response.order_id;
         } else {
@@ -341,7 +341,7 @@ $(document).ready(function () {
     });
   });
 
-  // Initialize
+
   updateTotals();
   toggleClearButton();
 });

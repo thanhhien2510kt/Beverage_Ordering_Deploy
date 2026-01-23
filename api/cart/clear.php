@@ -1,9 +1,4 @@
 <?php
-/**
- * Clear Cart API
- * Xóa tất cả sản phẩm khỏi giỏ hàng
- */
-
 header('Content-Type: application/json');
 if (session_status() === PHP_SESSION_NONE) {
     session_start();

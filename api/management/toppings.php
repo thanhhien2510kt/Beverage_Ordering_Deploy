@@ -14,21 +14,21 @@ if (session_status() === PHP_SESSION_NONE) {
 $response = ['success' => false, 'data' => [], 'message' => ''];
 
 try {
-    // Check if user is logged in
+
     if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
         throw new Exception('Bạn cần đăng nhập để truy cập');
     }
 
-    // Check if user has Staff or Admin role
+
     $userRole = $_SESSION['user_role_name'] ?? '';
     if ($userRole !== 'Staff' && $userRole !== 'Admin') {
         throw new Exception('Bạn không có quyền truy cập trang này');
     }
 
-    // Get database connection
+
     $pdo = getDBConnection();
 
-    // Get all toppings from Option_Value where MaOptionGroup = 3
+
     $sql = "SELECT ov.*, og.TenNhom 
             FROM Option_Value ov 
             INNER JOIN Option_Group og ON ov.MaOptionGroup = og.MaOptionGroup 

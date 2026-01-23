@@ -1,9 +1,4 @@
 <?php
-/**
- * Get Cart Count API
- * Lấy số lượng sản phẩm trong giỏ hàng
- */
-
 header('Content-Type: application/json');
 if (session_status() === PHP_SESSION_NONE) {
     session_start();

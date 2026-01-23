@@ -14,29 +14,29 @@ if (session_status() === PHP_SESSION_NONE) {
 $response = ['success' => false, 'message' => ''];
 
 try {
-    // Check if user is logged in
+
     if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
         throw new Exception('Bạn cần đăng nhập để thực hiện thao tác này');
     }
 
-    // Check if user has Admin role
+
     $userRole = $_SESSION['user_role_name'] ?? '';
     if ($userRole !== 'Admin') {
         throw new Exception('Chỉ Admin mới có quyền xóa topping');
     }
 
-    // Get POST data
+
     $toppingId = isset($_POST['topping_id']) ? (int)$_POST['topping_id'] : 0;
 
-    // Validation
+
     if (!$toppingId || $toppingId <= 0) {
         throw new Exception('Mã topping không hợp lệ');
     }
 
-    // Get database connection
+
     $pdo = getDBConnection();
 
-    // Check if topping exists and belongs to Topping group (MaOptionGroup = 3)
+
     $stmt = $pdo->prepare("SELECT ov.MaOptionValue, ov.TenGiaTri 
                            FROM Option_Value ov 
                            WHERE ov.MaOptionValue = ? AND ov.MaOptionGroup = 3");
@@ -47,7 +47,7 @@ try {
         throw new Exception('Topping không tồn tại');
     }
 
-    // Check if topping is being used in any cart items or order items
+
     $stmt = $pdo->prepare("SELECT COUNT(*) as count FROM Cart_Item_Option WHERE MaOptionValue = ?");
     $stmt->execute([$toppingId]);
     $cartUsage = $stmt->fetch()['count'];
@@ -60,7 +60,7 @@ try {
         throw new Exception('Không thể xóa topping này vì đang được sử dụng trong giỏ hàng hoặc đơn hàng');
     }
 
-    // Delete topping
+
     $sql = "DELETE FROM Option_Value WHERE MaOptionValue = ? AND MaOptionGroup = 3";
     $stmt = $pdo->prepare($sql);
     $stmt->execute([$toppingId]);

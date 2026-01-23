@@ -1,9 +1,4 @@
 <?php
-/**
- * Get Cart Items API
- * Lấy danh sách sản phẩm trong giỏ hàng
- */
-
 header('Content-Type: application/json');
 if (session_status() === PHP_SESSION_NONE) {
     session_start();

@@ -6,18 +6,18 @@
 
 require_once '../../functions.php';
 
-// Start session
+
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// Check if user is logged in
+
 if (!isLoggedIn()) {
     header('Location: ../auth/login.php');
     exit;
 }
 
-// Get order ID from query string
+
 $orderId = isset($_GET['order_id']) ? (int)$_GET['order_id'] : 0;
 
 if (!$orderId) {
@@ -25,11 +25,11 @@ if (!$orderId) {
     exit;
 }
 
-// Get user info
+
 $user = getCurrentUser();
 $userId = $user['id'];
 
-// Get order from database
+
 $pdo = getDBConnection();
 $sql = "SELECT o.*, s.TenStore, s.DiaChi as StoreAddress, s.DienThoai as StorePhone
         FROM Orders o
@@ -39,9 +39,9 @@ $stmt = $pdo->prepare($sql);
 $stmt->execute([$orderId, $userId]);
 $order = $stmt->fetch();
 
-// Check if order exists
+
 if (!$order) {
-    // Render error page if order doesn't exist
+
     $basePath = '../../';
     ?>
     <!DOCTYPE html>
@@ -100,7 +100,7 @@ if (!$order) {
     exit;
 }
 
-// Get payment method from session or default
+
 $paymentMethodId = $_SESSION['order_payment_' . $orderId] ?? null;
 $paymentMethodName = 'Ví Zalo Pay'; // Default
 if ($paymentMethodId) {
@@ -114,7 +114,7 @@ if ($paymentMethodId) {
 }
 $order['PaymentMethod'] = $paymentMethodName;
 
-// Get order items
+
 $sql = "SELECT oi.*, sp.TenSP, sp.HinhAnh
         FROM Order_Item oi
         INNER JOIN SanPham sp ON oi.MaSP = sp.MaSP
@@ -123,7 +123,7 @@ $stmt = $pdo->prepare($sql);
 $stmt->execute([$orderId]);
 $orderItems = $stmt->fetchAll();
 
-// Get order item options
+
 foreach ($orderItems as &$item) {
     $sql = "SELECT oio.*, ov.TenGiaTri, og.TenNhom
             FROM Order_Item_Option oio
@@ -136,7 +136,7 @@ foreach ($orderItems as &$item) {
 }
 unset($item); 
 
-// Calculate totals
+
 $subtotal = 0;
 foreach ($orderItems as $item) {
     $subtotal += ($item['GiaNiemYet'] * $item['SoLuong']);
@@ -151,26 +151,26 @@ $shippingFee = $order['PhiVanChuyen'] ?? 0;
 $totalAmount = $order['TongTien'] ?? 0;
 $promotionDiscount = $order['GiamGia'] ?? 0;
 
-// Generate order code
+
 $orderCode = 'MTF' . str_pad($orderId, 5, '0', STR_PAD_LEFT);
 
-// Estimated delivery time (1 hour from now)
+
 $estimatedDelivery = date('H:i d/m/Y', strtotime('+1 hour'));
 
-// Get order status and determine progress steps
+
 $orderStatus = $order['TrangThai'] ?? 'Payment_Received';
 $orderDate = $order['NgayTao'] ?? date('Y-m-d H:i:s');
 
-// Determine which steps are completed based on order status
+
 $step1Completed = in_array($orderStatus, ['Payment_Received', 'Pending', 'Processing', 'Order_Received', 'Delivering', 'Completed']);
 $step2Completed = in_array($orderStatus, ['Processing', 'Order_Received', 'Delivering', 'Completed']);
 $step3Completed = in_array($orderStatus, ['Delivering', 'Completed']);
 $step4Completed = ($orderStatus === 'Completed');
 
-// Format order time for display
+
 $orderTime = date('H:i', strtotime($orderDate));
 
-// Base path for assets
+
 $basePath = '../../';
 $iconPath = $basePath . 'assets/img/cart/order_result/';
 ?>

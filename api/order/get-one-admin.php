@@ -1,10 +1,4 @@
 <?php
-/**
- * Get Single Order Detail API (Admin/Staff Only)
- * For "Xem chi tiết" order modal in manage orders
- * Query: id (MaOrder)
- */
-
 header('Content-Type: application/json');
 require_once '../../functions.php';
 
@@ -13,7 +7,6 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 
 $response = ['success' => false, 'message' => '', 'order' => null];
-
 try {
     if (!isLoggedIn()) {
         throw new Exception('User not logged in');
@@ -22,7 +15,7 @@ try {
     $currentUser = getCurrentUser();
     $userRole = $currentUser['role_name'] ?? '';
     
-    // Check if user is admin or staff
+
     if (strtolower($userRole) !== 'admin' && strtolower($userRole) !== 'staff') {
         throw new Exception('Bạn không có quyền thực hiện thao tác này');
     }
@@ -33,8 +26,6 @@ try {
     }
 
     $pdo = getDBConnection();
-    
-    // Automatically progress orders based on scheduled timestamps
     try {
         $pdo->exec("
             UPDATE Orders
@@ -71,7 +62,6 @@ try {
     $order['OrderCode'] = '#MTF' . str_pad($order['MaOrder'], 5, '0', STR_PAD_LEFT);
     $order['NgayTaoFormatted'] = date('d/m/Y H:i:s', strtotime($order['NgayTao']));
 
-    // Format customer name
     $order['CustomerName'] = trim(($order['Ho'] ?? '') . ' ' . ($order['Ten'] ?? ''));
     if (empty($order['CustomerName'])) {
         $order['CustomerName'] = $order['Username'];
@@ -88,8 +78,6 @@ try {
         }
     }
     $order['PaymentMethod'] = $paymentMethodName;
-
-    // Get receiver info from order or fallback to user info
     if (empty($order['NguoiNhan'])) {
         $order['NguoiNhan'] = $order['CustomerName'];
     }
@@ -114,9 +102,7 @@ try {
                 WHERE oio.MaOrderItem = ?");
         $st->execute([$item['MaOrderItem']]);
         $item['options'] = $st->fetchAll(PDO::FETCH_ASSOC);
-
-        // Use GiaNiemYet (price at time of order) instead of GiaCoBan
-        $item['GiaCoBan'] = $item['GiaNiemYet']; // For compatibility with frontend
+        $item['GiaCoBan'] = $item['GiaNiemYet'];
         $itemTotal = (float)$item['GiaNiemYet'] * (int)$item['SoLuong'];
         foreach ($item['options'] as $opt) {
             $itemTotal += (float)$opt['GiaThem'] * (int)$item['SoLuong'];

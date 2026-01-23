@@ -1,10 +1,4 @@
 <?php
-/**
- * Get All Orders API (Admin/Staff Only)
- * List all orders in system with pagination and filters
- * Query: page, per_page (default 10), user_id, status, days (1|7|30, default 30)
- */
-
 header('Content-Type: application/json');
 require_once '../../functions.php';
 
@@ -13,18 +7,16 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 
 $response = ['success' => false, 'message' => '', 'orders' => [], 'total' => 0, 'total_pages' => 0, 'page' => 1, 'per_page' => 10];
-
 try {
     if (!isLoggedIn()) {
-        throw new Exception('User not logged in');
+        throw new Exception('Bạn cần đăng nhập để xem danh sách đơn hàng');
     }
 
     $currentUser = getCurrentUser();
     $userRole = $currentUser['role_name'] ?? '';
     
-    // Check if user is admin or staff
     if (strtolower($userRole) !== 'admin' && strtolower($userRole) !== 'staff') {
-        throw new Exception('Access denied. Admin or Staff role required.');
+        throw new Exception('Bạn không có quyền thực hiện thao tác này');
     }
 
     $page = max(1, (int)($_GET['page'] ?? 1));
@@ -38,10 +30,7 @@ try {
     }
 
     $pdo = getDBConnection();
-    
-    // Automatically progress orders based on scheduled timestamps
     try {
-        // Move Processing -> Delivering when due
         $pdo->exec("
             UPDATE Orders
             SET TrangThai = 'Delivering'
@@ -50,7 +39,6 @@ try {
               AND ThoiDiemGiaoHang <= NOW()
         ");
 
-        // Move Delivering -> Completed when due
         $pdo->exec("
             UPDATE Orders
             SET TrangThai = 'Completed'
@@ -59,26 +47,22 @@ try {
               AND ThoiDiemNhanHang <= NOW()
         ");
     } catch (Exception $e) {
-        // Auto-progress error - log and continue
         error_log("Auto-progress error: " . $e->getMessage());
     }
 
     $where = ["1=1"];
     $params = [];
 
-    // Filter by user
     if ($userId !== null && $userId > 0) {
         $where[] = "o.MaUser = ?";
         $params[] = $userId;
     }
 
-    // Filter by days
     if ($days > 0) {
         $where[] = "o.NgayTao >= DATE_SUB(NOW(), INTERVAL ? DAY)";
         $params[] = $days;
     }
 
-    // Filter by status
     if ($status !== '') {
         $statusMap = [
             'payment_received' => ['Payment_Received', 'Pending'],
@@ -102,7 +86,6 @@ try {
 
     $whereClause = implode(' AND ', $where);
 
-    // Count total
     $sqlCount = "SELECT COUNT(*) AS cnt FROM Orders o WHERE $whereClause";
     $stmt = $pdo->prepare($sqlCount);
     $stmt->execute($params);
@@ -111,7 +94,6 @@ try {
     $page = min($page, max(1, $totalPages));
     $offset = ($page - 1) * $perPage;
 
-    // Fetch orders (list only, no items for list view)
     $sql = "SELECT o.*, s.TenStore, u.Username, u.Ho, u.Ten
             FROM Orders o
             INNER JOIN Store s ON o.MaStore = s.MaStore
@@ -129,7 +111,7 @@ try {
         $orderId = $order['MaOrder'];
         $order['OrderCode'] = '#MTF' . str_pad($orderId, 5, '0', STR_PAD_LEFT);
         
-        // Format user name
+
         $order['CustomerName'] = trim(($order['Ho'] ?? '') . ' ' . ($order['Ten'] ?? ''));
         if (empty($order['CustomerName'])) {
             $order['CustomerName'] = $order['Username'];
@@ -147,7 +129,7 @@ try {
         }
         $order['PaymentMethod'] = $paymentMethodName;
 
-        // Item count for list
+
         $st = $pdo->prepare("SELECT COALESCE(SUM(SoLuong), 0) AS n FROM Order_Item WHERE MaOrder = ?");
         $st->execute([$orderId]);
         $order['ItemCount'] = (int)$st->fetch(PDO::FETCH_ASSOC)['n'];

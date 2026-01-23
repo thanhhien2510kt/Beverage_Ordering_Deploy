@@ -4,17 +4,17 @@
  * Reusable footer với 3 cột: About Us, Contact, Support
  */
 
-// Tính đường dẫn base từ vị trí file gọi component này
+
 $backtrace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1);
 $callerFile = isset($backtrace[0]['file']) ? $backtrace[0]['file'] : __FILE__;
 $callerDir = dirname($callerFile);
 $rootDir = dirname(__DIR__); // Root của project
 
-// Normalize paths
+
 $callerDir = realpath($callerDir);
 $rootDir = realpath($rootDir);
 
-// Tính số level cần lùi lại
+
 if ($callerDir && $rootDir && strpos($callerDir, $rootDir) === 0) {
     $relativePath = str_replace($rootDir, '', $callerDir);
     $relativePath = trim($relativePath, DIRECTORY_SEPARATOR);

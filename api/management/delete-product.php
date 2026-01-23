@@ -14,29 +14,29 @@ if (session_status() === PHP_SESSION_NONE) {
 $response = ['success' => false, 'message' => ''];
 
 try {
-    // Check if user is logged in
+
     if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
         throw new Exception('Bạn cần đăng nhập để thực hiện thao tác này');
     }
 
-    // Check if user has Admin role
+
     $userRole = $_SESSION['user_role_name'] ?? '';
     if ($userRole !== 'Admin') {
         throw new Exception('Chỉ Admin mới có quyền xóa sản phẩm');
     }
 
-    // Get POST data
+
     $productId = isset($_POST['product_id']) ? (int)$_POST['product_id'] : 0;
 
-    // Validation
+
     if (!$productId || $productId <= 0) {
         throw new Exception('Mã sản phẩm không hợp lệ');
     }
 
-    // Get database connection
+
     $pdo = getDBConnection();
 
-    // Check if product exists
+
     $stmt = $pdo->prepare("SELECT MaSP, TenSP FROM SanPham WHERE MaSP = ?");
     $stmt->execute([$productId]);
     $product = $stmt->fetch();
@@ -45,7 +45,7 @@ try {
         throw new Exception('Sản phẩm không tồn tại');
     }
 
-    // Soft delete: Set TrangThai = 0
+
     $sql = "UPDATE SanPham SET TrangThai = 0 WHERE MaSP = ?";
     $stmt = $pdo->prepare($sql);
     $stmt->execute([$productId]);

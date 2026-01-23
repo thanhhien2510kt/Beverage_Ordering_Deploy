@@ -6,22 +6,22 @@
 
 require_once __DIR__ . '/../functions.php';
 
-// Start session if not already started
+
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// Tính đường dẫn base từ vị trí file gọi component này
+
 $backtrace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1);
 $callerFile = isset($backtrace[0]['file']) ? $backtrace[0]['file'] : __FILE__;
 $callerDir = dirname($callerFile);
 $rootDir = dirname(__DIR__); // Root của project
 
-// Normalize paths
+
 $callerDir = realpath($callerDir);
 $rootDir = realpath($rootDir);
 
-// Tính số level cần lùi lại
+
 if ($callerDir && $rootDir && strpos($callerDir, $rootDir) === 0) {
     $relativePath = str_replace($rootDir, '', $callerDir);
     $relativePath = trim($relativePath, DIRECTORY_SEPARATOR);
@@ -31,14 +31,14 @@ if ($callerDir && $rootDir && strpos($callerDir, $rootDir) === 0) {
     $basePath = '';
 }
 
-// Tính đường dẫn index.php
+
 $indexPath = $basePath . 'index.php';
 
-// Xác định trang hiện tại để đánh dấu active
+
 $currentScript = basename($_SERVER['PHP_SELF']);
 $currentPath = $_SERVER['REQUEST_URI'];
 
-// Xác định active link dựa trên path
+
 $isHome = ($currentScript == 'index.php' && strpos($currentPath, '/pages/') === false);
 $isMenu = strpos($currentPath, '/pages/menu/') !== false;
 $isStores = strpos($currentPath, '/pages/stores/') !== false;
@@ -48,20 +48,20 @@ $isAbout = strpos($currentPath, '/pages/about/') !== false;
 $isManagement = strpos($currentPath, '/pages/management/') !== false;
 $isPromotion = strpos($currentPath, '/pages/promotion/') !== false;
 
-// Check if user is logged in
+
 $isLoggedIn = isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true;
 
-// Check if user can use cart (only customers can use cart)
+
 $canUseCart = true;
 if ($isLoggedIn && isset($_SESSION['user_role_name'])) {
     $userRoleLower = strtolower($_SESSION['user_role_name']);
-    // Hide cart for admin and staff
+
     if ($userRoleLower === 'admin' || $userRoleLower === 'staff') {
         $canUseCart = false;
     }
 }
 
-// Ensure $_SESSION['user'] array exists for cart functions
+
 if ($isLoggedIn && !isset($_SESSION['user'])) {
     $_SESSION['user'] = [
         'MaUser' => $_SESSION['user_id'] ?? null,
@@ -76,19 +76,19 @@ if ($isLoggedIn && !isset($_SESSION['user'])) {
     ];
 }
 
-// Load cart from database if logged in and not loaded yet (only for customers)
+
 if ($isLoggedIn && $canUseCart && isset($_SESSION['user']['MaUser']) && !isset($_SESSION['cart_loaded_from_db'])) {
     $userId = $_SESSION['user']['MaUser'];
     $storeId = isset($_SESSION['selected_store']) ? (int)$_SESSION['selected_store'] : 1;
     
-    // Load cart from database (only if session cart is empty)
+
     if (!isset($_SESSION['cart']) || empty($_SESSION['cart'])) {
         $cartLoaded = loadCartFromDB($userId, $storeId);
         if ($cartLoaded) {
             $_SESSION['cart_loaded_from_db'] = true;
         }
     } else {
-        // If session cart has items, merge with DB (session takes priority)
+
         $cartMerged = mergeCartWithDB($userId, $storeId);
         if ($cartMerged) {
             $_SESSION['cart_loaded_from_db'] = true;
@@ -96,7 +96,7 @@ if ($isLoggedIn && $canUseCart && isset($_SESSION['user']['MaUser']) && !isset($
     }
 }
 
-// Check user role for management access
+
 $userRole = $isLoggedIn ? ($_SESSION['user_role_name'] ?? '') : '';
 $showManagement = $isLoggedIn && ($userRole === 'Staff' || $userRole === 'Admin');
 $isAdmin = $isLoggedIn && ($userRole === 'Admin');

@@ -5,32 +5,32 @@
  */
 
 $(document).ready(function() {
-    // Collapsible sections
+
     $('.collapsible-header').on('click', function() {
         const $header = $(this);
         const targetId = $header.data('target');
         const $content = $('#' + targetId);
         
-        // Toggle collapsed class
+
         $header.toggleClass('collapsed');
         $content.toggleClass('collapsed');
         
-        // Update aria-expanded for accessibility
+
         const isExpanded = !$header.hasClass('collapsed');
         $header.attr('aria-expanded', isExpanded);
     });
 
-    // Tab switching (only for items with data-tab; allow default for links like logout)
+
     $('.profile-nav-item').on('click', function(e) {
         const tab = $(this).data('tab');
         if (!tab) return; // e.g. logout link - let browser navigate
 
         e.preventDefault();
-        // Update nav active state
+
         $('.profile-nav-item').removeClass('active');
         $(this).addClass('active');
 
-        // Update tab content
+
         $('.profile-tab').removeClass('active');
         if (tab === 'info') {
             $('#infoTab').addClass('active');
@@ -42,12 +42,12 @@ $(document).ready(function() {
         }
     });
 
-    // Password toggle visibility
+
     setupPasswordToggle('#currentPasswordToggle', '#current_password');
     setupPasswordToggle('#newPasswordToggle', '#new_password');
     setupPasswordToggle('#confirmPasswordToggle', '#confirm_password');
 
-    // Real-time password match validation
+
     $('#confirm_password').on('input', function() {
         const newPassword = $('#new_password').val();
         const confirmPassword = $(this).val();
@@ -64,7 +64,7 @@ $(document).ready(function() {
         }
     });
 
-    // Change password form submit
+
     $('#changePasswordForm').on('submit', function(e) {
         e.preventDefault();
         
@@ -74,10 +74,10 @@ $(document).ready(function() {
         const $btnLoading = $btn.find('.btn-loading');
         const $message = $('#changePasswordMessage');
         
-        // Reset message
+
         $message.hide().removeClass('success error').text('');
         
-        // Validate password match
+
         const newPassword = $('#new_password').val();
         const confirmPassword = $('#confirm_password').val();
         
@@ -86,19 +86,19 @@ $(document).ready(function() {
             return;
         }
         
-        // Disable button and show loading
+
         $btn.prop('disabled', true);
         $btnText.hide();
         $btnLoading.show();
         
-        // Get form data
+
         const formData = {
             current_password: $('#current_password').val(),
             new_password: newPassword,
             confirm_password: confirmPassword
         };
         
-        // AJAX request
+
         $.ajax({
             url: '../../api/auth/change-password.php',
             method: 'POST',
@@ -139,7 +139,7 @@ $(document).ready(function() {
         });
     });
 
-    // Update profile form submit
+
     $('#updateProfileForm').on('submit', function(e) {
         e.preventDefault();
         
@@ -149,15 +149,15 @@ $(document).ready(function() {
         const $btnLoading = $btn.find('.btn-loading');
         const $message = $('#updateProfileMessage');
         
-        // Reset message
+
         $message.hide().removeClass('success error').text('');
         
-        // Disable button and show loading
+
         $btn.prop('disabled', true);
         $btnText.hide();
         $btnLoading.show();
         
-        // Get form data
+
         const formData = {
             gioi_tinh: $('#gioi_tinh').val() || null,
             email: $('#email').val().trim() || null,
@@ -165,7 +165,7 @@ $(document).ready(function() {
             dia_chi: $('#dia_chi').val().trim() || null
         };
         
-        // AJAX request
+
         $.ajax({
             url: '../../api/auth/update-profile.php',
             method: 'POST',
@@ -201,12 +201,12 @@ $(document).ready(function() {
         });
     });
 
-    // Orders filters: reload on change (reset to page 1)
+
     $('#orderStatusFilter, #orderDaysFilter').on('change', function() {
         loadOrders(1);
     });
 
-    // Order detail modal: close
+
     $('#orderDetailModal .order-detail-overlay, #orderDetailModal .order-detail-close').on('click', function() {
         $('#orderDetailModal').hide();
     });
@@ -216,7 +216,7 @@ $(document).ready(function() {
         }
     });
 
-    // Load orders with pagination and filters
+
     function loadOrders(page) {
         page = page || 1;
         var $loading = $('#ordersLoading');
@@ -262,7 +262,7 @@ $(document).ready(function() {
         });
     }
 
-    // Render order list cards (design: compact with Xem chi tiết)
+
     function renderOrders(orders) {
         var $list = $('#ordersList');
         $list.empty();
@@ -294,7 +294,7 @@ $(document).ready(function() {
         });
     }
 
-    // Pagination: "Trang X trên Y" and prev/next, numbers
+
     function renderOrdersPagination(res) {
         var total = res.total || 0;
         var totalPages = res.total_pages || 1;
@@ -324,7 +324,7 @@ $(document).ready(function() {
         });
     }
 
-    // Open order detail modal: load from PHP view
+
     function openOrderDetail(orderId) {
         var $modal = $('#orderDetailModal');
         var $body = $('#orderDetailBody');
@@ -337,7 +337,7 @@ $(document).ready(function() {
             data: { id: orderId },
             success: function(html) {
                 $body.html(html);
-                // Initialize collapsible sections
+
                 initCollapsibleSections();
             },
             error: function() {
@@ -347,7 +347,7 @@ $(document).ready(function() {
         });
     }
     
-    // Initialize collapsible sections
+
     function initCollapsibleSections() {
         $('#orderDetailBody').off('click', '.order-detail-section.collapsible .order-detail-section-title');
         $('#orderDetailBody').on('click', '.order-detail-section.collapsible .order-detail-section-title', function() {

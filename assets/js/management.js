@@ -8,15 +8,15 @@ $(document).ready(function () {
   const apiBasePath = getApiBasePath();
   const isAdmin = $("#btn-add-product").length > 0; // Check if add button exists
 
-  // ===== TAB HANDLERS =====
+
   $(".tab-btn").on("click", function () {
     const tab = $(this).data("tab");
 
-    // Update tab buttons
+
     $(".tab-btn").removeClass("active");
     $(this).addClass("active");
 
-    // Update sections
+
     $(".management-section-content").removeClass("active");
     if (tab === "products") {
       $("#products-section").addClass("active");
@@ -37,26 +37,26 @@ $(document).ready(function () {
     }
   });
 
-  // Load products on page load
+
   loadProducts();
 
-  // Load categories for dropdown (Admin only)
+
   if (isAdmin) {
     loadCategories();
   }
 
-  // ===== MODAL HANDLERS =====
-  // Add Product Modal
+
+
   $("#btn-add-product").on("click", function () {
-    // Load categories first, then open modal
+
     if (isAdmin) {
       loadCategories();
     }
     $("#add-product-modal").addClass("active");
-    // Reset form after a small delay to ensure categories are loaded
+
     setTimeout(function () {
       $("#add-product-form")[0].reset();
-      // Ensure select is enabled
+
       $("#product-category").prop("disabled", false);
     }, 100);
   });
@@ -74,7 +74,7 @@ $(document).ready(function () {
     }
   );
 
-  // Edit Price Modal
+
   $(document).on("click", ".btn-edit-price", function () {
     const productId = $(this).data("product-id");
     const productName = $(this).data("product-name");
@@ -99,15 +99,15 @@ $(document).ready(function () {
     }
   );
 
-  // Close modal on Escape key
+
   $(document).on("keydown", function (e) {
     if (e.key === "Escape") {
       $(".modal").removeClass("active");
     }
   });
 
-  // ===== TOPPING MODAL HANDLERS =====
-  // Add Topping Modal
+
+
   $("#btn-add-topping").on("click", function () {
     $("#add-topping-modal").addClass("active");
     setTimeout(function () {
@@ -129,7 +129,7 @@ $(document).ready(function () {
     }
   );
 
-  // Edit Topping Price Modal
+
   $(document).on("click", ".btn-edit-topping-price", function () {
     const toppingId = $(this).data("topping-id");
     const toppingName = $(this).data("topping-name");
@@ -154,12 +154,12 @@ $(document).ready(function () {
     }
   );
 
-  // Delete Topping Handler
+
   $(document).on("click", ".btn-delete-topping", function () {
     const toppingId = $(this).data("topping-id");
     const toppingName = $(this).data("topping-name");
 
-    // Confirm before deleting
+
     if (
       !confirm(
         "Bạn có chắc chắn muốn xóa topping '" +
@@ -170,7 +170,7 @@ $(document).ready(function () {
       return;
     }
 
-    // Submit via AJAX
+
     $.ajax({
       url: apiBasePath + "delete-topping.php",
       method: "POST",
@@ -193,7 +193,7 @@ $(document).ready(function () {
     });
   });
 
-  // Topping image preview handler
+
   $("#topping-image").on("change", function (e) {
     const file = e.target.files[0];
     if (file) {
@@ -208,12 +208,12 @@ $(document).ready(function () {
     }
   });
 
-  // Delete Product Handler
+
   $(document).on("click", ".btn-delete-product", function () {
     const productId = $(this).data("product-id");
     const productName = $(this).data("product-name");
 
-    // Confirm before deleting
+
     if (
       !confirm(
         "Bạn có chắc chắn muốn xóa sản phẩm '" +
@@ -224,7 +224,7 @@ $(document).ready(function () {
       return;
     }
 
-    // Submit via AJAX
+
     $.ajax({
       url: apiBasePath + "delete-product.php",
       method: "POST",
@@ -247,7 +247,7 @@ $(document).ready(function () {
     });
   });
 
-  // Image preview handler
+
   $("#product-image").on("change", function (e) {
     const file = e.target.files[0];
     if (file) {
@@ -262,12 +262,12 @@ $(document).ready(function () {
     }
   });
 
-  // ===== FORM SUBMISSIONS =====
-  // Add Product Form
+
+
   $("#add-product-form").on("submit", function (e) {
     e.preventDefault();
 
-    // Validation
+
     const tenSP = $("#product-name").val().trim();
     const maCategory = $("#product-category").val();
     const giaNiemYet = $("#product-price").val();
@@ -289,7 +289,7 @@ $(document).ready(function () {
       return;
     }
 
-    // Create FormData for file upload
+
     const formData = new FormData();
     formData.append("ten_sp", tenSP);
     formData.append("ma_category", maCategory);
@@ -297,7 +297,7 @@ $(document).ready(function () {
     if (giaCoBan !== "") formData.append("gia_co_ban", giaCoBan);
     formData.append("hinh_anh", imageFile);
 
-    // Submit via AJAX
+
     $.ajax({
       url: apiBasePath + "create-product.php",
       method: "POST",
@@ -322,7 +322,7 @@ $(document).ready(function () {
         console.error("Response:", xhr.responseText);
         let errorMessage = "Có lỗi xảy ra khi thêm sản phẩm. Vui lòng thử lại.";
 
-        // Try to parse error response
+
         if (xhr.responseText) {
           try {
             const errorResponse = JSON.parse(xhr.responseText);
@@ -330,7 +330,7 @@ $(document).ready(function () {
               errorMessage = errorResponse.message;
             }
           } catch (e) {
-            // Use default error message
+
           }
         }
 
@@ -339,7 +339,7 @@ $(document).ready(function () {
     });
   });
 
-  // Edit Price Form
+
   $("#edit-price-form").on("submit", function (e) {
     e.preventDefault();
 
@@ -348,13 +348,13 @@ $(document).ready(function () {
       price: $("#edit-product-price").val(),
     };
 
-    // Validation
+
     if (!formData.price || formData.price < 0) {
       showSnackBar("failed", "Vui lòng nhập giá bán hợp lệ");
       return;
     }
 
-    // Submit via AJAX
+
     $.ajax({
       url: apiBasePath + "update-price.php",
       method: "POST",
@@ -378,11 +378,11 @@ $(document).ready(function () {
     });
   });
 
-  // Add Topping Form
+
   $("#add-topping-form").on("submit", function (e) {
     e.preventDefault();
 
-    // Validation
+
     const tenTopping = $("#topping-name").val().trim();
     const giaThem = $("#topping-price").val();
     const imageFile = $("#topping-image")[0].files[0];
@@ -397,13 +397,13 @@ $(document).ready(function () {
       return;
     }
 
-    // Create FormData for file upload
+
     const formData = new FormData();
     formData.append("ten_topping", tenTopping);
     formData.append("gia_them", giaThem);
     formData.append("hinh_anh", imageFile);
 
-    // Submit via AJAX
+
     $.ajax({
       url: apiBasePath + "create-topping.php",
       method: "POST",
@@ -428,7 +428,7 @@ $(document).ready(function () {
         console.error("Response:", xhr.responseText);
         let errorMessage = "Có lỗi xảy ra khi thêm topping. Vui lòng thử lại.";
 
-        // Try to parse error response
+
         if (xhr.responseText) {
           try {
             const errorResponse = JSON.parse(xhr.responseText);
@@ -436,7 +436,7 @@ $(document).ready(function () {
               errorMessage = errorResponse.message;
             }
           } catch (e) {
-            // Use default error message
+
           }
         }
 
@@ -445,7 +445,7 @@ $(document).ready(function () {
     });
   });
 
-  // Edit Topping Price Form
+
   $("#edit-topping-price-form").on("submit", function (e) {
     e.preventDefault();
 
@@ -454,13 +454,13 @@ $(document).ready(function () {
       price: $("#edit-topping-price").val(),
     };
 
-    // Validation
+
     if (!formData.price || formData.price < 0) {
       showSnackBar("failed", "Vui lòng nhập giá thêm hợp lệ");
       return;
     }
 
-    // Submit via AJAX
+
     $.ajax({
       url: apiBasePath + "update-topping-price.php",
       method: "POST",
@@ -484,7 +484,7 @@ $(document).ready(function () {
     });
   });
 
-  // ===== AJAX FUNCTIONS =====
+
   function loadProducts() {
     $.ajax({
       url: apiBasePath + "products.php",
@@ -509,7 +509,7 @@ $(document).ready(function () {
   function loadCategories() {
     const $select = $("#product-category");
 
-    // Ensure select is enabled before loading
+
     $select.prop("disabled", false);
 
     $.ajax({
@@ -518,7 +518,7 @@ $(document).ready(function () {
       dataType: "json",
       success: function (response) {
         if (response.success) {
-          // Keep the first option (placeholder)
+
           $select.find("option:not(:first)").remove();
 
           if (response.data && response.data.length > 0) {
@@ -529,11 +529,11 @@ $(document).ready(function () {
                   .text(category.TenCategory)
               );
             });
-            // Ensure select is enabled when options are loaded
+
             $select.prop("disabled", false).removeAttr("disabled");
           } else {
             console.warn("No categories found");
-            // Don't disable, just show warning
+
             if ($select.find("option").length === 1) {
               $select.append(
                 $("<option></option>")
@@ -545,7 +545,7 @@ $(document).ready(function () {
           }
         } else {
           console.error("Failed to load categories:", response.message);
-          // Don't disable select, just show error in placeholder
+
           if ($select.find("option").length === 1) {
             $select.find("option:first").text("-- Lỗi tải danh mục --");
           }
@@ -553,7 +553,7 @@ $(document).ready(function () {
       },
       error: function (xhr, status, error) {
         console.error("Error loading categories:", error);
-        // Don't disable select, just show error
+
         if ($select.find("option").length === 1) {
           $select.find("option:first").text("-- Lỗi tải danh mục --");
         }
@@ -569,7 +569,7 @@ $(document).ready(function () {
       return;
     }
 
-    // Group products by category
+
     const productsByCategory = {};
     products.forEach(function (product) {
       const categoryName = product.TenCategory || "Khác";
@@ -579,7 +579,7 @@ $(document).ready(function () {
       productsByCategory[categoryName].push(product);
     });
 
-    // Build accordion HTML
+
     let html = "";
     let accordionIndex = 0;
 
@@ -699,7 +699,7 @@ $(document).ready(function () {
 
     $accordion.html(html);
 
-    // Initialize accordion toggle functionality
+
     initAccordion();
   }
 
@@ -711,7 +711,7 @@ $(document).ready(function () {
         const $item = $(this).closest(".accordion-item");
         const $content = $("#" + accordionId);
 
-        // Toggle current item
+
         if ($item.hasClass("expanded")) {
           $item.removeClass("expanded");
           $content.slideUp(300);
@@ -722,7 +722,7 @@ $(document).ready(function () {
       });
   }
 
-  // ===== TOPPING FUNCTIONS =====
+
   function loadToppings() {
     $.ajax({
       url: apiBasePath + "toppings.php",
@@ -752,11 +752,11 @@ $(document).ready(function () {
       return;
     }
 
-    // Default image if no image is set
+
     const defaultToppingImage =
       "assets/img/products/topping/topping-tranchau.png";
 
-    // Build table HTML
+
     let html = '<div class="products-table-wrapper">';
     html += '<table class="products-table">';
     html += "<thead>";
@@ -773,7 +773,7 @@ $(document).ready(function () {
     html += "<tbody>";
 
     toppings.forEach(function (topping) {
-      // Use image from database, fallback to default if not set
+
       const imagePath = topping.HinhAnh || defaultToppingImage;
       const price = formatCurrency(topping.GiaThem);
 
@@ -844,8 +844,8 @@ $(document).ready(function () {
     $wrapper.html(html);
   }
 
-  // ===== HELPER FUNCTIONS =====
-  // Use formatCurrencyWithStyle from common.js for management pages
+
+
   function formatCurrency(amount) {
     return formatCurrencyWithStyle(amount);
   }

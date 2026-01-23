@@ -7,7 +7,7 @@
 
 require_once '../../functions.php';
 
-// Check if user is logged in
+
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
@@ -17,7 +17,7 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
     exit;
 }
 
-// Check if user is customer
+
 $userRole = $_SESSION['user_role_name'] ?? '';
 $userRoleLower = strtolower($userRole);
 if ($userRoleLower !== 'customer') {

@@ -11,13 +11,13 @@ if (!isset($href)) $href = "#top";
 if (!isset($text)) $text = "Lên đầu trang";
 if (!isset($bgType)) $bgType = "transparent";
 
-// Validate bgType
+
 $validBgTypes = ['light-green', 'white', 'transparent'];
 if (!in_array($bgType, $validBgTypes)) {
     $bgType = 'transparent';
 }
 
-// Build class name
+
 $bgClass = $bgType !== 'transparent' ? 'bg-' . $bgType : '';
 $classAttr = 'back-to-top' . ($bgClass ? ' ' . $bgClass : '');
 ?>

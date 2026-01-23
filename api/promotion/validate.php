@@ -1,9 +1,4 @@
 <?php
-/**
- * Promotion Validation API
- * Validate promotion code and calculate discount
- */
-
 header('Content-Type: application/json');
 require_once '../../functions.php';
 
@@ -12,18 +7,14 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 
 $response = ['success' => false, 'message' => '', 'discount' => 0, 'promotion' => null];
-
 try {
-    // Check if user is logged in
     if (!isLoggedIn()) {
         throw new Exception('Bạn cần đăng nhập để sử dụng mã khuyến mãi');
     }
 
-    // Get POST data
     $code = isset($_POST['code']) ? trim($_POST['code']) : '';
     $subtotal = isset($_POST['subtotal']) ? (float)$_POST['subtotal'] : 0;
 
-    // Validation
     if (empty($code)) {
         throw new Exception('Vui lòng nhập mã khuyến mãi');
     }
@@ -32,10 +23,8 @@ try {
         throw new Exception('Giá trị đơn hàng không hợp lệ');
     }
 
-    // Get database connection
     $pdo = getDBConnection();
 
-    // Check if promotion exists and is valid
     $sql = "SELECT * FROM Promotion 
             WHERE Code = ? AND TrangThai = 1";
     $stmt = $pdo->prepare($sql);
@@ -46,7 +35,6 @@ try {
         throw new Exception('Mã khuyến mãi không tồn tại hoặc đã bị vô hiệu hóa');
     }
 
-    // Check date validity
     $now = new DateTime();
     
     if (!empty($promotion['NgayBatDau'])) {
@@ -63,31 +51,25 @@ try {
         }
     }
 
-    // Calculate discount
     $loaiGiamGia = $promotion['LoaiGiamGia'] ?? 'Percentage';
     $giaTri = (float)$promotion['GiaTri'];
     $giaTriToiDa = isset($promotion['GiaTriToiDa']) && $promotion['GiaTriToiDa'] !== null ? (float)$promotion['GiaTriToiDa'] : null;
     $discount = 0;
 
     if ($loaiGiamGia === 'Percentage') {
-        // Percentage discount
         $discount = ($subtotal * $giaTri) / 100;
         
-        // Apply maximum value limit if set
         if ($giaTriToiDa !== null && $giaTriToiDa > 0) {
             if ($discount > $giaTriToiDa) {
                 $discount = $giaTriToiDa;
             }
         }
         
-        // Ensure discount doesn't exceed subtotal
         if ($discount > $subtotal) {
             $discount = $subtotal;
         }
     } else {
-        // Fixed amount discount
         $discount = $giaTri;
-        // Ensure discount doesn't exceed subtotal
         if ($discount > $subtotal) {
             $discount = $subtotal;
         }

@@ -1,9 +1,4 @@
 <?php
-/**
- * Login API
- * Xử lý đăng nhập người dùng
- */
-
 header('Content-Type: application/json');
 require_once '../../database/config.php';
 
@@ -12,13 +7,10 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 
 $response = ['success' => false, 'message' => ''];
-
 try {
-    // Get POST data
     $usernameOrEmail = isset($_POST['username_or_email']) ? trim($_POST['username_or_email']) : '';
     $password = isset($_POST['password']) ? $_POST['password'] : '';
 
-    // Validation
     if (empty($usernameOrEmail)) {
         throw new Exception('Vui lòng nhập tên đăng nhập hoặc email');
     }
@@ -27,10 +19,8 @@ try {
         throw new Exception('Vui lòng nhập mật khẩu');
     }
 
-    // Get database connection
     $pdo = getDBConnection();
 
-    // Find user by username or email
     $sql = "SELECT u.*, r.TenRole 
             FROM User u 
             INNER JOIN Role r ON u.MaRole = r.MaRole 
@@ -44,17 +34,11 @@ try {
         throw new Exception('Tên đăng nhập/email hoặc mật khẩu không đúng');
     }
 
-    // Verify password
-    // Note: Trong seed data, password là plain text, nên tạm thời so sánh trực tiếp
-    // Trong production, cần hash password bằng password_hash() và verify bằng password_verify()
     $passwordMatch = false;
     
-    // Check if password is hashed (starts with $2y$ for bcrypt)
     if (strpos($user['Password'], '$2y$') === 0) {
-        // Password is hashed, use password_verify
         $passwordMatch = password_verify($password, $user['Password']);
     } else {
-        // Password is plain text (for demo), compare directly
         $passwordMatch = ($user['Password'] === $password);
     }
 
@@ -62,7 +46,6 @@ try {
         throw new Exception('Tên đăng nhập/email hoặc mật khẩu không đúng');
     }
 
-    // Login successful - set session
     $fullName = trim($user['Ho'] . ' ' . $user['Ten']);
     $_SESSION['user_id'] = $user['MaUser'];
     $_SESSION['username'] = $user['Username'];
@@ -77,7 +60,6 @@ try {
     $_SESSION['user_role_name'] = $user['TenRole'];
     $_SESSION['logged_in'] = true;
 
-    // Store user info in array format for cart functions
     $_SESSION['user'] = [
         'MaUser' => $user['MaUser'],
         'Username' => $user['Username'],
@@ -90,11 +72,9 @@ try {
         'TenRole' => $user['TenRole']
     ];
 
-    // Load cart from database for logged in user
     require_once '../../functions.php';
     $storeId = isset($_SESSION['selected_store']) ? (int)$_SESSION['selected_store'] : 1;
     
-    // Merge session cart with database cart
     $cartMerged = mergeCartWithDB($user['MaUser'], $storeId);
     if (!$cartMerged) {
         error_log("Warning: Failed to merge cart from database for user " . $user['MaUser']);

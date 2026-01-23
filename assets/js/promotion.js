@@ -7,11 +7,11 @@
 $(document).ready(function () {
   const apiBasePath = getApiBasePath();
 
-  // Load promotions on page load
+
   loadPromotions();
 
-  // ===== MODAL HANDLERS =====
-  // Add Promotion Modal
+
+
   $("#btn-add-promotion").on("click", function () {
     $("#add-promotion-modal").addClass("active");
     $("#add-promotion-form")[0].reset();
@@ -20,7 +20,7 @@ $(document).ready(function () {
     toggleMaxValueField();
   });
 
-  // Toggle max value field based on discount type
+
   function toggleMaxValueField() {
     const loaiGiamGia = $("#promotion-loai-giam-gia").val();
     const editLoaiGiamGia = $("#edit-promotion-loai-giam-gia").val();
@@ -40,7 +40,7 @@ $(document).ready(function () {
     }
   }
 
-  // Listen to discount type changes
+
   $("#promotion-loai-giam-gia, #edit-promotion-loai-giam-gia").on(
     "change",
     function () {
@@ -61,7 +61,7 @@ $(document).ready(function () {
     }
   );
 
-  // Edit Promotion Modal
+
   $(document).on("click", ".btn-edit-promotion", function () {
     const promotionId = $(this).data("promotion-id");
     const promotionCode = $(this).data("promotion-code");
@@ -78,10 +78,10 @@ $(document).ready(function () {
     $("#edit-promotion-gia-tri").val(giaTri);
     $("#edit-promotion-gia-tri-toi-da").val(giaTriToiDa || "");
 
-    // Toggle max value field visibility
+
     toggleMaxValueField();
 
-    // Convert datetime to datetime-local format
+
     if (ngayBatDau) {
       const startDate = new Date(ngayBatDau);
       const startLocal = new Date(
@@ -123,19 +123,19 @@ $(document).ready(function () {
     }
   );
 
-  // Close modal on Escape key
+
   $(document).on("keydown", function (e) {
     if (e.key === "Escape") {
       $(".modal").removeClass("active");
     }
   });
 
-  // Delete Promotion Handler
+
   $(document).on("click", ".btn-delete-promotion", function () {
     const promotionId = $(this).data("promotion-id");
     const promotionCode = $(this).data("promotion-code");
 
-    // Confirm before deleting
+
     if (
       !confirm(
         "Bạn có chắc chắn muốn xóa khuyến mãi '" +
@@ -146,7 +146,7 @@ $(document).ready(function () {
       return;
     }
 
-    // Submit via AJAX
+
     $.ajax({
       url: apiBasePath + "delete-promotion.php",
       method: "POST",
@@ -169,8 +169,8 @@ $(document).ready(function () {
     });
   });
 
-  // ===== FORM SUBMISSIONS =====
-  // Add Promotion Form
+
+
   $("#add-promotion-form").on("submit", function (e) {
     e.preventDefault();
 
@@ -184,7 +184,7 @@ $(document).ready(function () {
       trang_thai: $("#promotion-trang-thai").val(),
     };
 
-    // Validation
+
     if (!formData.code) {
       showSnackBar("failed", "Vui lòng nhập mã khuyến mãi");
       return;
@@ -203,7 +203,7 @@ $(document).ready(function () {
       return;
     }
 
-    // Submit via AJAX
+
     $.ajax({
       url: apiBasePath + "create-promotion.php",
       method: "POST",
@@ -226,7 +226,7 @@ $(document).ready(function () {
     });
   });
 
-  // Edit Promotion Form
+
   $("#edit-promotion-form").on("submit", function (e) {
     e.preventDefault();
 
@@ -241,7 +241,7 @@ $(document).ready(function () {
       trang_thai: $("#edit-promotion-trang-thai").val(),
     };
 
-    // Validation
+
     if (!formData.code) {
       showSnackBar("failed", "Vui lòng nhập mã khuyến mãi");
       return;
@@ -260,7 +260,7 @@ $(document).ready(function () {
       return;
     }
 
-    // Submit via AJAX
+
     $.ajax({
       url: apiBasePath + "update-promotion.php",
       method: "POST",
@@ -284,7 +284,7 @@ $(document).ready(function () {
     });
   });
 
-  // ===== AJAX FUNCTIONS =====
+
   function loadPromotions() {
     $.ajax({
       url: apiBasePath + "promotions.php",
@@ -428,8 +428,8 @@ $(document).ready(function () {
     $wrapper.html(html);
   }
 
-  // ===== HELPER FUNCTIONS =====
-  // Use formatCurrencyWithStyle from common.js for management pages
+
+
   function formatCurrency(amount) {
     return formatCurrencyWithStyle(amount);
   }

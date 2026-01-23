@@ -1,16 +1,10 @@
 <?php
-/**
- * Delete Cart Item API
- * Xóa sản phẩm khỏi giỏ hàng
- */
-
 header('Content-Type: application/json');
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
 $response = ['success' => false, 'message' => ''];
-
 try {
     if (!isset($_SESSION['cart']) || !is_array($_SESSION['cart'])) {
         throw new Exception('Cart is empty');
@@ -22,23 +16,19 @@ try {
         throw new Exception('Invalid item index');
     }
 
-    // Remove item from cart
     array_splice($_SESSION['cart'], $itemIndex, 1);
 
-    // If user is logged in, save cart to database
     if (isset($_SESSION['user']) && isset($_SESSION['user']['MaUser'])) {
         require_once '../../functions.php';
         $userId = $_SESSION['user']['MaUser'];
         $storeId = isset($_SESSION['selected_store']) ? (int)$_SESSION['selected_store'] : 1;
         
-        // Save to database (but don't fail the request if it fails)
         $dbSaved = saveCartToDB($userId, $storeId);
         if (!$dbSaved) {
             error_log("Warning: Failed to save cart to database for user " . $userId);
         }
     }
 
-    // Calculate total cart count
     $cartCount = 0;
     $totalAmount = 0;
     foreach ($_SESSION['cart'] as $item) {

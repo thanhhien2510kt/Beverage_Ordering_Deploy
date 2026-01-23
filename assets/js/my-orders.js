@@ -5,31 +5,31 @@
  */
 
 $(document).ready(function() {
-    // Load orders on page load
+
     loadMyOrders(1);
 
-    // Search input with debounce
+
     let searchTimeout;
     $('#myOrderSearchInput').on('input', function() {
         const searchValue = $(this).val().trim();
         
-        // Show/hide clear button
+
         if (searchValue) {
             $('#clearMySearchBtn').show();
         } else {
             $('#clearMySearchBtn').hide();
         }
 
-        // Clear previous timeout
+
         clearTimeout(searchTimeout);
         
-        // Set new timeout for search (300ms delay)
+
         searchTimeout = setTimeout(function() {
             loadMyOrders(1);
         }, 300);
     });
 
-    // Search on Enter key
+
     $('#myOrderSearchInput').on('keypress', function(e) {
         if (e.which === 13) { // Enter key
             e.preventDefault();
@@ -38,19 +38,19 @@ $(document).ready(function() {
         }
     });
 
-    // Clear search button
+
     $('#clearMySearchBtn').on('click', function() {
         $('#myOrderSearchInput').val('');
         $(this).hide();
         loadMyOrders(1);
     });
 
-    // Filters: reload on change (reset to page 1)
+
     $('#myOrderStatusFilter, #myOrderDaysFilter').on('change', function() {
         loadMyOrders(1);
     });
 
-    // Order detail modal: close
+
     $('#myOrderDetailModal .order-detail-overlay, #myOrderDetailModal .order-detail-close').on('click', function() {
         $('#myOrderDetailModal').hide();
     });
@@ -60,7 +60,7 @@ $(document).ready(function() {
         }
     });
 
-    // Load my orders with pagination and filters
+
     function loadMyOrders(page) {
         page = page || 1;
         var $loading = $('#myOrdersLoading');
@@ -117,7 +117,7 @@ $(document).ready(function() {
         });
     }
 
-    // Render my order list cards
+
     function renderMyOrders(orders) {
         var $list = $('#myOrdersList');
         $list.empty();
@@ -149,7 +149,7 @@ $(document).ready(function() {
         });
     }
 
-    // Pagination for my orders
+
     function renderMyOrdersPagination(res) {
         var total = res.total || 0;
         var totalPages = res.total_pages || 1;
@@ -179,7 +179,7 @@ $(document).ready(function() {
         });
     }
 
-    // Open my order detail modal - load from PHP view (includes order progress timeline)
+
     function openMyOrderDetail(orderId) {
         var $modal = $('#myOrderDetailModal');
         var $body = $('#myOrderDetailBody');
@@ -192,7 +192,7 @@ $(document).ready(function() {
             data: { id: orderId },
             success: function(html) {
                 $body.html(html);
-                // Initialize collapsible sections
+
                 initCollapsibleSections();
             },
             error: function() {
@@ -202,7 +202,7 @@ $(document).ready(function() {
         });
     }
 
-    // Initialize collapsible sections
+
     function initCollapsibleSections() {
         $('#myOrderDetailBody').off('click', '.order-detail-section.collapsible .order-detail-section-title');
         $('#myOrderDetailBody').on('click', '.order-detail-section.collapsible .order-detail-section-title', function() {

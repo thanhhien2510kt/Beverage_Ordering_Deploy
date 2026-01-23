@@ -5,32 +5,32 @@
  */
 
 $(document).ready(function() {
-    // Load orders on page load
+
     loadManageOrders(1);
     loadUserFilter();
 
-    // Search input with debounce
+
     let searchTimeout;
     $('#manageOrderSearchInput').on('input', function() {
         const searchValue = $(this).val().trim();
         
-        // Show/hide clear button
+
         if (searchValue) {
             $('#clearSearchBtn').show();
         } else {
             $('#clearSearchBtn').hide();
         }
 
-        // Clear previous timeout
+
         clearTimeout(searchTimeout);
         
-        // Set new timeout for search (300ms delay)
+
         searchTimeout = setTimeout(function() {
             loadManageOrders(1);
         }, 300);
     });
 
-    // Search on Enter key
+
     $('#manageOrderSearchInput').on('keypress', function(e) {
         if (e.which === 13) { // Enter key
             e.preventDefault();
@@ -39,19 +39,19 @@ $(document).ready(function() {
         }
     });
 
-    // Clear search button
+
     $('#clearSearchBtn').on('click', function() {
         $('#manageOrderSearchInput').val('');
         $(this).hide();
         loadManageOrders(1);
     });
 
-    // Manage Orders filters: reload on change (reset to page 1)
+
     $('#manageOrderUserFilter, #manageOrderStatusFilter, #manageOrderDaysFilter').on('change', function() {
         loadManageOrders(1);
     });
 
-    // Manage Order detail modal: close
+
     $('#manageOrderDetailModal .order-detail-overlay, #manageOrderDetailModal .order-detail-close').on('click', function() {
         $('#manageOrderDetailModal').hide();
     });
@@ -61,7 +61,7 @@ $(document).ready(function() {
         }
     });
 
-    // Load user filter dropdown
+
     function loadUserFilter() {
         $.ajax({
             url: '../../api/auth/get-users.php',
@@ -70,7 +70,7 @@ $(document).ready(function() {
             success: function(res) {
                 if (res.success && res.users) {
                     var $select = $('#manageOrderUserFilter');
-                    // Keep "Tất cả" option
+
                     $select.find('option:not(:first)').remove();
                     res.users.forEach(function(user) {
                         var userName = (user.Ho + ' ' + user.Ten).trim() || user.Username;
@@ -84,7 +84,7 @@ $(document).ready(function() {
         });
     }
 
-    // Load manage orders with pagination and filters
+
     function loadManageOrders(page) {
         page = page || 1;
         var $loading = $('#manageOrdersLoading');
@@ -121,7 +121,7 @@ $(document).ready(function() {
                         $pagination.show();
                     }
                 } else {
-                    // Update empty message based on search status
+
                     var searchValue = $('#manageOrderSearchInput').val().trim();
                     if (searchValue) {
                         $empty.find('p').text('Không tìm thấy đơn hàng có mã "' + searchValue + '"');
@@ -139,7 +139,7 @@ $(document).ready(function() {
         });
     }
 
-    // Render manage order list cards
+
     function renderManageOrders(orders) {
         var $list = $('#manageOrdersList');
         $list.empty();
@@ -172,7 +172,7 @@ $(document).ready(function() {
         });
     }
 
-    // Pagination for manage orders
+
     function renderManageOrdersPagination(res) {
         var total = res.total || 0;
         var totalPages = res.total_pages || 1;
@@ -202,7 +202,7 @@ $(document).ready(function() {
         });
     }
 
-    // Open manage order detail modal
+
     function openManageOrderDetail(orderId) {
         var $modal = $('#manageOrderDetailModal');
         var $body = $('#manageOrderDetailBody');
@@ -218,10 +218,10 @@ $(document).ready(function() {
                 if (res.success && res.order) {
                     $body.html(renderManageOrderDetail(res.order));
                     
-                    // Initialize collapsible sections
+
                     initCollapsibleSections();
                     
-                    // Attach event handlers for action buttons
+
                     $('#acceptOrderBtn').on('click', function() {
                         updateOrderStatus(orderId, 'accept');
                     });
@@ -242,7 +242,7 @@ $(document).ready(function() {
         });
     }
 
-    // Initialize collapsible sections
+
     function initCollapsibleSections() {
         $('#manageOrderDetailBody').off('click', '.order-detail-section.collapsible .order-detail-section-title');
         $('#manageOrderDetailBody').on('click', '.order-detail-section.collapsible .order-detail-section-title', function() {
@@ -251,7 +251,7 @@ $(document).ready(function() {
         });
     }
 
-    // Render manage order detail (with action buttons if payment_received)
+
     function renderManageOrderDetail(o) {
         var statusClass = getManageStatusClass(o.TrangThai);
         var statusText = getManageStatusText(o.TrangThai);
@@ -321,7 +321,7 @@ $(document).ready(function() {
             '<div class="order-detail-summary-row total"><span class="info-label">Số tiền thanh toán:</span> <span class="info-value">' + formatCurrency(o.TongTien || 0) + '</span></div>' +
             '</div></div>';
 
-        // Add action buttons if order status is payment_received or pending
+
         var actionsHtml = '';
         var currentStatus = (o.TrangThai || '').toLowerCase();
         if (currentStatus === 'payment_received' || currentStatus === 'pending') {
@@ -336,7 +336,7 @@ $(document).ready(function() {
         return sect1 + sect2 + sect3 + sect4 + actionsHtml;
     }
 
-    // Update order status (accept or cancel)
+
     function updateOrderStatus(orderId, action) {
         $.ajax({
             url: '../../api/order/update-status.php',

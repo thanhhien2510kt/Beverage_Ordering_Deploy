@@ -1,25 +1,18 @@
 <?php
-/**
- * Search Stores API
- * Tìm kiếm cửa hàng theo tên hoặc vị trí
- */
-
 header('Content-Type: application/json');
 require_once '../../functions.php';
 
 $response = ['success' => false, 'stores' => [], 'total' => 0, 'message' => ''];
-
 try {
-    // Get parameters
     $keyword = isset($_GET['keyword']) ? trim($_GET['keyword']) : '';
     $province = isset($_GET['province']) ? trim($_GET['province']) : '';
     $ward = isset($_GET['ward']) ? trim($_GET['ward']) : '';
     
-    // Search stores
+
     $stores = getStoresWithFilters($keyword, $province, $ward);
     $total = countStores($keyword, $province, $ward);
     
-    // Format store data
+
     $formattedStores = [];
     foreach ($stores as $store) {
         $formattedStores[] = [

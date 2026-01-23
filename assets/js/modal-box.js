@@ -1,14 +1,14 @@
 (function() {
     'use strict';
 
-    // Get modal elements
+
     const $overlay = $('#modal-box-overlay');
     const $container = $('#modal-box-container');
     const $title = $('#modal-box-title');
     const $message = $('#modal-box-message');
     const $footer = $('#modal-box-footer');
 
-    // Current callback functions
+
     let currentOnConfirm = null;
     let currentOnCancel = null;
 
@@ -38,7 +38,7 @@
         $overlay.removeClass('active');
         $('body').css('overflow', '');
         
-        // Clear callbacks
+
         currentOnConfirm = null;
         currentOnCancel = null;
     }
@@ -73,7 +73,7 @@
      * @param {Function} [options.onCancel] - Callback function when Cancel is clicked (only for yesno type)
      */
     function showModalBox(options) {
-        // Validate options
+
         if (!options || typeof options !== 'object') {
             console.error('ModalBox: options object is required');
             return;
@@ -85,25 +85,25 @@
         const onConfirm = typeof options.onConfirm === 'function' ? options.onConfirm : null;
         const onCancel = typeof options.onCancel === 'function' ? options.onCancel : null;
 
-        // Validate type
+
         if (type !== 'yesno' && type !== 'acknowledge') {
             console.warn('ModalBox: Invalid type. Using "acknowledge" instead.');
             type = 'acknowledge';
         }
 
-        // Set title and message (escape HTML to prevent XSS)
+
         $title.html(escapeHtml(title));
         $message.html(escapeHtml(message));
 
-        // Store callbacks
+
         currentOnConfirm = onConfirm;
         currentOnCancel = onCancel;
 
-        // Clear footer and create buttons based on type
+
         $footer.empty();
 
         if (type === 'yesno') {
-            // Create OK and Cancel buttons
+
             const $cancelBtn = $('<button>', {
                 type: 'button',
                 class: 'modal-box-btn modal-box-btn-secondary',
@@ -118,7 +118,7 @@
 
             $footer.append($cancelBtn, $okBtn);
         } else {
-            // Create only OK button
+
             const $okBtn = $('<button>', {
                 type: 'button',
                 class: 'modal-box-btn modal-box-btn-primary',
@@ -128,22 +128,22 @@
             $footer.append($okBtn);
         }
 
-        // Show modal
+
         $overlay.addClass('active');
         $('body').css('overflow', 'hidden');
     }
 
-    // Setup event handlers
+
     $(document).ready(function() {
 
-        // Overlay click (close when clicking outside modal)
+
         $overlay.on('click', function(e) {
             if (e.target === this) {
                 handleCancel();
             }
         });
 
-        // ESC key to close
+
         $(document).on('keydown', function(e) {
             if (e.key === 'Escape' && $overlay.hasClass('active')) {
                 handleCancel();
@@ -151,7 +151,7 @@
         });
     });
 
-    // Expose global function
+
     window.showModalBox = showModalBox;
 
 })();

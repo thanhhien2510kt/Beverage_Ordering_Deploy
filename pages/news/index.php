@@ -6,17 +6,17 @@
 
 require_once '../../functions.php';
 
-// Get parameters
+
 $page = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
 $perPage = 6; // Hiển thị 6 bài viết mỗi trang
 
-// Get total news count
+
 $pdo = getDBConnection();
 $countStmt = $pdo->query("SELECT COUNT(*) as total FROM News WHERE TrangThai = 1");
 $totalNews = $countStmt->fetch()['total'] ?? 0;
 $totalPages = ceil($totalNews / $perPage);
 
-// Get news for current page
+
 $offset = ($page - 1) * $perPage;
 $sql = "SELECT * FROM News WHERE TrangThai = 1 ORDER BY NgayTao DESC LIMIT :limit OFFSET :offset";
 $stmt = $pdo->prepare($sql);

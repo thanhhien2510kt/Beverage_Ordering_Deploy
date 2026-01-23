@@ -14,24 +14,24 @@ if (session_status() === PHP_SESSION_NONE) {
 $response = ['success' => false, 'message' => '', 'product_id' => null];
 
 try {
-    // Check if user is logged in
+
     if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
         throw new Exception('Bạn cần đăng nhập để thực hiện thao tác này');
     }
 
-    // Check if user has Admin role
+
     $userRole = $_SESSION['user_role_name'] ?? '';
     if ($userRole !== 'Admin') {
         throw new Exception('Chỉ Admin mới có quyền thêm sản phẩm mới');
     }
 
-    // Get POST data
+
     $tenSP = isset($_POST['ten_sp']) ? trim($_POST['ten_sp']) : '';
     $giaNiemYet = isset($_POST['gia_niem_yet']) ? trim($_POST['gia_niem_yet']) : '';
     $giaCoBan = isset($_POST['gia_co_ban']) && $_POST['gia_co_ban'] !== '' ? trim($_POST['gia_co_ban']) : null;
     $maCategory = isset($_POST['ma_category']) ? (int)$_POST['ma_category'] : 0;
 
-    // Validation
+
     if (empty($tenSP)) {
         throw new Exception('Vui lòng nhập tên sản phẩm');
     }
@@ -53,20 +53,20 @@ try {
         throw new Exception('Vui lòng chọn danh mục');
     }
 
-    // Get database connection
+
     $pdo = getDBConnection();
 
-    // Check if category exists
+
     $stmt = $pdo->prepare("SELECT MaCategory FROM Category WHERE MaCategory = ? AND TrangThai = 1");
     $stmt->execute([$maCategory]);
     if (!$stmt->fetch()) {
         throw new Exception('Danh mục không tồn tại');
     }
 
-    // Handle image upload
+
     $hinhAnh = 'assets/img/products/product_one.png'; // Default image
     
-    // Check if file was uploaded
+
     if (isset($_FILES['hinh_anh']) && 
         isset($_FILES['hinh_anh']['name']) && 
         !empty($_FILES['hinh_anh']['name']) &&
@@ -77,7 +77,7 @@ try {
         
         $uploadDir = __DIR__ . '/../../assets/img/products/';
         
-        // Create uploads directory if it doesn't exist
+
         if (!file_exists($uploadDir)) {
             if (!mkdir($uploadDir, 0755, true)) {
                 throw new Exception('Không thể tạo thư mục upload: ' . $uploadDir);
@@ -88,7 +88,7 @@ try {
         $fileTmpName = $file['tmp_name'];
         $fileSize = $file['size'];
 
-        // Validate file type
+
         $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
         $fileExtension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
         
@@ -96,39 +96,39 @@ try {
             throw new Exception('Chỉ chấp nhận file ảnh (JPG, PNG, GIF, WEBP)');
         }
 
-        // Validate file size (max 5MB)
+
         $maxFileSize = 5 * 1024 * 1024; // 5MB
         if ($fileSize > $maxFileSize) {
             throw new Exception('Kích thước file không được vượt quá 5MB');
         }
 
-        // Validate file is actually an image
+
         $imageInfo = @getimagesize($fileTmpName);
         if ($imageInfo === false) {
             throw new Exception('File không phải là hình ảnh hợp lệ');
         }
 
-        // Generate unique filename
+
         $newFileName = uniqid('product_', true) . '.' . $fileExtension;
         $uploadPath = $uploadDir . $newFileName;
 
-        // Move uploaded file
+
         if (!move_uploaded_file($fileTmpName, $uploadPath)) {
             throw new Exception('Không thể upload file. Vui lòng kiểm tra quyền ghi file.');
         }
 
-        // Verify file was moved successfully
+
         if (!file_exists($uploadPath)) {
             throw new Exception('File không được lưu thành công');
         }
 
-        // Set image path for database (relative to root)
+
         $hinhAnh = 'assets/img/products/' . $newFileName;
         
-        // Log for debugging
+
         error_log("Image uploaded successfully: " . $hinhAnh);
     } else {
-        // Log when no file is uploaded
+
         if (isset($_FILES['hinh_anh'])) {
             error_log("No file uploaded or upload error. Error code: " . ($_FILES['hinh_anh']['error'] ?? 'N/A'));
         } else {
@@ -136,7 +136,7 @@ try {
         }
     }
 
-    // Insert new product (GiaNiemYet = selling price, GiaCoBan = reference/strikethrough)
+
     $sql = "INSERT INTO SanPham (TenSP, GiaNiemYet, GiaCoBan, HinhAnh, MaCategory, TrangThai) 
             VALUES (?, ?, ?, ?, ?, 1)";
     $stmt = $pdo->prepare($sql);

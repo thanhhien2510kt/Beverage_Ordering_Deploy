@@ -14,22 +14,22 @@ if (session_status() === PHP_SESSION_NONE) {
 $response = ['success' => false, 'message' => ''];
 
 try {
-    // Check if user is logged in
+
     if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
         throw new Exception('Bạn cần đăng nhập để thực hiện thao tác này');
     }
 
-    // Check if user has Admin role
+
     $userRole = $_SESSION['user_role_name'] ?? '';
     if ($userRole !== 'Admin') {
         throw new Exception('Chỉ Admin mới có quyền điều chỉnh giá topping');
     }
 
-    // Get POST data
+
     $toppingId = isset($_POST['topping_id']) ? (int)$_POST['topping_id'] : 0;
     $newPrice = isset($_POST['price']) ? trim($_POST['price']) : '';
 
-    // Validation
+
     if (!$toppingId) {
         throw new Exception('Mã topping không hợp lệ');
     }
@@ -38,10 +38,10 @@ try {
         throw new Exception('Giá thêm không hợp lệ');
     }
 
-    // Get database connection
+
     $pdo = getDBConnection();
 
-    // Update topping price
+
     $sql = "UPDATE Option_Value SET GiaThem = ? WHERE MaOptionValue = ? AND MaOptionGroup = 3";
     $stmt = $pdo->prepare($sql);
     $stmt->execute([$newPrice, $toppingId]);

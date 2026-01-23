@@ -6,12 +6,12 @@
 
 require_once '../../functions.php';
 
-// Start session
+
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// Check if user is admin or staff - redirect to homepage if true
+
 if (isset($_SESSION['user_role_name'])) {
     $userRoleLower = strtolower($_SESSION['user_role_name']);
     if ($userRoleLower === 'admin' || $userRoleLower === 'staff') {
@@ -20,17 +20,17 @@ if (isset($_SESSION['user_role_name'])) {
     }
 }
 
-// Get cart items from session
+
 $cartItems = isset($_SESSION['cart']) && is_array($_SESSION['cart']) ? $_SESSION['cart'] : [];
 $cartCount = count($cartItems);
 
-// Calculate total amount
+
 $totalAmount = 0;
 foreach ($cartItems as $item) {
     $totalAmount += isset($item['total_price']) ? (float)$item['total_price'] : 0;
 }
 
-// Base path for assets
+
 $basePath = '../../';
 ?>
 <!DOCTYPE html>
@@ -86,13 +86,13 @@ $basePath = '../../';
                         $itemTotal = isset($item['total_price']) ? (float)$item['total_price'] : $basePrice * $quantity;
                         $options = isset($item['options']) ? $item['options'] : [];
                         $note = isset($item['note']) ? $item['note'] : '';
-                        // Calculate price per unit including options
+
                         $pricePerUnit = $quantity > 0 ? ($itemTotal / $quantity) : $basePrice;
                         
-                        // Enrich options if they are in old format (only option_value_id and price)
+
                         if (!empty($options) && !isset($options[0]['value_name'])) {
                             $options = enrichCartOptions($options);
-                            // Update session with enriched options
+
                             $_SESSION['cart'][$index]['options'] = $options;
                         }
                     ?>
@@ -110,32 +110,32 @@ $basePath = '../../';
                                         <?php if (!empty($options)): ?>
                                             <div class="cart-item-options">
                                                 <?php foreach ($options as $option): 
-                                                    // Check if this is an addon (IsMultiple = 1) or regular option (IsMultiple = 0)
-                                                    // Fallback: if IsMultiple is not set, check if it's an old format option
+
+
                                                     $isAddon = false;
                                                     if (isset($option['IsMultiple'])) {
                                                         $isAddon = (bool)$option['IsMultiple'];
                                                     } elseif (isset($option['option_value_id'])) {
-                                                        // Old format - need to check from database or assume it's not an addon
-                                                        // For backward compatibility, assume it's a regular option
+
+
                                                         $isAddon = false;
                                                     }
                                                     
                                                     $valueName = $option['value_name'] ?? '';
-                                                    // Fallback for old format
+
                                                     if (empty($valueName) && isset($option['option_value_id'])) {
-                                                        // Try to get value name from database if not enriched
-                                                        // For now, skip if no value_name
+
+
                                                         continue;
                                                     }
                                                 ?>
                                                     <span class="option-tag">
                                                         <?php 
-                                                        // Add "+" prefix for addon options (IsMultiple = 1)
+
                                                         if ($isAddon && !empty($valueName)) {
                                                             echo '+ ' . e($valueName);
                                                         } else if (!empty($valueName)) {
-                                                            // Regular options (IsMultiple = 0) - no prefix
+
                                                             echo e($valueName);
                                                         }
                                                         ?>

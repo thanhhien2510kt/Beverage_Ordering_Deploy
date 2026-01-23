@@ -1,9 +1,4 @@
 <?php
-/**
- * Update Cart Item API
- * Cập nhật số lượng hoặc ghi chú của sản phẩm trong giỏ hàng
- */
-
 header('Content-Type: application/json');
 require_once '../../functions.php';
 
@@ -12,7 +7,6 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 
 $response = ['success' => false, 'message' => ''];
-
 try {
     if (!isset($_SESSION['cart']) || !is_array($_SESSION['cart'])) {
         throw new Exception('Giỏ hàng trống');
@@ -24,12 +18,10 @@ try {
         throw new Exception('Mã sản phẩm không hợp lệ');
     }
 
-    // Update quantity if provided
     if (isset($_POST['quantity'])) {
         $quantity = max(1, (int)$_POST['quantity']);
         $_SESSION['cart'][$itemIndex]['quantity'] = $quantity;
         
-        // Recalculate total price
         $basePrice = $_SESSION['cart'][$itemIndex]['base_price'] ?? 0;
         $options = $_SESSION['cart'][$itemIndex]['options'] ?? [];
         $optionPrice = 0;
@@ -39,25 +31,21 @@ try {
         $_SESSION['cart'][$itemIndex]['total_price'] = ($basePrice + $optionPrice) * $quantity;
     }
 
-    // Update note if provided
     if (isset($_POST['note'])) {
         $_SESSION['cart'][$itemIndex]['note'] = trim($_POST['note']);
     }
 
-    // If user is logged in, save cart to database
     if (isset($_SESSION['user']) && isset($_SESSION['user']['MaUser'])) {
         require_once '../../functions.php';
         $userId = $_SESSION['user']['MaUser'];
         $storeId = isset($_SESSION['selected_store']) ? (int)$_SESSION['selected_store'] : 1;
         
-        // Save to database (but don't fail the request if it fails)
         $dbSaved = saveCartToDB($userId, $storeId);
         if (!$dbSaved) {
             error_log("Warning: Failed to save cart to database for user " . $userId);
         }
     }
 
-    // Calculate total cart count
     $cartCount = 0;
     $totalAmount = 0;
     foreach ($_SESSION['cart'] as $item) {

@@ -14,22 +14,22 @@ if (session_status() === PHP_SESSION_NONE) {
 $response = ['success' => false, 'message' => ''];
 
 try {
-    // Check if user is logged in
+
     if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
         throw new Exception('Bạn cần đăng nhập để thực hiện thao tác này');
     }
 
-    // Check if user has Admin role
+
     $userRole = $_SESSION['user_role_name'] ?? '';
     if ($userRole !== 'Admin') {
         throw new Exception('Chỉ Admin mới có quyền điều chỉnh giá bán');
     }
 
-    // Get POST data
+
     $productId = isset($_POST['product_id']) ? (int)$_POST['product_id'] : 0;
     $newPrice = isset($_POST['price']) ? trim($_POST['price']) : '';
 
-    // Validation
+
     if (!$productId) {
         throw new Exception('Mã sản phẩm không hợp lệ');
     }
@@ -38,10 +38,10 @@ try {
         throw new Exception('Giá bán không hợp lệ');
     }
 
-    // Get database connection
+
     $pdo = getDBConnection();
 
-    // Update product selling price (GiaNiemYet)
+
     $sql = "UPDATE SanPham SET GiaNiemYet = ? WHERE MaSP = ?";
     $stmt = $pdo->prepare($sql);
     $stmt->execute([$newPrice, $productId]);

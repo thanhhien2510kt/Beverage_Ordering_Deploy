@@ -10,13 +10,13 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// Check if user is logged in
+
 if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
     header('Location: ../auth/login.php');
     exit;
 }
 
-// Check if user has Admin role
+
 $userRole = $_SESSION['user_role_name'] ?? '';
 if ($userRole !== 'Admin') {
     header('Location: ../../index.php');

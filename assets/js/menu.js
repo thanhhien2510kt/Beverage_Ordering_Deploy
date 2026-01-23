@@ -63,7 +63,7 @@ $(document).ready(function () {
   function fetchMenu(params) {
     const keyword = $searchInput.val().trim();
     const finalParams = { ...getCurrentParams(), ...params };
-    // Reset to page 1 only when changing filter/search, not when pagination click
+
     if (!("page" in params)) {
       finalParams.page = 1;
     }
@@ -95,7 +95,7 @@ $(document).ready(function () {
         buildUrlForHistory(finalParams, keyword);
       },
       error: function () {
-        // Keep silent on error, không làm giật UI
+
       },
     });
   }
@@ -120,7 +120,7 @@ $(document).ready(function () {
     }
   });
 
-  // Handle click on sidebar menu (Best Seller / Category / Topping)
+
   $(".category-list").on("click", ".category-link", function (e) {
     e.preventDefault();
 
@@ -141,15 +141,15 @@ $(document).ready(function () {
       topping: qs.get("topping") === "1" ? "1" : undefined,
     };
 
-    // Cập nhật active state cho sidebar
+
     $(".category-item").removeClass("active");
     $item.addClass("active");
 
-    // Gọi AJAX với params mới, giữ nguyên keyword hiện tại
+
     fetchMenu(newParams);
   });
 
-  // Pagination: AJAX chuyển trang, không reload
+
   $wrapper.on("click", ".pagination .pagination-number, .pagination .pagination-btn", function (e) {
     e.preventDefault();
     var p = parseInt($(this).data("page"), 10);

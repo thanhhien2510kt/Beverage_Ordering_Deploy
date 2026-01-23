@@ -57,7 +57,7 @@ $totalImages = count($images);
     let currentIndex = 0;
     let autoPlayTimer = null;
     
-    // Set carousel height
+
     function setHeight() {
         const header = document.querySelector('.main-header');
         const headerHeight = header ? header.offsetHeight : 0;
@@ -68,7 +68,7 @@ $totalImages = count($images);
     setHeight();
     window.addEventListener('resize', setHeight);
     
-    // Show slide
+
     function showSlide(index) {
         if (index < 0) index = totalSlides - 1;
         if (index >= totalSlides) index = 0;
@@ -81,7 +81,7 @@ $totalImages = count($images);
         });
     }
     
-    // Auto play
+
     function startAutoPlay() {
         stopAutoPlay();
         autoPlayTimer = setInterval(() => {
@@ -96,7 +96,7 @@ $totalImages = count($images);
         }
     }
     
-    // Navigation
+
     nextBtn.addEventListener('click', () => {
         showSlide(currentIndex + 1);
         startAutoPlay();
@@ -107,7 +107,7 @@ $totalImages = count($images);
         startAutoPlay();
     });
     
-    // Dots
+
     dots.forEach((dot, index) => {
         dot.addEventListener('click', () => {
             showSlide(index);
@@ -115,11 +115,11 @@ $totalImages = count($images);
         });
     });
     
-    // Pause on hover
+
     carousel.addEventListener('mouseenter', stopAutoPlay);
     carousel.addEventListener('mouseleave', startAutoPlay);
     
-    // Start
+
     showSlide(0);
     startAutoPlay();
 })();

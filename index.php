@@ -6,7 +6,7 @@
 
 require_once 'functions.php';
 
-// Get all carousel images from directory
+
 $carouselDir = __DIR__ . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR . 'img' . DIRECTORY_SEPARATOR . 'carousel';
 $carouselImages = [];
 if (is_dir($carouselDir)) {
@@ -19,11 +19,11 @@ if (is_dir($carouselDir)) {
             }
         }
     }
-    // Sort images for consistent order
+
     sort($carouselImages);
 }
 
-// Get data from database
+
 $categories = getCategories();
 $bestSellerProducts = getProductsByCategory(null, 4);
 $news = getNews(3); 

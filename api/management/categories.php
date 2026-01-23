@@ -14,18 +14,18 @@ if (session_status() === PHP_SESSION_NONE) {
 $response = ['success' => false, 'data' => [], 'message' => ''];
 
 try {
-    // Check if user is logged in
+
     if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
         throw new Exception('Bạn cần đăng nhập để truy cập');
     }
 
-    // Check if user has Staff or Admin role
+
     $userRole = $_SESSION['user_role_name'] ?? '';
     if ($userRole !== 'Staff' && $userRole !== 'Admin') {
         throw new Exception('Bạn không có quyền truy cập trang này');
     }
 
-    // Get categories
+
     $categories = getCategories();
 
     $response = [

@@ -1,9 +1,4 @@
 <?php
-/**
- * Register API
- * Xử lý đăng ký người dùng mới
- */
-
 header('Content-Type: application/json');
 require_once '../../database/config.php';
 require_once '../../functions.php';
@@ -13,18 +8,15 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 
 $response = ['success' => false, 'message' => ''];
-
 try {
-    // Get POST data
     $username = isset($_POST['username']) ? trim($_POST['username']) : '';
     $password = isset($_POST['password']) ? $_POST['password'] : '';
     $ho = isset($_POST['ho']) ? trim($_POST['ho']) : '';
     $ten = isset($_POST['ten']) ? trim($_POST['ten']) : '';
-    $gioiTinh = null; // Gender field removed from form
+    $gioiTinh = null;
     $dienThoai = isset($_POST['dien_thoai']) ? trim($_POST['dien_thoai']) : null;
     $email = isset($_POST['email']) ? trim($_POST['email']) : null;
 
-    // Validation
     if (empty($username)) {
         throw new Exception('Vui lòng nhập tên đăng nhập');
     }
@@ -61,22 +53,18 @@ try {
         throw new Exception('Tên không được vượt quá 50 ký tự');
     }
 
-    // Validate phone if provided
     if ($dienThoai !== null && !empty($dienThoai)) {
-        // Remove all non-digit characters for validation
         $phoneDigits = preg_replace('/\D/', '', $dienThoai);
         
         if (strlen($phoneDigits) !== 10) {
             throw new Exception('Số điện thoại phải có đúng 10 chữ số');
         }
         
-        // Check if phone number starts with 0
         if (!preg_match('/^0\d{9}$/', $phoneDigits)) {
             throw new Exception('Số điện thoại phải bắt đầu bằng số 0 và có 10 chữ số');
         }
     }
 
-    // Validate email if provided
     if ($email !== null && !empty($email)) {
         if (strlen($email) > 100) {
             throw new Exception('Email không được vượt quá 100 ký tự');
@@ -86,17 +74,14 @@ try {
         }
     }
 
-    // Get database connection
     $pdo = getDBConnection();
 
-    // Check if username already exists
     $stmt = $pdo->prepare("SELECT MaUser FROM User WHERE Username = ?");
     $stmt->execute([$username]);
     if ($stmt->fetch()) {
         throw new Exception('Tên đăng nhập đã tồn tại. Vui lòng chọn tên khác');
     }
 
-    // Check if email already exists (if provided)
     if ($email !== null && !empty($email)) {
         $stmt = $pdo->prepare("SELECT MaUser FROM User WHERE Email = ?");
         $stmt->execute([$email]);
@@ -105,7 +90,6 @@ try {
         }
     }
 
-    // Check if phone already exists (if provided)
     if ($dienThoai !== null && !empty($dienThoai)) {
         $stmt = $pdo->prepare("SELECT MaUser FROM User WHERE DienThoai = ?");
         $stmt->execute([$dienThoai]);
@@ -114,7 +98,6 @@ try {
         }
     }
 
-    // Get Customer role ID (MaRole = 3)
     $stmt = $pdo->prepare("SELECT MaRole FROM Role WHERE TenRole = 'Customer' LIMIT 1");
     $stmt->execute();
     $role = $stmt->fetch();
@@ -125,10 +108,8 @@ try {
 
     $maRole = $role['MaRole'];
 
-    // Hash password
     $hashedPassword = hashPassword($password);
 
-    // Insert new user
     $sql = "INSERT INTO User (Username, Password, Ho, Ten, GioiTinh, DienThoai, Email, TrangThai, MaRole) 
             VALUES (?, ?, ?, ?, ?, ?, ?, 1, ?)";
     
@@ -145,8 +126,6 @@ try {
     ]);
 
     $newUserId = $pdo->lastInsertId();
-
-    // Don't auto login after registration - user needs to login manually
     $fullName = trim($ho . ' ' . $ten);
 
     $response = [

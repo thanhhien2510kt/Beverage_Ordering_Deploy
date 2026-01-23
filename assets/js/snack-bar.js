@@ -6,13 +6,13 @@
 (function() {
     'use strict';
 
-    // Snack-bar configuration
+
     const CONFIG = {
         AUTO_CLOSE_DELAY: 5000, // 5 seconds
         ANIMATION_DURATION: 300 // milliseconds
     };
 
-    // Type configuration
+
     const TYPE_CONFIG = {
         warm: {
             icon: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="10" fill="#F59E0B"/><path d="M12 8v4M12 16h.01" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>',
@@ -106,10 +106,10 @@
     function closeSnackBar($snackBar) {
         if (!$snackBar || $snackBar.length === 0) return;
         
-        // Add closing class for animation
+
         $snackBar.addClass('snack-bar-closing');
         
-        // Remove after animation
+
         setTimeout(function() {
             $snackBar.remove();
         }, CONFIG.ANIMATION_DURATION);
@@ -121,41 +121,41 @@
      * @param {string} message - Message content
      */
     function showSnackBar(type, message) {
-        // Validate type
+
         if (!TYPE_CONFIG[type]) {
             console.warn('Invalid snack-bar type:', type, '. Using "success" instead.');
             type = 'success';
         }
 
-        // Validate message
+
         if (!message || typeof message !== 'string') {
             console.warn('Snack-bar message is required.');
             return;
         }
 
-        // Get container
+
         const $container = getContainer();
         
-        // Create snack-bar element
+
         const $snackBar = createSnackBar(type, message);
         
-        // Add to container
+
         $container.append($snackBar);
 
-        // Setup close button click handler
+
         $snackBar.find('.snack-bar-close').on('click', function() {
             closeSnackBar($snackBar);
         });
 
-        // Auto close after delay
+
         const autoCloseTimeout = setTimeout(function() {
             closeSnackBar($snackBar);
         }, CONFIG.AUTO_CLOSE_DELAY);
 
-        // Store timeout ID for potential cancellation
+
         $snackBar.data('autoCloseTimeout', autoCloseTimeout);
 
-        // Clear timeout if manually closed
+
         $snackBar.find('.snack-bar-close').on('click', function() {
             const timeoutId = $snackBar.data('autoCloseTimeout');
             if (timeoutId) {
@@ -164,12 +164,12 @@
         });
     }
 
-    // Expose global function
+
     window.showSnackBar = showSnackBar;
 
-    // Initialize when DOM is ready
+
     $(document).ready(function() {
-        // Ensure container exists
+
         getContainer();
     });
 

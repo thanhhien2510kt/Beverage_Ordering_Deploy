@@ -1,9 +1,4 @@
 <?php
-/**
- * Menu Search API
- * Tìm kiếm sản phẩm theo từ khóa / category / chế độ hiển thị
- */
-
 header('Content-Type: application/json');
 require_once '../../functions.php';
 
@@ -12,9 +7,7 @@ $response = [
     'headingHtml' => '',
     'contentHtml' => '',
 ];
-
 try {
-    // Parameters giống menu/index.php
     $categoryId = isset($_GET['category']) ? (int)$_GET['category'] : null;
     $keyword = isset($_GET['search']) ? trim($_GET['search']) : '';
     $showBestSeller = isset($_GET['bestseller']) && $_GET['bestseller'] == '1';
@@ -43,7 +36,6 @@ try {
         }
     }
 
-    // Build heading HTML
     ob_start();
     ?>
     <h2 class="section-heading" id="menu-section-heading">
@@ -59,38 +51,34 @@ try {
     <?php
     $headingHtml = ob_get_clean();
 
-    // Build products wrapper HTML, dùng lại đúng cấu trúc trong menu/index.php
     ob_start();
     ?>
     <?php if ($showBestSeller && !empty($bestSellers)): ?>
-        <!-- Render Best Sellers -->
         <div class="products-grid">
             <?php foreach ($bestSellers as $product): ?>
                 <?php 
                     $product = $product;
-                    $basePath = '../../'; // Từ api/menu/ về root
+                    $basePath = '../../';
                     include '../../components/product-card.php'; 
                 ?>
             <?php endforeach; ?>
         </div>
     <?php elseif ($showTopping && !empty($toppings)): ?>
-        <!-- Render Toppings -->
         <div class="products-grid">
             <?php foreach ($toppings as $topping): ?>
                 <?php 
                     $product = $topping;
-                    $basePath = '../../'; // Từ api/menu/ về root
+                    $basePath = '../../';
                     include '../../components/product-card.php'; 
                 ?>
             <?php endforeach; ?>
         </div>
     <?php elseif (!$showBestSeller && !$showTopping && !empty($products)): ?>
-        <!-- Render Regular Products -->
         <div class="products-grid">
             <?php foreach ($products as $product): ?>
                 <?php 
                     $product = $product;
-                    $basePath = '../../'; // Từ api/menu/ về root
+                    $basePath = '../../';
                     include '../../components/product-card.php'; 
                 ?>
             <?php endforeach; ?>
@@ -108,7 +96,6 @@ try {
         </div>
     <?php endif; ?>
 
-    <!-- Pagination -->
     <?php if (!$showBestSeller && !$showTopping && $totalPages > 0): ?>
         <?php
             $queryParams = [];

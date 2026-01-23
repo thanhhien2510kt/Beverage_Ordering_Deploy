@@ -26,19 +26,19 @@ if (!isset($width)) $width = 'auto';
 if (!isset($iconPosition)) $iconPosition = 'left';
 if (!isset($data)) $data = [];
 
-// Build button class
+
 $buttonClass = "btn btn-{$type}";
 if ($class) {
     $buttonClass .= " {$class}";
 }
 
-// Build style attribute with common CSS
+
 $style = "border-radius: 30px; height: 40px; display: inline-flex; align-items: center; justify-content: center; padding: 0 20px; line-height: 1;";
 if ($width !== 'auto') {
     $style .= " width: {$width};";
 }
 
-// Build attributes
+
 $attributes = [];
 $attributes[] = "class=\"{$buttonClass}\"";
 $attributes[] = "style=\"{$style}\"";
@@ -51,7 +51,7 @@ if (isset($onclick)) {
     $attributes[] = "onclick=\"{$onclick}\"";
 }
 
-// Add data attributes
+
 foreach ($data as $key => $value) {
     $attributes[] = "data-{$key}=\"" . e($value) . "\"";
 }
@@ -63,10 +63,10 @@ if ($disabled) {
 $attributesStr = implode(' ', $attributes);
 $buttonText = e($text);
 
-// Build content with icon
+
 $content = '';
 if (isset($icon)) {
-    // Icon không cần escape vì là HTML/SVG
+
     if ($iconPosition === 'left') {
         $content = $icon . '<span>' . $buttonText . '</span>';
     } else {
@@ -76,14 +76,14 @@ if (isset($icon)) {
     $content = $buttonText;
 }
 
-// Render button or link
+
 if (isset($href)) {
-    // Remove buttonType and disabled for links, but keep other attributes
+
     $linkAttributes = array_filter($attributes, function($attr) {
         return !str_contains($attr, 'type=') && !str_contains($attr, 'disabled');
     });
     
-    // Add target if specified
+
     if (isset($target)) {
         $linkAttributes[] = "target=\"" . e($target) . "\"";
     }

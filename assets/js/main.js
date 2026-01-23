@@ -5,7 +5,7 @@
  */
 
 $(document).ready(function () {
-  // Back to top button
+
   $(".back-to-top-link").on("click", function (e) {
     e.preventDefault();
     $("html, body").animate(
@@ -16,7 +16,7 @@ $(document).ready(function () {
     );
   });
 
-  // Show/hide back to top button
+
   $(window).scroll(function () {
     if ($(this).scrollTop() > 300) {
       $(".back-to-top").fadeIn();
@@ -25,7 +25,7 @@ $(document).ready(function () {
     }
   });
 
-  // Add to cart functionality - Open modal
+
   $(document).on("click", ".add-to-cart-btn", function (e) {
     e.preventDefault();
     e.stopPropagation();
@@ -34,10 +34,10 @@ $(document).ready(function () {
     openProductCustomizeModal(productId);
   });
 
-  // Load cart count on page load
+
   updateCartCount();
 
-  // User dropdown menu toggle
+
   $(".user-dropdown-toggle").on("click", function (e) {
     e.preventDefault();
     e.stopPropagation();
@@ -45,35 +45,35 @@ $(document).ready(function () {
     $dropdown.toggleClass("active");
   });
 
-  // Close dropdown when clicking outside
+
   $(document).on("click", function (e) {
     if (!$(e.target).closest(".user-dropdown").length) {
       $(".user-dropdown").removeClass("active");
     }
   });
 
-  // Close dropdown when clicking on dropdown item
+
   $(".dropdown-item").on("click", function () {
     $(".user-dropdown").removeClass("active");
   });
 
-  // ===== PRODUCT CUSTOMIZE MODAL =====
 
-  // Open product customize modal
+
+
   function openProductCustomizeModal(productId) {
     const $modal = $("#product-customize-modal");
     const $loading = $("#modal-loading");
     const $content = $("#modal-product-content");
 
-    // Show modal
+
     $modal.addClass("active");
     $("body").css("overflow", "hidden");
 
-    // Show loading, hide content
+
     $loading.show();
     $content.hide();
 
-    // Load product data
+
     $.ajax({
       url: getApiPath(`product/get.php?id=${productId}`),
       method: "GET",
@@ -97,12 +97,12 @@ $(document).ready(function () {
     });
   }
 
-  // Render product data in modal
+
   function renderProductModal(data) {
     const product = data.product;
     const optionGroups = data.optionGroups;
 
-    // Set product info: GiaNiemYet = price for calc, GiaCoBan = reference (strikethrough)
+
     const giaNiemYet = product.GiaNiemYet ?? product.GiaCoBan ?? 0;
     const giaCoBan = product.GiaCoBan ?? product.GiaNiemYet ?? giaNiemYet;
     $("#modal-product-id").val(product.MaSP);
@@ -117,7 +117,7 @@ $(document).ready(function () {
       $("#modal-reference-price").val("");
     }
 
-    // Set product image
+
     const imagePath = product.HinhAnh || "assets/img/products/product_one.png";
     const currentPath = window.location.pathname;
     let imageUrl = imagePath;
@@ -128,13 +128,13 @@ $(document).ready(function () {
     }
     $("#modal-product-image").attr("src", imageUrl).attr("alt", product.TenSP);
 
-    // Reset quantity (format with leading zero)
+
     $("#modal-quantity").val(1);
     $("#modal-quantity-display").text("01");
     $("#modal-product-note").val("");
     $("#modal-char-count").text("0");
 
-    // Render option groups
+
     const $optionGroupsContainer = $("#modal-option-groups");
     $optionGroupsContainer.empty();
 
@@ -198,37 +198,37 @@ $(document).ready(function () {
       $optionGroupsContainer.append($groupDiv);
     });
 
-    // Initialize modal handlers
+
     initModalHandlers();
   }
 
-  // Initialize modal event handlers
+
   function initModalHandlers() {
     const basePrice = parseFloat($("#modal-base-price").val());
     let quantity = parseInt($("#modal-quantity").val()) || 1;
 
-    // Update total price function
+
     function updateModalTotalPrice() {
       let total = basePrice;
 
-      // Add selected options prices
+
       $(".option-checkbox:checked, .option-radio:checked").each(function () {
         total += parseFloat($(this).data("price") || 0);
       });
 
-      // Multiply by quantity
+
       total *= quantity;
 
-      // Update display
+
       $("#modal-total-price").text(formatCurrency(total));
     }
 
-    // Helper to format quantity with leading zero
+
     function formatQuantity(num) {
       return num < 10 ? "0" + num : num.toString();
     }
 
-    // Quantity controls
+
     $("#modal-increase-qty")
       .off("click")
       .on("click", function () {
@@ -260,7 +260,7 @@ $(document).ready(function () {
         updateModalTotalPrice();
       });
 
-    // Option change handlers
+
     $(document)
       .off(
         "change",
@@ -277,14 +277,14 @@ $(document).ready(function () {
         }
       );
 
-    // Initialize selected state
+
     $(
       "#modal-product-content .option-radio:checked, #modal-product-content .option-checkbox:checked"
     ).each(function () {
       $(this).closest(".option-item").addClass("selected");
     });
 
-    // Note character counter
+
     $("#modal-product-note")
       .off("input")
       .on("input", function () {
@@ -292,13 +292,13 @@ $(document).ready(function () {
         $("#modal-char-count").text(length);
       });
 
-    // Add to cart button
+
     $("#modal-add-to-cart-btn")
       .off("click")
       .on("click", function () {
         const options = [];
 
-        // Collect selected options
+
         $(
           "#modal-product-content .option-checkbox:checked, #modal-product-content .option-radio:checked"
         ).each(function () {
@@ -308,7 +308,7 @@ $(document).ready(function () {
           });
         });
 
-        // Calculate total
+
         let total = basePrice;
         options.forEach(function (opt) {
           total += opt.price;
@@ -326,7 +326,7 @@ $(document).ready(function () {
         var refPrice = parseFloat($("#modal-reference-price").val() || 0);
         if (refPrice > basePrice) formData.reference_price = refPrice;
 
-        // Send to cart API
+
         $.ajax({
           url: getApiPath("cart/add.php"),
           method: "POST",
@@ -347,17 +347,17 @@ $(document).ready(function () {
         });
       });
 
-    // Initial price update
+
     updateModalTotalPrice();
   }
 
-  // Close product modal
+
   function closeProductModal() {
     $("#product-customize-modal").removeClass("active");
     $("body").css("overflow", "");
   }
 
-  // Close modal handlers
+
   $("#close-modal-btn").on("click", function (e) {
     e.preventDefault();
     e.stopPropagation();
@@ -370,7 +370,7 @@ $(document).ready(function () {
     }
   });
 
-  // Close modal on ESC key
+
   $(document).on("keydown", function (e) {
     if (
       e.key === "Escape" &&

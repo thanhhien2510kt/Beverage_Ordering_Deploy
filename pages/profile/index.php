@@ -6,14 +6,14 @@
 
 require_once '../../functions.php';
 
-// Check if user is logged in
+
 session_start();
 if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
     header('Location: ../../pages/auth/login.php');
     exit;
 }
 
-// Get user data from session
+
 $userId = $_SESSION['user_id'] ?? null;
 $username = $_SESSION['username'] ?? '';
 $userHo = $_SESSION['user_ho'] ?? '';
@@ -25,10 +25,10 @@ $userPhone = $_SESSION['user_phone'] ?? '';
 $userDiaChi = $_SESSION['user_dia_chi'] ?? '';
 $userRole = $_SESSION['user_role_name'] ?? '';
 
-// Check if user is customer (can edit address)
+
 $isCustomer = (strtolower($userRole) === 'customer');
 
-// Calculate base path
+
 $basePath = '../../';
 ?>
 <!DOCTYPE html>

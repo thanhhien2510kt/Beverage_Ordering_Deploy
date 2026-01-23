@@ -3,7 +3,7 @@
  * Shared JavaScript utilities for MeowTea Fresh
  */
 
-// ===== API PATH HELPERS =====
+
 /**
  * Get API path based on current page location
  * @param {string} endpoint - API endpoint (e.g., "cart/add.php")
@@ -34,7 +34,7 @@ function getApiBasePath() {
   return getApiPath("", "api/management/");
 }
 
-// ===== FORMATTING FUNCTIONS =====
+
 /**
  * Format currency to Vietnamese format
  * @param {number} amount - Amount to format
@@ -76,7 +76,7 @@ function escapeHtml(text) {
   });
 }
 
-// ===== CART FUNCTIONS =====
+
 /**
  * Update cart count in header
  */
@@ -91,12 +91,12 @@ function updateCartCount() {
       }
     },
     error: function () {
-      // Silent fail - don't show error for cart count
+
     },
   });
 }
 
-// ===== ALERT FUNCTIONS =====
+
 /**
  * Show alert message
  * @param {string} message - Alert message
@@ -110,7 +110,7 @@ function showAlert(
   containerSelector = ".management-content",
   autoHideDelay = 5000
 ) {
-  // Remove existing alerts
+
   $(".alert").remove();
 
   const alertClass = type === "success" ? "alert-success" : "alert-error";
@@ -118,16 +118,16 @@ function showAlert(
     '<div class="alert ' + alertClass + '">' + escapeHtml(message) + "</div>"
   );
 
-  // Insert at the top of container
+
   const $container = $(containerSelector);
   if ($container.length > 0) {
     $container.prepend($alert);
   } else {
-    // Fallback to body if container not found
+
     $("body").prepend($alert);
   }
 
-  // Auto remove after delay
+
   if (autoHideDelay > 0) {
     setTimeout(function () {
       $alert.fadeOut(function () {
@@ -137,7 +137,7 @@ function showAlert(
   }
 }
 
-// ===== PASSWORD TOGGLE =====
+
 /**
  * Setup password toggle visibility
  * @param {string} toggleId - Toggle button selector
@@ -161,7 +161,7 @@ function setupPasswordToggle(toggleId, inputId) {
   });
 }
 
-// ===== FORM HELPERS =====
+
 /**
  * Handle form submission with loading state
  * @param {Object} options - Configuration options
@@ -193,18 +193,18 @@ function handleFormSubmission(options) {
     const $btnLoading = $btn.find(".btn-loading");
     const $message = $(messageSelector);
 
-    // Reset message
+
     $message.hide().removeClass("success error").text("");
 
-    // Disable button and show loading
+
     $btn.prop("disabled", true);
     $btnText.hide();
     $btnLoading.show();
 
-    // Get form data
+
     const formData = getFormData ? getFormData($form) : $form.serialize();
 
-    // AJAX request
+
     $.ajax({
       url: apiUrl,
       method: "POST",
@@ -241,7 +241,7 @@ function handleFormSubmission(options) {
         console.error("Form submission error:", error);
         let errorMessage = "Có lỗi xảy ra. Vui lòng thử lại sau.";
 
-        // Try to parse error response
+
         if (xhr.responseText) {
           try {
             const errorResponse = JSON.parse(xhr.responseText);
@@ -249,7 +249,7 @@ function handleFormSubmission(options) {
               errorMessage = errorResponse.message;
             }
           } catch (e) {
-            // Use default error message
+
           }
         }
 
@@ -273,7 +273,7 @@ function handleFormSubmission(options) {
   });
 }
 
-// ===== DEBOUNCE HELPER =====
+
 /**
  * Debounce function to limit function calls
  * @param {Function} func - Function to debounce
@@ -292,7 +292,7 @@ function debounce(func, wait) {
   };
 }
 
-// ===== RESIZE HELPER =====
+
 /**
  * Handle window resize with debounce
  * @param {Function} callback - Callback function

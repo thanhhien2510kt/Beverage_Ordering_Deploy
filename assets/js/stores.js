@@ -5,7 +5,7 @@
  */
 
 $(document).ready(function () {
-  // Set stores hero banner height to match viewport minus header
+
   function setStoresHeroHeight() {
     const header = $(".main-header");
     const headerHeight = header.length > 0 ? header.outerHeight() : 80;
@@ -15,13 +15,13 @@ $(document).ready(function () {
     $(".stores-hero").css("height", heroHeight + "px");
   }
 
-  // Set height on load
+
   setStoresHeroHeight();
 
-  // Update height on window resize using common helper
+
   $(window).on("resize", handleResize(setStoresHeroHeight, 250));
 
-  // Render stores list to DOM (used for AJAX search)
+
   function renderStores(stores, total) {
     const $grid = $("#stores-grid");
     const $count = $(".stores-count");
@@ -30,12 +30,12 @@ $(document).ready(function () {
       return;
     }
 
-    // Update total count text
+
     if ($count.length) {
       $count.text(`Tất cả có ${total} cửa hàng`);
     }
 
-    // No stores found
+
     if (!stores || !stores.length) {
       $grid.html(
         '<div class="no-stores">Không tìm thấy cửa hàng nào phù hợp với tiêu chí tìm kiếm của bạn.</div>'
@@ -43,7 +43,7 @@ $(document).ready(function () {
       return;
     }
 
-    // Build stores HTML (keep same structure as PHP)
+
     const itemsHtml = stores
       .map((store) => {
         const name = store.TenStore || "";
@@ -98,7 +98,7 @@ $(document).ready(function () {
     $grid.html(itemsHtml);
   }
 
-  // Search functionality with debounce (AJAX, no full reload)
+
   const performSearch = debounce(function () {
     const keyword = $("#search-keyword").val().trim();
     const province = $("#search-province").val();
@@ -121,17 +121,17 @@ $(document).ready(function () {
         }
       },
       error: function () {
-        // On error, keep current UI but avoid breaking UX
-        // We do not reload page or scroll, just leave as-is
+
+
       },
     });
   }, 400);
 
-  // Search on input change
+
   $("#search-keyword").on("input", performSearch);
   $("#search-province, #search-ward").on("change", performSearch);
 
-  // Prevent form submission on Enter
+
   $("#search-keyword").on("keypress", function (e) {
     if (e.which === 13) {
       e.preventDefault();

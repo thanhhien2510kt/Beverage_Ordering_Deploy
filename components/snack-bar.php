@@ -11,8 +11,8 @@
  * Types: 'warm' (vàng), 'success' (xanh), 'failed' (đỏ)
  */
 
-// Only create container if it doesn't exist yet
-// This prevents duplicate containers when component is included multiple times
+
+
 ?>
 
 <div class="snack-bar-container" id="snack-bar-container">

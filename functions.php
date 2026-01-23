@@ -213,33 +213,33 @@ function getMarkdownExcerpt($markdownContent, $length = 150) {
         return 'Lorem ipsum dolor sit amet, consectetur adipiscing elit...';
     }
     
-    // Remove markdown headers (# ## ###)
+
     $text = preg_replace('/^#{1,6}\s+/m', '', $markdownContent);
     
-    // Remove markdown images ![alt](url)
+
     $text = preg_replace('/!\[.*?\]\(.*?\)/', '', $text);
     
-    // Remove markdown links [text](url) but keep text
+
     $text = preg_replace('/\[([^\]]+)\]\([^\)]+\)/', '$1', $text);
     
-    // Remove markdown bold/italic markers
+
     $text = preg_replace('/\*\*([^\*]+)\*\*/', '$1', $text);
     $text = preg_replace('/\*([^\*]+)\*/', '$1', $text);
     
-    // Remove horizontal rules
+
     $text = preg_replace('/^---$/m', '', $text);
     
-    // Strip HTML tags if any
+
     $text = strip_tags($text);
     
-    // Remove extra whitespace
+
     $text = preg_replace('/\s+/', ' ', $text);
     $text = trim($text);
     
-    // Get excerpt
+
     if (mb_strlen($text) > $length) {
         $text = mb_substr($text, 0, $length);
-        // Try to cut at word boundary
+
         $lastSpace = mb_strrpos($text, ' ');
         if ($lastSpace !== false) {
             $text = mb_substr($text, 0, $lastSpace);
@@ -310,7 +310,7 @@ function enrichCartOptions($options) {
             continue;
         }
         
-        // Get option value details with group information
+
         $sql = "SELECT ov.MaOptionValue, ov.TenGiaTri, ov.GiaThem,
                        og.MaOptionGroup, og.TenNhom, og.IsMultiple
                 FROM Option_Value ov
@@ -329,7 +329,7 @@ function enrichCartOptions($options) {
                 'price' => isset($option['price']) ? (float)$option['price'] : (float)$optionData['GiaThem']
             ];
         } else {
-            // Fallback: keep original data if option not found
+
             $enrichedOptions[] = [
                 'option_value_id' => $optionValueId,
                 'value_name' => isset($option['value_name']) ? $option['value_name'] : '',
@@ -429,28 +429,28 @@ function normalizeImagePath($imagePath, $currentDir = null) {
         return 'assets/img/products/product_one.png';
     }
     
-    // Nếu đã là absolute path (bắt đầu bằng /), giữ nguyên
+
     if (strpos($imagePath, '/') === 0) {
         return $imagePath;
     }
     
-    // Nếu đã có http/https, giữ nguyên
+
     if (strpos($imagePath, 'http://') === 0 || strpos($imagePath, 'https://') === 0) {
         return $imagePath;
     }
     
-    // Xác định base path dựa trên vị trí file gọi function
+
     if ($currentDir === null) {
-        // Mặc định từ root
+
         return $imagePath;
     }
     
-    // Tính toán relative path từ currentDir về root
+
     $rootPath = realpath(__DIR__);
     $currentPath = realpath($currentDir);
     
     if ($currentPath && strpos($currentPath, $rootPath) === 0) {
-        // Tính số level cần lùi lại
+
         $relativePath = str_replace($rootPath, '', $currentPath);
         $levels = substr_count($relativePath, DIRECTORY_SEPARATOR);
         
@@ -473,18 +473,18 @@ function getImagePath($imagePath) {
         return 'assets/img/products/product_one.png';
     }
     
-    // Nếu đã là absolute path, giữ nguyên
+
     if (strpos($imagePath, '/') === 0) {
         return $imagePath;
     }
     
-    // Nếu đã có http/https, giữ nguyên
+
     if (strpos($imagePath, 'http://') === 0 || strpos($imagePath, 'https://') === 0) {
         return $imagePath;
     }
     
-    // Đảm bảo bắt đầu từ root (không có ../)
-    // Loại bỏ các ../ ở đầu nếu có
+
+
     $imagePath = ltrim($imagePath, './');
     
     return $imagePath;
@@ -506,11 +506,11 @@ function hashPassword($password) {
  * @return bool - True if password matches
  */
 function verifyPassword($password, $hash) {
-    // If hash starts with $2y$, use password_verify
+
     if (strpos($hash, '$2y$') === 0) {
         return password_verify($password, $hash);
     }
-    // Otherwise, compare directly (for demo/legacy passwords)
+
     return ($password === $hash);
 }
 
@@ -579,11 +579,11 @@ function getAvatarInitial($name) {
         return 'U';
     }
     
-    // Remove extra spaces and get first character
+
     $name = trim($name);
     $firstChar = mb_substr($name, 0, 1, 'UTF-8');
     
-    // Convert to uppercase
+
     return mb_strtoupper($firstChar, 'UTF-8');
 }
 
@@ -594,7 +594,7 @@ function getAvatarInitial($name) {
  * @return string - First character (uppercase)
  */
 function getAvatarInitialFromName($ho, $ten) {
-    // Prefer Ten (first name) for avatar initial
+
     if (!empty($ten)) {
         return getAvatarInitial($ten);
     }
@@ -655,7 +655,7 @@ function getBestSellerProducts($limit = 8) {
  * @return string - HTML string with stars (★ for full, ☆ for empty/half)
  */
 function renderStars($rating) {
-    // Ensure rating is between 0 and 5
+
     $rating = max(0, min(5, (float)$rating));
     
     $fullStars = floor($rating); // Số sao đầy
@@ -684,13 +684,13 @@ function getToppings() {
                         ORDER BY ov.MaOptionValue");
     $toppings = $stmt->fetchAll(PDO::FETCH_ASSOC);
     
-    // Fallback image if no image is set
+
     $defaultToppingImage = 'assets/img/products/topping/topping-tranchau.png';
     
-    // Format toppings to match product structure for display
+
     $formattedToppings = [];
     foreach ($toppings as $topping) {
-        // Use image from database, fallback to default if not set
+
         $imagePath = !empty($topping['HinhAnh']) ? $topping['HinhAnh'] : $defaultToppingImage;
         
         $formattedToppings[] = [
@@ -729,7 +729,7 @@ function saveCartToDB($userId, $storeId) {
     try {
         $pdo->beginTransaction();
         
-        // Check if user already has a cart for this store
+
         $stmt = $pdo->prepare("SELECT MaCart FROM Cart WHERE MaUser = ? AND MaStore = ?");
         $stmt->execute([$userId, $storeId]);
         $existingCart = $stmt->fetch();
@@ -737,11 +737,11 @@ function saveCartToDB($userId, $storeId) {
         if ($existingCart) {
             $cartId = $existingCart['MaCart'];
             error_log("saveCartToDB: Found existing cart ID: $cartId");
-            // Clear existing cart items
+
             $stmt = $pdo->prepare("DELETE FROM Cart_Item WHERE MaCart = ?");
             $stmt->execute([$cartId]);
         } else {
-            // Create new cart
+
             error_log("saveCartToDB: Creating new cart");
             $stmt = $pdo->prepare("INSERT INTO Cart (MaUser, MaStore, NgayTao) VALUES (?, ?, NOW())");
             $stmt->execute([$userId, $storeId]);
@@ -749,11 +749,11 @@ function saveCartToDB($userId, $storeId) {
             error_log("saveCartToDB: Created new cart ID: $cartId");
         }
         
-        // Insert cart items from session
+
         foreach ($_SESSION['cart'] as $index => $item) {
             error_log("saveCartToDB: Processing item $index - Product ID: " . ($item['product_id'] ?? 'N/A'));
             
-            // Insert cart item with note
+
             $note = isset($item['note']) ? $item['note'] : null;
             $stmt = $pdo->prepare("INSERT INTO Cart_Item (MaCart, MaSP, SoLuong, GiaNiemYet, GhiChu) VALUES (?, ?, ?, ?, ?)");
             $stmt->execute([
@@ -766,7 +766,7 @@ function saveCartToDB($userId, $storeId) {
             $cartItemId = $pdo->lastInsertId();
             error_log("saveCartToDB: Inserted cart item ID: $cartItemId");
             
-            // Insert cart item options
+
             if (!empty($item['options'])) {
                 error_log("saveCartToDB: Item has " . count($item['options']) . " options");
                 foreach ($item['options'] as $option) {
@@ -812,7 +812,7 @@ function loadCartFromDB($userId, $storeId) {
     $pdo = getDBConnection();
     
     try {
-        // Get cart for this user and store
+
         $stmt = $pdo->prepare("SELECT MaCart FROM Cart WHERE MaUser = ? AND MaStore = ?");
         $stmt->execute([$userId, $storeId]);
         $cart = $stmt->fetch();
@@ -823,7 +823,7 @@ function loadCartFromDB($userId, $storeId) {
         
         $cartId = $cart['MaCart'];
         
-        // Get cart items
+
         $stmt = $pdo->prepare("
             SELECT ci.*, sp.TenSP, sp.HinhAnh, sp.GiaCoBan
             FROM Cart_Item ci
@@ -833,12 +833,12 @@ function loadCartFromDB($userId, $storeId) {
         $stmt->execute([$cartId]);
         $cartItems = $stmt->fetchAll();
         
-        // Clear session cart before loading from DB
+
         $_SESSION['cart'] = [];
         
-        // Load items into session
+
         foreach ($cartItems as $item) {
-            // Get item options
+
             $stmt = $pdo->prepare("
                 SELECT cio.*, ov.TenGiaTri, og.TenNhom
                 FROM Cart_Item_Option cio
@@ -849,7 +849,7 @@ function loadCartFromDB($userId, $storeId) {
             $stmt->execute([$item['MaCartItem']]);
             $options = $stmt->fetchAll();
             
-            // Format options
+
             $formattedOptions = [];
             $totalPrice = $item['GiaNiemYet'];
             
@@ -865,7 +865,7 @@ function loadCartFromDB($userId, $storeId) {
             
             $totalPrice *= $item['SoLuong'];
             
-            // Add to session cart
+
             $_SESSION['cart'][] = [
                 'product_id' => $item['MaSP'],
                 'product_name' => $item['TenSP'],
@@ -896,12 +896,12 @@ function loadCartFromDB($userId, $storeId) {
  * @return bool - Success status
  */
 function mergeCartWithDB($userId, $storeId) {
-    // If session cart is empty, just load from DB
+
     if (!isset($_SESSION['cart']) || empty($_SESSION['cart'])) {
         return loadCartFromDB($userId, $storeId);
     }
     
-    // If session cart has items, save to DB (overwrite)
+
     return saveCartToDB($userId, $storeId);
 }
 

@@ -1,10 +1,4 @@
 <?php
-/**
- * Get Orders API
- * List orders for current user with pagination and filters
- * Query: page, per_page (default 10), status, days (7|30|90, default 30)
- */
-
 header('Content-Type: application/json');
 require_once '../../functions.php';
 
@@ -13,7 +7,6 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 
 $response = ['success' => false, 'message' => '', 'orders' => [], 'total' => 0, 'total_pages' => 0, 'page' => 1, 'per_page' => 10];
-
 try {
     if (!isLoggedIn()) {
         throw new Exception('Bạn cần đăng nhập để xem đơn hàng');
@@ -32,8 +25,6 @@ try {
     }
 
     $pdo = getDBConnection();
-    
-    // Automatically progress orders based on scheduled timestamps
     try {
         $pdo->exec("
             UPDATE Orders
@@ -78,16 +69,13 @@ try {
         }
     }
 
-    // Search by order code (MaOrder)
     if ($search !== '') {
-        // Remove #MTF prefix if present and extract order ID
         $searchClean = preg_replace('/^#?MTF?/i', '', $search);
         $searchClean = ltrim($searchClean, '0');
         if (is_numeric($searchClean) && (int)$searchClean > 0) {
             $where[] = "o.MaOrder = ?";
             $params[] = (int)$searchClean;
         } else {
-            // Search by partial match on order code
             $where[] = "o.MaOrder LIKE ?";
             $params[] = '%' . $search . '%';
         }
@@ -95,7 +83,6 @@ try {
 
     $whereClause = implode(' AND ', $where);
 
-    // Count total
     $sqlCount = "SELECT COUNT(*) AS cnt FROM Orders o WHERE $whereClause";
     $stmt = $pdo->prepare($sqlCount);
     $stmt->execute($params);
@@ -104,7 +91,6 @@ try {
     $page = min($page, max(1, $totalPages));
     $offset = ($page - 1) * $perPage;
 
-    // Fetch orders (list only, no items for list view)
     $sql = "SELECT o.*, s.TenStore
             FROM Orders o
             INNER JOIN Store s ON o.MaStore = s.MaStore
@@ -133,7 +119,7 @@ try {
         }
         $order['PaymentMethod'] = $paymentMethodName;
 
-        // Item count for list
+
         $st = $pdo->prepare("SELECT COALESCE(SUM(SoLuong), 0) AS n FROM Order_Item WHERE MaOrder = ?");
         $st->execute([$orderId]);
         $order['ItemCount'] = (int)$st->fetch(PDO::FETCH_ASSOC)['n'];

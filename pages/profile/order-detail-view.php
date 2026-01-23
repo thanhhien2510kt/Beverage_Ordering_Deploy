@@ -5,18 +5,18 @@
 
 require_once '../../functions.php';
 
-// Start session
+
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// Check if user is logged in
+
 if (!isLoggedIn()) {
     echo '<p class="order-detail-error">Vui lòng đăng nhập để xem đơn hàng.</p>';
     exit;
 }
 
-// Get order ID from query string
+
 $orderId = isset($_GET['id']) ? (int)$_GET['id'] : 0;
 
 if (!$orderId) {
@@ -24,11 +24,11 @@ if (!$orderId) {
     exit;
 }
 
-// Get user info
+
 $user = getCurrentUser();
 $userId = $user['id'];
 
-// Get order from database
+
 $pdo = getDBConnection();
 $sql = "SELECT o.*, s.TenStore, s.DiaChi as StoreAddress, s.DienThoai as StorePhone
         FROM Orders o
@@ -38,13 +38,13 @@ $stmt = $pdo->prepare($sql);
 $stmt->execute([$orderId, $userId]);
 $order = $stmt->fetch();
 
-// Check if order exists
+
 if (!$order) {
     echo '<p class="order-detail-error">Không tải được đơn hàng.</p>';
     exit;
 }
 
-// Get payment method
+
 $paymentMethodId = $order['MaPayment'] ?? null;
 $paymentMethodName = 'Tiền mặt';
 if ($paymentMethodId) {
@@ -57,7 +57,7 @@ if ($paymentMethodId) {
     }
 }
 
-// Get order items
+
 $sql = "SELECT oi.*, sp.TenSP, sp.HinhAnh
         FROM Order_Item oi
         INNER JOIN SanPham sp ON oi.MaSP = sp.MaSP
@@ -66,7 +66,7 @@ $stmt = $pdo->prepare($sql);
 $stmt->execute([$orderId]);
 $orderItems = $stmt->fetchAll();
 
-// Get order item options
+
 foreach ($orderItems as &$item) {
     $sql = "SELECT oio.*, ov.TenGiaTri, og.TenNhom
             FROM Order_Item_Option oio
@@ -79,7 +79,7 @@ foreach ($orderItems as &$item) {
 }
 unset($item); 
 
-// Calculate totals
+
 $subtotal = 0;
 foreach ($orderItems as $item) {
     $subtotal += ($item['GiaNiemYet'] * $item['SoLuong']);
@@ -94,34 +94,34 @@ $shippingFee = $order['PhiVanChuyen'] ?? 0;
 $totalAmount = $order['TongTien'] ?? 0;
 $promotionDiscount = $order['GiamGia'] ?? 0;
 
-// Generate order code
+
 $orderCode = 'MTF' . str_pad($orderId, 5, '0', STR_PAD_LEFT);
 
-// Get order status and format date
+
 $orderStatus = $order['TrangThai'] ?? 'Payment_Received';
 $orderDate = $order['NgayTao'] ?? date('Y-m-d H:i:s');
 $orderDateFormatted = date('d/m/Y H:i:s', strtotime($orderDate));
 
-// Get timeline timestamps
+
 $thoiDiemNhanDon = $order['ThoiDiemNhanDon'] ?? null;
 $thoiDiemGiaoHang = $order['ThoiDiemGiaoHang'] ?? null;
 $thoiDiemNhanHang = $order['ThoiDiemNhanHang'] ?? null;
 $thoiDiemHuyDon = $order['ThoiDiemHuyDon'] ?? null;
 
-// Format timestamps
+
 $step1Date = $orderDateFormatted; // Always show order creation date
 $step2Date = $thoiDiemNhanDon ? date('d/m/Y H:i:s', strtotime($thoiDiemNhanDon)) : null;
 $step3Date = $thoiDiemGiaoHang ? date('d/m/Y H:i:s', strtotime($thoiDiemGiaoHang)) : null;
 $step4Date = $thoiDiemNhanHang ? date('d/m/Y H:i:s', strtotime($thoiDiemNhanHang)) : null;
 $cancelDate = $thoiDiemHuyDon ? date('d/m/Y H:i:s', strtotime($thoiDiemHuyDon)) : $orderDateFormatted;
 
-// Determine which steps are completed based on order status
+
 $step1Completed = in_array($orderStatus, ['Payment_Received', 'Pending', 'Processing', 'Order_Received', 'Delivering', 'Completed']);
 $step2Completed = in_array($orderStatus, ['Processing', 'Order_Received', 'Delivering', 'Completed']);
 $step3Completed = in_array($orderStatus, ['Delivering', 'Completed']);
 $step4Completed = ($orderStatus === 'Completed');
 
-// Check if order is cancelled
+
 $isCancelled = in_array($orderStatus, ['Cancelled', 'Store_Cancelled']);
 if ($isCancelled) {
     $step1Completed = true;
@@ -130,11 +130,11 @@ if ($isCancelled) {
     $step4Completed = false;
 }
 
-// Base path for assets
+
 $basePath = '../../';
 $iconPath = $basePath . 'assets/img/cart/order_result/';
 
-// Get status text and class
+
 function getStatusText($status) {
     $s = strtolower($status);
     if ($s === 'completed') return 'Hoàn thành';
@@ -295,7 +295,7 @@ $statusClass = getStatusClass($orderStatus);
                         $img = $basePath . $img;
                     }
                     
-                    // Calculate total price including options
+
                     $giaHienTai = $item['GiaNiemYet'];
                     $optionsText = [];
                     if (isset($item['options']) && count($item['options']) > 0) {

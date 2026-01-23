@@ -14,12 +14,12 @@ if (!isset($totalPages)) $totalPages = 1;
 if (!isset($queryParams)) $queryParams = [];
 if (!isset($ajaxMode)) $ajaxMode = false;
 
-// Build base URL
+
 if (!isset($baseUrl)) {
     $baseUrl = $_SERVER['PHP_SELF'];
 }
 
-// Helper function to build pagination URL (scoped to avoid conflicts)
+
 if (!function_exists('buildPaginationUrl')) {
     function buildPaginationUrl($pageNum, $baseUrl, $queryParams) {
         $params = array_merge($queryParams, ['page' => $pageNum]);
@@ -28,7 +28,7 @@ if (!function_exists('buildPaginationUrl')) {
     }
 }
 
-// Calculate page range
+
 $startPage = max(1, $page - 2);
 $endPage = min($totalPages, $page + 2);
 ?>

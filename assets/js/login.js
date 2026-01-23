@@ -5,10 +5,10 @@
  */
 
 $(document).ready(function () {
-  // Password toggle visibility
+
   setupPasswordToggle("#passwordToggle", "#password");
 
-  // Login form submit
+
   $("#loginForm").on("submit", function (e) {
     e.preventDefault();
 
@@ -18,21 +18,21 @@ $(document).ready(function () {
     const $btnLoading = $btn.find(".btn-loading");
     const $message = $("#loginMessage");
 
-    // Reset message
+
     $message.hide().removeClass("success error").text("");
 
-    // Disable button and show loading
+
     $btn.prop("disabled", true);
     $btnText.hide();
     $btnLoading.show();
 
-    // Get form data
+
     const formData = {
       username_or_email: $("#username_or_email").val().trim(),
       password: $("#password").val(),
     };
 
-    // AJAX request
+
     $.ajax({
       url: "../../api/auth/login.php",
       method: "POST",
@@ -61,7 +61,7 @@ $(document).ready(function () {
     });
   });
 
-  // Social login buttons (placeholder)
+
   $("#facebookLogin").on("click", function () {
     showSnackBar('information', "Tính năng đăng nhập bằng Facebook sẽ được triển khai sau.");
   });

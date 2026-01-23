@@ -5,7 +5,7 @@
  */
 
 $(document).ready(function () {
-  // Set news banner height to match viewport minus header
+
   function setNewsBannerHeight() {
     const header = $(".main-header");
     const headerHeight = header.length > 0 ? header.outerHeight() : 80;
@@ -15,9 +15,9 @@ $(document).ready(function () {
     $("#news-banner-section").css("height", bannerHeight + "px");
   }
 
-  // Set height on load
+
   setNewsBannerHeight();
 
-  // Update height on window resize using common helper
+
   $(window).on("resize", handleResize(setNewsBannerHeight, 250));
 });
