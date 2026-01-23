@@ -49,6 +49,9 @@ $(document).ready(function () {
     if (keyword) {
       urlParams.set("search", keyword);
     }
+    if (params.page && params.page > 1) {
+      urlParams.set("page", params.page);
+    }
 
     const newUrl =
       window.location.pathname +
@@ -59,11 +62,11 @@ $(document).ready(function () {
 
   function fetchMenu(params) {
     const keyword = $searchInput.val().trim();
-    const finalParams = {
-      ...getCurrentParams(),
-      ...params,
-      page: 1, // Khi đổi filter hoặc search thì luôn về trang 1
-    };
+    const finalParams = { ...getCurrentParams(), ...params };
+    // Reset to page 1 only when changing filter/search, not when pagination click
+    if (!("page" in params)) {
+      finalParams.page = 1;
+    }
 
     const ajaxData = {
       ...finalParams,
@@ -144,6 +147,15 @@ $(document).ready(function () {
 
     // Gọi AJAX với params mới, giữ nguyên keyword hiện tại
     fetchMenu(newParams);
+  });
+
+  // Pagination: AJAX chuyển trang, không reload
+  $wrapper.on("click", ".pagination .pagination-number, .pagination .pagination-btn", function (e) {
+    e.preventDefault();
+    var p = parseInt($(this).data("page"), 10);
+    if (p >= 1) {
+      fetchMenu({ page: p });
+    }
   });
 });
 

@@ -238,6 +238,7 @@ if ($showBestSeller) {
                                     if ($keyword) {
                                         $queryParams['search'] = $keyword;
                                     }
+                                    $ajaxMode = true;
                                     include '../../components/pagination.php';
                                 ?>
                             <?php endif; ?>

@@ -35,6 +35,12 @@
     font-weight: bold;
     font-size: 14px;
     transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+/* AJAX mode: button.pagination-number reset to match link style */
+button.pagination-number {
+    font: inherit;
 }
 
 .pagination-number:hover {
