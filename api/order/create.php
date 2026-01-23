@@ -16,7 +16,7 @@ $response = ['success' => false, 'message' => ''];
 try {
     // Check if user is logged in
     if (!isLoggedIn()) {
-        throw new Exception('User not logged in');
+        throw new Exception('Bạn cần đăng nhập để đặt hàng');
     }
 
     $user = getCurrentUser();
@@ -37,16 +37,16 @@ try {
 
     // Validate required fields
     if (!$storeId) {
-        throw new Exception('Store is required');
+        throw new Exception('Cửa hàng là bắt buộc');
     }
 
     if (!$paymentMethod) {
-        throw new Exception('Payment method is required');
+        throw new Exception('Phương thức thanh toán là bắt buộc');
     }
 
     // Get cart items
     if (!isset($_SESSION['cart']) || !is_array($_SESSION['cart']) || empty($_SESSION['cart'])) {
-        throw new Exception('Cart is empty');
+        throw new Exception('Giỏ hàng trống');
     }
 
     $cartItems = $_SESSION['cart'];

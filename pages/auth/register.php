@@ -257,6 +257,7 @@ $basePath = '../../';
     <?php include '../../components/footer.php'; ?>
 
     <script src="<?php echo $basePath; ?>assets/js/common.js"></script>
+    <script src="<?php echo $basePath; ?>assets/js/snack-bar.js"></script>
     <script src="<?php echo $basePath; ?>assets/js/register.js"></script>
 </body>
 </html>

@@ -24,12 +24,12 @@ try {
     
     // Check if user is admin or staff
     if (strtolower($userRole) !== 'admin' && strtolower($userRole) !== 'staff') {
-        throw new Exception('Access denied. Admin or Staff role required.');
+        throw new Exception('Bạn không có quyền thực hiện thao tác này');
     }
 
     $orderId = (int)($_GET['id'] ?? 0);
     if ($orderId <= 0) {
-        throw new Exception('Invalid order id');
+        throw new Exception('Mã đơn hàng không hợp lệ');
     }
 
     $pdo = getDBConnection();
@@ -65,7 +65,7 @@ try {
     $order = $stmt->fetch(PDO::FETCH_ASSOC);
 
     if (!$order) {
-        throw new Exception('Order not found');
+        throw new Exception('Đơn hàng không tồn tại');
     }
 
     $order['OrderCode'] = '#MTF' . str_pad($order['MaOrder'], 5, '0', STR_PAD_LEFT);

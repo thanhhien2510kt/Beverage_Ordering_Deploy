@@ -15,7 +15,7 @@ $response = ['success' => false, 'message' => '', 'users' => []];
 
 try {
     if (!isLoggedIn()) {
-        throw new Exception('User not logged in');
+        throw new Exception('Bạn cần đăng nhập để xem danh sách người dùng');
     }
 
     $currentUser = getCurrentUser();
@@ -23,7 +23,7 @@ try {
     
     // Check if user is admin or staff
     if (strtolower($userRole) !== 'admin' && strtolower($userRole) !== 'staff') {
-        throw new Exception('Access denied. Admin or Staff role required.');
+        throw new Exception('Bạn không có quyền thực hiện thao tác này');
     }
 
     $pdo = getDBConnection();

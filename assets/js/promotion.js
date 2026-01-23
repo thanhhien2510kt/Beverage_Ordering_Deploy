@@ -156,19 +156,15 @@ $(document).ready(function () {
       dataType: "json",
       success: function (response) {
         if (response.success) {
-          showAlert(response.message, "success", ".management-content");
+          showSnackBar("success", response.message);
           loadPromotions(); // Reload promotions list
         } else {
-          showAlert(response.message || "Có lỗi xảy ra", "error", ".management-content");
+          showSnackBar("failed", response.message || "Có lỗi xảy ra");
         }
       },
       error: function (xhr, status, error) {
         console.error("Error:", error);
-        showAlert(
-          "Có lỗi xảy ra khi xóa khuyến mãi. Vui lòng thử lại.",
-          "error",
-          ".management-content"
-        );
+        showSnackBar("failed", "Có lỗi xảy ra khi xóa khuyến mãi. Vui lòng thử lại.");
       },
     });
   });
@@ -190,12 +186,12 @@ $(document).ready(function () {
 
     // Validation
     if (!formData.code) {
-      showAlert("Vui lòng nhập mã khuyến mãi", "error", ".management-content");
+      showSnackBar("failed", "Vui lòng nhập mã khuyến mãi");
       return;
     }
 
     if (!formData.gia_tri || formData.gia_tri < 0) {
-      showAlert("Vui lòng nhập giá trị giảm giá hợp lệ", "error", ".management-content");
+      showSnackBar("failed", "Vui lòng nhập giá trị giảm giá hợp lệ");
       return;
     }
 
@@ -203,7 +199,7 @@ $(document).ready(function () {
       formData.loai_giam_gia === "Percentage" &&
       (formData.gia_tri > 100 || formData.gia_tri < 0)
     ) {
-      showAlert("Phần trăm giảm giá phải từ 0 đến 100", "error", ".management-content");
+      showSnackBar("failed", "Phần trăm giảm giá phải từ 0 đến 100");
       return;
     }
 
@@ -215,21 +211,17 @@ $(document).ready(function () {
       dataType: "json",
       success: function (response) {
         if (response.success) {
-          showAlert(response.message, "success", ".management-content");
+          showSnackBar("success", response.message);
           $("#add-promotion-modal").removeClass("active");
           $("#add-promotion-form")[0].reset();
           loadPromotions(); // Reload promotions list
         } else {
-          showAlert(response.message || "Có lỗi xảy ra", "error", ".management-content");
+          showSnackBar("failed", response.message || "Có lỗi xảy ra");
         }
       },
       error: function (xhr, status, error) {
         console.error("Error:", error);
-        showAlert(
-          "Có lỗi xảy ra khi thêm khuyến mãi. Vui lòng thử lại.",
-          "error",
-          ".management-content"
-        );
+        showSnackBar("failed", "Có lỗi xảy ra khi thêm khuyến mãi. Vui lòng thử lại.");
       },
     });
   });
@@ -251,12 +243,12 @@ $(document).ready(function () {
 
     // Validation
     if (!formData.code) {
-      showAlert("Vui lòng nhập mã khuyến mãi", "error", ".management-content");
+      showSnackBar("failed", "Vui lòng nhập mã khuyến mãi");
       return;
     }
 
     if (!formData.gia_tri || formData.gia_tri < 0) {
-      showAlert("Vui lòng nhập giá trị giảm giá hợp lệ", "error", ".management-content");
+      showSnackBar("failed", "Vui lòng nhập giá trị giảm giá hợp lệ");
       return;
     }
 
@@ -264,7 +256,7 @@ $(document).ready(function () {
       formData.loai_giam_gia === "Percentage" &&
       (formData.gia_tri > 100 || formData.gia_tri < 0)
     ) {
-      showAlert("Phần trăm giảm giá phải từ 0 đến 100", "error", ".management-content");
+      showSnackBar("failed", "Phần trăm giảm giá phải từ 0 đến 100");
       return;
     }
 
@@ -276,20 +268,18 @@ $(document).ready(function () {
       dataType: "json",
       success: function (response) {
         if (response.success) {
-          showAlert(response.message, "success", ".management-content");
+          showSnackBar("success", response.message);
           $("#edit-promotion-modal").removeClass("active");
           loadPromotions(); // Reload promotions list
         } else {
-          showAlert(response.message || "Có lỗi xảy ra", "error", ".management-content");
+          var msg = response.message || "Có lỗi xảy ra";
+          var type = msg.indexOf("Không có thay đổi nào") !== -1 ? "warm" : "failed";
+          showSnackBar(type, msg);
         }
       },
       error: function (xhr, status, error) {
         console.error("Error:", error);
-        showAlert(
-          "Có lỗi xảy ra khi cập nhật khuyến mãi. Vui lòng thử lại.",
-          "error",
-          ".management-content"
-        );
+        showSnackBar("failed", "Có lỗi xảy ra khi cập nhật khuyến mãi. Vui lòng thử lại.");
       },
     });
   });
@@ -304,18 +294,14 @@ $(document).ready(function () {
         if (response.success) {
           renderPromotions(response.data);
         } else {
-          $("#promotions-table-wrapper").html(
-            '<div class="alert alert-error">' +
-              (response.message || "Không thể tải danh sách khuyến mãi") +
-              "</div>"
-          );
+          showSnackBar("failed", response.message || "Không thể tải danh sách khuyến mãi");
+          $("#promotions-table-wrapper").html('<div class="empty-state">Không thể tải danh sách khuyến mãi</div>');
         }
       },
       error: function (xhr, status, error) {
         console.error("Error loading promotions:", error);
-        $("#promotions-table-wrapper").html(
-          '<div class="alert alert-error">Có lỗi xảy ra khi tải danh sách khuyến mãi</div>'
-        );
+        showSnackBar("failed", "Có lỗi xảy ra khi tải danh sách khuyến mãi");
+        $("#promotions-table-wrapper").html('<div class="empty-state">Không thể tải danh sách khuyến mãi</div>');
       },
     });
   }

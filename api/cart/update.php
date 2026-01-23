@@ -15,13 +15,13 @@ $response = ['success' => false, 'message' => ''];
 
 try {
     if (!isset($_SESSION['cart']) || !is_array($_SESSION['cart'])) {
-        throw new Exception('Cart is empty');
+        throw new Exception('Giỏ hàng trống');
     }
 
     $itemIndex = isset($_POST['item_index']) ? (int)$_POST['item_index'] : -1;
     
     if ($itemIndex < 0 || $itemIndex >= count($_SESSION['cart'])) {
-        throw new Exception('Invalid item index');
+        throw new Exception('Mã sản phẩm không hợp lệ');
     }
 
     // Update quantity if provided

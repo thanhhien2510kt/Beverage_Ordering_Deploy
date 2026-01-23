@@ -180,23 +180,15 @@ $(document).ready(function () {
       dataType: "json",
       success: function (response) {
         if (response.success) {
-          showAlert(response.message, "success", ".management-content");
+          showSnackBar("success", response.message);
           loadToppings(); // Reload toppings list
         } else {
-          showAlert(
-            response.message || "Có lỗi xảy ra",
-            "error",
-            ".management-content"
-          );
+          showSnackBar("failed", response.message || "Có lỗi xảy ra");
         }
       },
       error: function (xhr, status, error) {
         console.error("Error:", error);
-        showAlert(
-          "Có lỗi xảy ra khi xóa topping. Vui lòng thử lại.",
-          "error",
-          ".management-content"
-        );
+        showSnackBar("failed", "Có lỗi xảy ra khi xóa topping. Vui lòng thử lại.");
       },
     });
   });
@@ -242,23 +234,15 @@ $(document).ready(function () {
       dataType: "json",
       success: function (response) {
         if (response.success) {
-          showAlert(response.message, "success", ".management-content");
+          showSnackBar("success", response.message);
           loadProducts(); // Reload products list
         } else {
-          showAlert(
-            response.message || "Có lỗi xảy ra",
-            "error",
-            ".management-content"
-          );
+          showSnackBar("failed", response.message || "Có lỗi xảy ra");
         }
       },
       error: function (xhr, status, error) {
         console.error("Error:", error);
-        showAlert(
-          "Có lỗi xảy ra khi xóa sản phẩm. Vui lòng thử lại.",
-          "error",
-          ".management-content"
-        );
+        showSnackBar("failed", "Có lỗi xảy ra khi xóa sản phẩm. Vui lòng thử lại.");
       },
     });
   });
@@ -291,17 +275,17 @@ $(document).ready(function () {
     const imageFile = $("#product-image")[0].files[0];
 
     if (!tenSP) {
-      showAlert("Vui lòng nhập tên sản phẩm", "error", ".management-content");
+      showSnackBar("failed", "Vui lòng nhập tên sản phẩm");
       return;
     }
 
     if (!maCategory) {
-      showAlert("Vui lòng chọn danh mục", "error", ".management-content");
+      showSnackBar("failed", "Vui lòng chọn danh mục");
       return;
     }
 
     if (!giaNiemYet || giaNiemYet < 0) {
-      showAlert("Vui lòng nhập giá niêm yết hợp lệ", "error", ".management-content");
+      showSnackBar("failed", "Vui lòng nhập giá niêm yết hợp lệ");
       return;
     }
 
@@ -323,17 +307,13 @@ $(document).ready(function () {
       dataType: "json",
       success: function (response) {
         if (response.success) {
-          showAlert(response.message, "success", ".management-content");
+          showSnackBar("success", response.message);
           $("#add-product-modal").removeClass("active");
           $("#add-product-form")[0].reset();
           $("#image-preview").hide();
           loadProducts(); // Reload products list
         } else {
-          showAlert(
-            response.message || "Có lỗi xảy ra",
-            "error",
-            ".management-content"
-          );
+          showSnackBar("failed", response.message || "Có lỗi xảy ra");
         }
       },
       error: function (xhr, status, error) {
@@ -354,7 +334,7 @@ $(document).ready(function () {
           }
         }
 
-        showAlert(errorMessage, "error", ".management-content");
+        showSnackBar("failed", errorMessage);
       },
     });
   });
@@ -370,7 +350,7 @@ $(document).ready(function () {
 
     // Validation
     if (!formData.price || formData.price < 0) {
-      showAlert("Vui lòng nhập giá bán hợp lệ", "error", ".management-content");
+      showSnackBar("failed", "Vui lòng nhập giá bán hợp lệ");
       return;
     }
 
@@ -382,24 +362,18 @@ $(document).ready(function () {
       dataType: "json",
       success: function (response) {
         if (response.success) {
-          showAlert(response.message, "success", ".management-content");
+          showSnackBar("success", response.message);
           $("#edit-price-modal").removeClass("active");
           loadProducts(); // Reload products list
         } else {
-          showAlert(
-            response.message || "Có lỗi xảy ra",
-            "error",
-            ".management-content"
-          );
+          var msg = response.message || "Có lỗi xảy ra";
+          var type = msg.indexOf("giá không thay đổi") !== -1 ? "warm" : "failed";
+          showSnackBar(type, msg);
         }
       },
       error: function (xhr, status, error) {
         console.error("Error:", error);
-        showAlert(
-          "Có lỗi xảy ra khi cập nhật giá. Vui lòng thử lại.",
-          "error",
-          ".management-content"
-        );
+        showSnackBar("failed", "Có lỗi xảy ra khi cập nhật giá. Vui lòng thử lại.");
       },
     });
   });
@@ -414,16 +388,12 @@ $(document).ready(function () {
     const imageFile = $("#topping-image")[0].files[0];
 
     if (!tenTopping) {
-      showAlert("Vui lòng nhập tên topping", "error", ".management-content");
+      showSnackBar("failed", "Vui lòng nhập tên topping");
       return;
     }
 
     if (!giaThem || giaThem < 0) {
-      showAlert(
-        "Vui lòng nhập giá thêm hợp lệ",
-        "error",
-        ".management-content"
-      );
+      showSnackBar("failed", "Vui lòng nhập giá thêm hợp lệ");
       return;
     }
 
@@ -443,17 +413,13 @@ $(document).ready(function () {
       dataType: "json",
       success: function (response) {
         if (response.success) {
-          showAlert(response.message, "success", ".management-content");
+          showSnackBar("success", response.message);
           $("#add-topping-modal").removeClass("active");
           $("#add-topping-form")[0].reset();
           $("#topping-image-preview").hide();
           loadToppings(); // Reload toppings list
         } else {
-          showAlert(
-            response.message || "Có lỗi xảy ra",
-            "error",
-            ".management-content"
-          );
+          showSnackBar("failed", response.message || "Có lỗi xảy ra");
         }
       },
       error: function (xhr, status, error) {
@@ -474,7 +440,7 @@ $(document).ready(function () {
           }
         }
 
-        showAlert(errorMessage, "error", ".management-content");
+        showSnackBar("failed", errorMessage);
       },
     });
   });
@@ -490,11 +456,7 @@ $(document).ready(function () {
 
     // Validation
     if (!formData.price || formData.price < 0) {
-      showAlert(
-        "Vui lòng nhập giá thêm hợp lệ",
-        "error",
-        ".management-content"
-      );
+      showSnackBar("failed", "Vui lòng nhập giá thêm hợp lệ");
       return;
     }
 
@@ -506,24 +468,18 @@ $(document).ready(function () {
       dataType: "json",
       success: function (response) {
         if (response.success) {
-          showAlert(response.message, "success", ".management-content");
+          showSnackBar("success", response.message);
           $("#edit-topping-price-modal").removeClass("active");
           loadToppings(); // Reload toppings list
         } else {
-          showAlert(
-            response.message || "Có lỗi xảy ra",
-            "error",
-            ".management-content"
-          );
+          var msg = response.message || "Có lỗi xảy ra";
+          var type = msg.indexOf("giá không thay đổi") !== -1 ? "warm" : "failed";
+          showSnackBar(type, msg);
         }
       },
       error: function (xhr, status, error) {
         console.error("Error:", error);
-        showAlert(
-          "Có lỗi xảy ra khi cập nhật giá topping. Vui lòng thử lại.",
-          "error",
-          ".management-content"
-        );
+        showSnackBar("failed", "Có lỗi xảy ra khi cập nhật giá topping. Vui lòng thử lại.");
       },
     });
   });
@@ -538,18 +494,14 @@ $(document).ready(function () {
         if (response.success) {
           renderProducts(response.data);
         } else {
-          $("#products-accordion").html(
-            '<div class="alert alert-error">' +
-              (response.message || "Không thể tải danh sách sản phẩm") +
-              "</div>"
-          );
+          showSnackBar("failed", response.message || "Không thể tải danh sách sản phẩm");
+          $("#products-accordion").html('<div class="empty-state">Không thể tải danh sách sản phẩm</div>');
         }
       },
       error: function (xhr, status, error) {
         console.error("Error loading products:", error);
-        $("#products-accordion").html(
-          '<div class="alert alert-error">Có lỗi xảy ra khi tải danh sách sản phẩm</div>'
-        );
+        showSnackBar("failed", "Có lỗi xảy ra khi tải danh sách sản phẩm");
+        $("#products-accordion").html('<div class="empty-state">Không thể tải danh sách sản phẩm</div>');
       },
     });
   }
@@ -780,18 +732,14 @@ $(document).ready(function () {
         if (response.success) {
           renderToppings(response.data);
         } else {
-          $("#toppings-table-wrapper").html(
-            '<div class="alert alert-error">' +
-              (response.message || "Không thể tải danh sách topping") +
-              "</div>"
-          );
+          showSnackBar("failed", response.message || "Không thể tải danh sách topping");
+          $("#toppings-table-wrapper").html('<div class="empty-state">Không thể tải danh sách topping</div>');
         }
       },
       error: function (xhr, status, error) {
         console.error("Error loading toppings:", error);
-        $("#toppings-table-wrapper").html(
-          '<div class="alert alert-error">Có lỗi xảy ra khi tải danh sách topping</div>'
-        );
+        showSnackBar("failed", "Có lỗi xảy ra khi tải danh sách topping");
+        $("#toppings-table-wrapper").html('<div class="empty-state">Không thể tải danh sách topping</div>');
       },
     });
   }

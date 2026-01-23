@@ -46,11 +46,7 @@ $(document).ready(function () {
 
     // Validate registration data (client-side)
     if (!formData.username || !formData.password || !formData.ho || !formData.ten) {
-      $message
-        .addClass("error")
-        .text("Vui lòng điền đầy đủ thông tin bắt buộc.")
-        .show();
-      
+      showSnackBar("failed", "Vui lòng điền đầy đủ thông tin bắt buộc.");
       $btn.prop("disabled", false);
       $btnText.show();
       $btnLoading.hide();
@@ -237,10 +233,7 @@ function verifyOTP() {
 
   // Validate OTP length
   if (otpValue.length !== 6) {
-    $message
-      .addClass("error")
-      .text("Vui lòng nhập đầy đủ 6 chữ số.")
-      .show();
+    showSnackBar("failed", "Vui lòng nhập đầy đủ 6 chữ số.");
     $otpInputs.addClass("error");
     return;
   }
@@ -256,15 +249,10 @@ function verifyOTP() {
     registerUser();
   } else {
     // OTP is incorrect
-    $message
-      .addClass("error")
-      .text("Mã xác minh không chính xác. Vui lòng thử lại.")
-      .show();
-    
+    showSnackBar("failed", "Mã xác minh không chính xác. Vui lòng thử lại.");
     $otpInputs.addClass("error").val("");
     $otpInputs.first().focus();
 
-    // Re-enable button
     $btn.prop("disabled", false);
     $btnText.show();
     $btnLoading.hide();
@@ -296,13 +284,9 @@ function registerUser() {
         // Show success screen
         showSuccessScreen();
       } else {
-        // Show error message
-        $message
-          .addClass("error")
-          .text(response.message || "Đăng ký thất bại. Vui lòng thử lại.")
-          .show();
-
-        // Re-enable button
+        var msg = response.message || "Đăng ký thất bại. Vui lòng thử lại.";
+        var type = (msg.indexOf("Không tìm thấy role") !== -1) ? "warm" : "failed";
+        showSnackBar(type, msg);
         $btn.prop("disabled", false);
         $btnText.show();
         $btnLoading.hide();
@@ -311,22 +295,15 @@ function registerUser() {
     error: function (xhr, status, error) {
       console.error("Register error:", error);
       let errorMessage = "Có lỗi xảy ra. Vui lòng thử lại sau.";
-
-      // Try to parse error response
       if (xhr.responseText) {
         try {
           const errorResponse = JSON.parse(xhr.responseText);
           if (errorResponse.message) {
             errorMessage = errorResponse.message;
           }
-        } catch (e) {
-          // Use default error message
-        }
+        } catch (e) {}
       }
-
-      $message.addClass("error").text(errorMessage).show();
-
-      // Re-enable button
+      showSnackBar("failed", errorMessage);
       $btn.prop("disabled", false);
       $btnText.show();
       $btnLoading.hide();

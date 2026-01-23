@@ -31,13 +31,13 @@ try {
     $referencePrice = (isset($_POST['reference_price']) && $_POST['reference_price'] !== '') ? (float)$_POST['reference_price'] : null;
 
     if (!$productId) {
-        throw new Exception('Product ID is required');
+        throw new Exception('Mã sản phẩm là bắt buộc');
     }
 
     // Get product from database to validate
     $product = getProductById($productId);
     if (!$product) {
-        throw new Exception('Product not found');
+        throw new Exception('Sản phẩm không tồn tại');
     }
 
     // Enrich options with full information from database

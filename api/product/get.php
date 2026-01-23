@@ -13,13 +13,13 @@ try {
     $productId = isset($_GET['id']) ? (int)$_GET['id'] : 0;
     
     if (!$productId) {
-        throw new Exception('Product ID is required');
+        throw new Exception('Mã sản phẩm không hợp lệ');
     }
     
     // Get product data
     $product = getProductById($productId);
     if (!$product) {
-        throw new Exception('Product not found');
+        throw new Exception('Sản phẩm không tồn tại');
     }
     
     // Get product options

@@ -96,7 +96,9 @@ $(document).ready(function() {
                         $pagination.show();
                     }
                 } else {
-                    // Update empty message based on search status
+                    if (res.success === false && res.message) {
+                        showSnackBar('failed', res.message);
+                    }
                     var searchValue = $('#myOrderSearchInput').val().trim();
                     if (searchValue) {
                         $empty.find('p').first().text('Không tìm thấy đơn hàng có mã "' + searchValue + '"');
@@ -108,6 +110,7 @@ $(document).ready(function() {
             },
             error: function(xhr, status, err) {
                 console.error('Load my orders error:', err);
+                showSnackBar('failed', 'Có lỗi xảy ra khi tải đơn hàng. Vui lòng thử lại.');
                 $loading.hide();
                 $empty.show();
             }
@@ -193,6 +196,7 @@ $(document).ready(function() {
                 initCollapsibleSections();
             },
             error: function() {
+                showSnackBar('failed', 'Có lỗi xảy ra. Vui lòng thử lại.');
                 $body.html('<p class="order-detail-error">Có lỗi xảy ra. Vui lòng thử lại.</p>');
             }
         });

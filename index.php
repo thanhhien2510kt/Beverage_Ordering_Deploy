@@ -224,6 +224,7 @@ $stores = getStores(1);
     <?php include 'components/footer.php'; ?>
 
     <script src="assets/js/common.js"></script>
+    <script src="assets/js/snack-bar.js"></script>
     <script src="assets/js/main.js"></script>
 </body>
 </html>

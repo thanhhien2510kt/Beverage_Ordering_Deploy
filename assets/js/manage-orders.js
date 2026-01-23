@@ -231,10 +231,12 @@ $(document).ready(function() {
                         }
                     });
                 } else {
+                    showSnackBar('failed', res.message || 'Không tải được đơn hàng.');
                     $body.html('<p class="order-detail-error">Không tải được đơn hàng.</p>');
                 }
             },
             error: function() {
+                showSnackBar('failed', 'Có lỗi xảy ra. Vui lòng thử lại.');
                 $body.html('<p class="order-detail-error">Có lỗi xảy ra. Vui lòng thử lại.</p>');
             }
         });
@@ -343,28 +345,17 @@ $(document).ready(function() {
             dataType: 'json',
             success: function(res) {
                 if (res.success) {
-                    if (typeof showSnackBar === 'function') {
-                        showSnackBar('success', res.message || 'Cập nhật trạng thái thành công!');
-                    } else {
-                        alert(res.message || 'Cập nhật trạng thái thành công!');
-                    }
+                    showSnackBar('success', res.message || 'Cập nhật trạng thái thành công!');
                     $('#manageOrderDetailModal').hide();
-                    // Reload manage orders list
                     loadManageOrders(1);
                 } else {
-                    if (typeof showSnackBar === 'function') {
-                        showSnackBar('failed', res.message || 'Cập nhật trạng thái thất bại!');
-                    } else {
-                        alert(res.message || 'Cập nhật trạng thái thất bại!');
-                    }
+                    var msg = res.message || 'Cập nhật trạng thái thất bại!';
+                    var type = (msg.indexOf('Chỉ có thể') !== -1) ? 'warm' : 'failed';
+                    showSnackBar(type, msg);
                 }
             },
             error: function() {
-                if (typeof showSnackBar === 'function') {
-                    showSnackBar('failed', 'Có lỗi xảy ra. Vui lòng thử lại.');
-                } else {
-                    alert('Có lỗi xảy ra. Vui lòng thử lại.');
-                }
+                showSnackBar('failed', 'Có lỗi xảy ra. Vui lòng thử lại.');
             }
         });
     }

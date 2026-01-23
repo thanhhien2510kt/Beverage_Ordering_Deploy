@@ -16,18 +16,18 @@ $response = ['success' => false, 'message' => '', 'order' => null];
 
 try {
     if (!isLoggedIn()) {
-        throw new Exception('User not logged in');
+        throw new Exception('Bạn cần đăng nhập để xem đơn hàng');
     }
 
     $currentUser = getCurrentUser();
     $userId = $currentUser['id'] ?? null;
     if (!$userId) {
-        throw new Exception('User ID not found');
+        throw new Exception('ID người dùng không tồn tại');
     }
 
     $orderId = (int)($_GET['id'] ?? 0);
     if ($orderId <= 0) {
-        throw new Exception('Invalid order id');
+        throw new Exception('Mã đơn hàng không hợp lệ');
     }
 
     $pdo = getDBConnection();
@@ -41,7 +41,7 @@ try {
     $order = $stmt->fetch(PDO::FETCH_ASSOC);
 
     if (!$order) {
-        throw new Exception('Order not found');
+        throw new Exception('Đơn hàng không tồn tại');
     }
 
     $order['OrderCode'] = '#MTF' . str_pad($order['MaOrder'], 5, '0', STR_PAD_LEFT);

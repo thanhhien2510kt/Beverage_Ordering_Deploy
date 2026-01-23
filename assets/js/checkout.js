@@ -153,7 +153,7 @@ $(document).ready(function () {
     $message.removeClass("promotion-success promotion-error").text("");
 
     if (!code) {
-      $message.addClass("promotion-error").text("Vui lòng nhập mã khuyến mãi");
+      showSnackBar("failed", "Vui lòng nhập mã khuyến mãi");
       toggleClearButton();
       return;
     }
@@ -189,9 +189,10 @@ $(document).ready(function () {
           updatePromotionDiscount(response.discount);
           updateTotals();
         } else {
-          $message
-            .addClass("promotion-error")
-            .text(response.message || "Mã khuyến mãi không hợp lệ");
+          var msg = response.message || "Mã khuyến mãi không hợp lệ";
+          var type = (msg.indexOf("chưa có hiệu lực") !== -1 || msg.indexOf("đã hết hạn") !== -1) ? "warm" : "failed";
+          showSnackBar(type, msg);
+          $message.removeClass("promotion-success promotion-error").text("");
           appliedPromotion = null;
           updatePromotionDiscount(0);
           updateTotals();
@@ -200,9 +201,7 @@ $(document).ready(function () {
       },
       error: function (xhr, status, error) {
         console.error("Error:", error);
-        $message
-          .addClass("promotion-error")
-          .text("Có lỗi xảy ra. Vui lòng thử lại.");
+        showSnackBar("failed", "Có lỗi xảy ra. Vui lòng thử lại.");
         appliedPromotion = null;
         toggleClearButton();
       },
@@ -255,52 +254,32 @@ $(document).ready(function () {
   $("#pay-now-btn").on("click", function () {
     // Validate form
     if (!$("#agree-terms").is(":checked")) {
-      if (typeof showSnackBar === 'function') {
-        showSnackBar('warm', "Vui lòng đồng ý với điều khoản mua hàng");
-      } else {
-        alert("Vui lòng đồng ý với điều khoản mua hàng");
-      }
+      showSnackBar("warm", "Vui lòng đồng ý với điều khoản mua hàng");
       return;
     }
 
     const deliveryAddr = $("#delivery-address").val().trim();
     if (!deliveryAddr) {
-      if (typeof showSnackBar === 'function') {
-        showSnackBar('warm', "Vui lòng nhập địa chỉ giao hàng");
-      } else {
-        alert("Vui lòng nhập địa chỉ giao hàng");
-      }
+      showSnackBar("warm", "Vui lòng nhập địa chỉ giao hàng");
       $("#change-address-btn").trigger("click");
       return;
     }
 
     const province = $("#province-select").val();
     if (!province) {
-      if (typeof showSnackBar === 'function') {
-        showSnackBar('warm', "Vui lòng chọn Tỉnh/Thành phố");
-      } else {
-        alert("Vui lòng chọn Tỉnh/Thành phố");
-      }
+      showSnackBar("warm", "Vui lòng chọn Tỉnh/Thành phố");
       return;
     }
 
     const storeId = $("#store-select").val();
     if (!storeId) {
-      if (typeof showSnackBar === 'function') {
-        showSnackBar('warm', "Vui lòng chọn cửa hàng");
-      } else {
-        alert("Vui lòng chọn cửa hàng");
-      }
+      showSnackBar("warm", "Vui lòng chọn cửa hàng");
       return;
     }
 
     const paymentMethod = $("input[name='payment_method']:checked").val();
     if (!paymentMethod) {
-      if (typeof showSnackBar === 'function') {
-        showSnackBar('warm', "Vui lòng chọn phương thức thanh toán");
-      } else {
-        alert("Vui lòng chọn phương thức thanh toán");
-      }
+      showSnackBar("warm", "Vui lòng chọn phương thức thanh toán");
       return;
     }
 
@@ -312,11 +291,7 @@ $(document).ready(function () {
       const vatAddress = $("input[name='vat_address']").val();
 
       if (!vatEmail || !vatTaxId || !vatCompany || !vatAddress) {
-        if (typeof showSnackBar === 'function') {
-          showSnackBar('warm', "Vui lòng điền đầy đủ thông tin hóa đơn VAT");
-        } else {
-          alert("Vui lòng điền đầy đủ thông tin hóa đơn VAT");
-        }
+        showSnackBar("warm", "Vui lòng điền đầy đủ thông tin hóa đơn VAT");
         return;
       }
     }
@@ -354,36 +329,14 @@ $(document).ready(function () {
           window.location.href =
             "order_result.php?order_id=" + response.order_id;
         } else {
-          if (typeof showModalBox === 'function') {
-            showModalBox({
-              type: 'acknowledge',
-              title: 'Lỗi',
-              message: "Có lỗi xảy ra: " + (response.message || "Vui lòng thử lại"),
-              onConfirm: function() {
-                $("#pay-now-btn").prop("disabled", false).text("Thanh toán ngay");
-              }
-            });
-          } else {
-            alert("Có lỗi xảy ra: " + (response.message || "Vui lòng thử lại"));
-            $("#pay-now-btn").prop("disabled", false).text("Thanh toán ngay");
-          }
+          showSnackBar("failed", "Có lỗi xảy ra: " + (response.message || "Vui lòng thử lại"));
+          $("#pay-now-btn").prop("disabled", false).text("Thanh toán ngay");
         }
       },
       error: function (xhr, status, error) {
         console.error("Error:", error);
-        if (typeof showModalBox === 'function') {
-          showModalBox({
-            type: 'acknowledge',
-            title: 'Lỗi',
-            message: "Có lỗi xảy ra. Vui lòng thử lại.",
-            onConfirm: function() {
-              $("#pay-now-btn").prop("disabled", false).text("Thanh toán ngay");
-            }
-          });
-        } else {
-          alert("Có lỗi xảy ra. Vui lòng thử lại.");
-          $("#pay-now-btn").prop("disabled", false).text("Thanh toán ngay");
-        }
+        showSnackBar("failed", "Có lỗi xảy ra. Vui lòng thử lại.");
+        $("#pay-now-btn").prop("disabled", false).text("Thanh toán ngay");
       },
     });
   });

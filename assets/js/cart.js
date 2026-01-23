@@ -52,19 +52,11 @@ $(document).ready(function () {
           // Reload page to reflect changes
           location.reload();
         } else {
-          if (typeof showSnackBar === 'function') {
-            showSnackBar('failed', "Có lỗi xảy ra: " + (response.message || "Vui lòng thử lại"));
-          } else {
-            alert("Có lỗi xảy ra: " + (response.message || "Vui lòng thử lại"));
-          }
+          showSnackBar('failed', "Có lỗi xảy ra: " + (response.message || "Vui lòng thử lại"));
         }
       },
       error: function () {
-        if (typeof showSnackBar === 'function') {
-          showSnackBar('failed', "Có lỗi xảy ra. Vui lòng thử lại.");
-        } else {
-          alert("Có lỗi xảy ra. Vui lòng thử lại.");
-        }
+        showSnackBar('failed', "Có lỗi xảy ra. Vui lòng thử lại.");
       },
     });
   }
@@ -79,11 +71,7 @@ $(document).ready(function () {
     // Validate item index exists in DOM
     const $item = $(".cart-item[data-item-index='" + itemIndex + "']");
     if ($item.length === 0) {
-      showModalBox({
-        title: 'Lỗi',
-        message: 'Sản phẩm không tồn tại trong giỏ hàng',
-        type: 'acknowledge'
-      });
+      showSnackBar('failed', 'Sản phẩm không tồn tại trong giỏ hàng');
       return;
     }
 
@@ -120,23 +108,13 @@ $(document).ready(function () {
           // Reload page to reflect changes and update item indices
           location.reload();
         } else {
-          showModalBox({
-            title: 'Lỗi',
-            message: 'Có lỗi xảy ra: ' + (response.message || "Vui lòng thử lại"),
-            type: 'acknowledge'
-          });
-          // Re-enable buttons on error
+          showSnackBar('failed', 'Có lỗi xảy ra: ' + (response.message || "Vui lòng thử lại"));
           isDeleting = false;
           $(".delete-btn").prop("disabled", false);
         }
       },
       error: function () {
-        showModalBox({
-          title: 'Lỗi',
-          message: 'Có lỗi xảy ra. Vui lòng thử lại.',
-          type: 'acknowledge'
-        });
-        // Re-enable buttons on error
+        showSnackBar('failed', 'Có lỗi xảy ra. Vui lòng thử lại.');
         isDeleting = false;
         $(".delete-btn").prop("disabled", false);
       },

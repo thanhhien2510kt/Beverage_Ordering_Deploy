@@ -82,7 +82,7 @@ $(document).ready(function() {
         const confirmPassword = $('#confirm_password').val();
         
         if (newPassword !== confirmPassword) {
-            $message.addClass('error').text('Mật khẩu xác nhận không khớp').show();
+            showSnackBar('failed', 'Mật khẩu xác nhận không khớp');
             return;
         }
         
@@ -106,23 +106,17 @@ $(document).ready(function() {
             dataType: 'json',
             success: function(response) {
                 if (response.success) {
-                    // Show success message
-                    $message.addClass('success').text(response.message || 'Đổi mật khẩu thành công!').show();
-                    
-                    // Clear form
+                    showSnackBar('success', response.message || 'Đổi mật khẩu thành công!');
                     $form[0].reset();
-                    
-                    // Re-enable button after 2 seconds
                     setTimeout(function() {
                         $btn.prop('disabled', false);
                         $btnText.show();
                         $btnLoading.hide();
                     }, 2000);
                 } else {
-                    // Show error message
-                    $message.addClass('error').text(response.message || 'Đổi mật khẩu thất bại. Vui lòng thử lại.').show();
-                    
-                    // Re-enable button
+                    var msg = response.message || 'Đổi mật khẩu thất bại. Vui lòng thử lại.';
+                    var type = (msg.indexOf('phải khác mật khẩu hiện tại') !== -1) ? 'warm' : 'failed';
+                    showSnackBar(type, msg);
                     $btn.prop('disabled', false);
                     $btnText.show();
                     $btnLoading.hide();
@@ -130,23 +124,14 @@ $(document).ready(function() {
             },
             error: function(xhr, status, error) {
                 console.error('Change password error:', error);
-                let errorMessage = 'Có lỗi xảy ra. Vui lòng thử lại sau.';
-                
-                // Try to parse error response
+                var errorMessage = 'Có lỗi xảy ra. Vui lòng thử lại sau.';
                 if (xhr.responseText) {
                     try {
-                        const errorResponse = JSON.parse(xhr.responseText);
-                        if (errorResponse.message) {
-                            errorMessage = errorResponse.message;
-                        }
-                    } catch (e) {
-                        // Use default error message
-                    }
+                        var errorResponse = JSON.parse(xhr.responseText);
+                        if (errorResponse.message) errorMessage = errorResponse.message;
+                    } catch (e) {}
                 }
-                
-                $message.addClass('error').text(errorMessage).show();
-                
-                // Re-enable button
+                showSnackBar('failed', errorMessage);
                 $btn.prop('disabled', false);
                 $btnText.show();
                 $btnLoading.hide();
@@ -188,18 +173,12 @@ $(document).ready(function() {
             dataType: 'json',
             success: function(response) {
                 if (response.success) {
-                    // Show success message
-                    $message.addClass('success').text(response.message || 'Cập nhật thông tin thành công!').show();
-                    
-                    // Reload page after 1.5 seconds to reflect changes
-                    setTimeout(function() {
-                        window.location.reload();
-                    }, 1500);
+                    showSnackBar('success', response.message || 'Cập nhật thông tin thành công!');
+                    setTimeout(function() { window.location.reload(); }, 1500);
                 } else {
-                    // Show error message
-                    $message.addClass('error').text(response.message || 'Cập nhật thông tin thất bại. Vui lòng thử lại.').show();
-                    
-                    // Re-enable button
+                    var msg = response.message || 'Cập nhật thông tin thất bại. Vui lòng thử lại.';
+                    var type = (msg.indexOf('Không có thông tin nào') !== -1) ? 'warm' : 'failed';
+                    showSnackBar(type, msg);
                     $btn.prop('disabled', false);
                     $btnText.show();
                     $btnLoading.hide();
@@ -207,23 +186,14 @@ $(document).ready(function() {
             },
             error: function(xhr, status, error) {
                 console.error('Update profile error:', error);
-                let errorMessage = 'Có lỗi xảy ra. Vui lòng thử lại sau.';
-                
-                // Try to parse error response
+                var errorMessage = 'Có lỗi xảy ra. Vui lòng thử lại sau.';
                 if (xhr.responseText) {
                     try {
-                        const errorResponse = JSON.parse(xhr.responseText);
-                        if (errorResponse.message) {
-                            errorMessage = errorResponse.message;
-                        }
-                    } catch (e) {
-                        // Use default error message
-                    }
+                        var errorResponse = JSON.parse(xhr.responseText);
+                        if (errorResponse.message) errorMessage = errorResponse.message;
+                    } catch (e) {}
                 }
-                
-                $message.addClass('error').text(errorMessage).show();
-                
-                // Re-enable button
+                showSnackBar('failed', errorMessage);
                 $btn.prop('disabled', false);
                 $btnText.show();
                 $btnLoading.hide();
@@ -371,6 +341,7 @@ $(document).ready(function() {
                 initCollapsibleSections();
             },
             error: function() {
+                showSnackBar('failed', 'Có lỗi xảy ra. Vui lòng thử lại.');
                 $body.html('<p class="order-detail-error">Có lỗi xảy ra. Vui lòng thử lại.</p>');
             }
         });

@@ -16,11 +16,11 @@ $response = ['success' => false, 'message' => ''];
 
 try {
     if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-        throw new Exception('Invalid request method');
+        throw new Exception('Phương thức yêu cầu không hợp lệ');
     }
 
     if (!isLoggedIn()) {
-        throw new Exception('User not logged in');
+        throw new Exception('Bạn cần đăng nhập để thực hiện thao tác này');
     }
 
     $currentUser = getCurrentUser();
@@ -28,18 +28,18 @@ try {
     
     // Check if user is admin or staff
     if (strtolower($userRole) !== 'admin' && strtolower($userRole) !== 'staff') {
-        throw new Exception('Access denied. Admin or Staff role required.');
+        throw new Exception('Bạn không có quyền thực hiện thao tác này');
     }
 
     $orderId = (int)($_POST['order_id'] ?? 0);
     $action = trim($_POST['action'] ?? '');
 
     if ($orderId <= 0) {
-        throw new Exception('Invalid order ID');
+        throw new Exception('Mã đơn hàng không hợp lệ');
     }
 
     if (!in_array($action, ['accept', 'cancel'], true)) {
-        throw new Exception('Invalid action. Must be "accept" or "cancel"');
+        throw new Exception('Hành động không hợp lệ. Phải là "accept" hoặc "cancel"');
     }
 
     $pdo = getDBConnection();
@@ -50,7 +50,7 @@ try {
     $order = $stmt->fetch(PDO::FETCH_ASSOC);
 
     if (!$order) {
-        throw new Exception('Order not found');
+        throw new Exception('Đơn hàng không tồn tại');
     }
 
     $currentStatus = strtolower($order['TrangThai']);

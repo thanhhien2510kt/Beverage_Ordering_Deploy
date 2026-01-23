@@ -16,7 +16,7 @@ $response = ['success' => false, 'message' => '', 'orders' => [], 'total' => 0, 
 
 try {
     if (!isLoggedIn()) {
-        throw new Exception('User not logged in');
+        throw new Exception('Bạn cần đăng nhập để xem đơn hàng');
     }
 
     $user = getCurrentUser();

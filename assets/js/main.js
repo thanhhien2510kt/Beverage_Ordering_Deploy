@@ -84,25 +84,14 @@ $(document).ready(function () {
           renderProductModal(response.data);
           $content.show();
         } else {
-          if (typeof showSnackBar === 'function') {
-            showSnackBar('failed', "Không thể tải thông tin sản phẩm: " + (response.message || "Lỗi không xác định"));
-          } else {
-            alert(
-              "Không thể tải thông tin sản phẩm: " +
-                (response.message || "Lỗi không xác định")
-            );
-          }
+          showSnackBar('failed', "Không thể tải thông tin sản phẩm: " + (response.message || "Lỗi không xác định"));
           closeProductModal();
         }
       },
       error: function (xhr, status, error) {
         $loading.hide();
         console.error("Error loading product:", error);
-        if (typeof showSnackBar === 'function') {
-          showSnackBar('failed', "Có lỗi xảy ra khi tải sản phẩm. Vui lòng thử lại.");
-        } else {
-          alert("Có lỗi xảy ra khi tải sản phẩm. Vui lòng thử lại.");
-        }
+        showSnackBar('failed', "Có lỗi xảy ra khi tải sản phẩm. Vui lòng thử lại.");
         closeProductModal();
       },
     });
@@ -346,24 +335,14 @@ $(document).ready(function () {
           success: function (response) {
             if (response.success) {
               updateCartCount();
-              if (typeof showSnackBar === 'function') {
-                showSnackBar('success', response.message || 'Đã thêm vào giỏ hàng thành công!');
-              }
+              showSnackBar('success', response.message || 'Đã thêm vào giỏ hàng thành công!');
             } else {
-              if (typeof showSnackBar === 'function') {
-                showSnackBar('failed', response.message || 'Có lỗi xảy ra. Vui lòng thử lại.');
-              } else {
-                alert("Có lỗi xảy ra: " + (response.message || "Vui lòng thử lại"));
-              }
+              showSnackBar('failed', response.message || 'Có lỗi xảy ra. Vui lòng thử lại.');
             }
           },
           error: function (xhr, status, error) {
             console.error("Error:", error);
-            if (typeof showSnackBar === 'function') {
-              showSnackBar('failed', 'Có lỗi xảy ra. Vui lòng thử lại.');
-            } else {
-              alert("Có lỗi xảy ra. Vui lòng thử lại.");
-            }
+            showSnackBar('failed', 'Có lỗi xảy ra. Vui lòng thử lại.');
           },
         });
       });
