@@ -265,3 +265,5 @@ $avatarImagePath = $isLoggedIn ? getAvatarImagePath($userGioiTinh, $basePath) : 
         </div>
     </div>
 </header>
+
+<?php include __DIR__ . '/chatbot.php'; ?>
