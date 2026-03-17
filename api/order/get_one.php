@@ -51,7 +51,7 @@ try {
     }
     $order['PaymentMethod'] = $paymentMethodName;
     if (empty($order['NguoiNhan']) || empty($order['DienThoaiGiao'])) {
-        $st = $pdo->prepare("SELECT Ho, Ten, DienThoai FROM User WHERE MaUser = ?");
+        $st = $pdo->prepare("SELECT Ho, Ten, DienThoai FROM AppUser WHERE MaUser = ?");
         $st->execute([$order['MaUser']]);
         $u = $st->fetch(PDO::FETCH_ASSOC);
         if ($u) {

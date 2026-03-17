@@ -1,12 +1,10 @@
 """
 Tool: Tiếp nhận và ghi nhận khiếu nại của khách hàng
-Lưu trực tiếp vào Supabase bảng `complaints`.
+Gọi PHP API /api/chatbot/complaint.php.
 """
+import httpx
 from langchain_core.tools import tool
-from supabase import create_client, Client
-from config import SUPABASE_URL, SUPABASE_SERVICE_KEY
-
-supabase: Client = create_client(SUPABASE_URL, SUPABASE_SERVICE_KEY)
+from config import PHP_BASE_URL, CHATBOT_SECRET_KEY
 
 COMPLAINT_CATEGORIES = {
     "sai_don": "wrong_order",
@@ -44,31 +42,34 @@ def submit_complaint_tool(
         if cat not in ["wrong_order", "late_delivery", "quality", "payment", "other"]:
             cat = "other"
 
-        # Insert into Supabase
+        # Call PHP API
         payload = {
             "content": content,
             "category": cat,
-            "status": "pending",
+            "user_id": user_id,
+            "order_id": order_id
         }
-        if user_id:
-            payload["user_id"] = user_id
-        if order_id:
-            payload["order_id"] = order_id
 
-        result = supabase.table("complaints").insert(payload).execute()
+        r = httpx.post(
+            f"{PHP_BASE_URL}/api/chatbot/complaint.php",
+            json=payload,
+            headers={"X-Chatbot-Secret": CHATBOT_SECRET_KEY},
+            timeout=5.0
+        )
+        data = r.json()
 
-        if result.data:
-            complaint_id = result.data[0].get("id", "N/A")
+        if data.get("success"):
+            complaint_id = data.get("complaint_id", "N/A")
             return (
                 f"🙏 Mình đã tiếp nhận khiếu nại của bạn thành công!\n"
                 f"• **Mã ticket**: #{complaint_id}\n"
                 f"• **Nội dung**: {content[:100]}{'...' if len(content) > 100 else ''}\n"
                 f"• **Trạng thái**: Đang chờ xử lý ⏳\n\n"
-                "Đội ngũ MeowTea Fresh sẽ liên hệ với bạn trong vòng 24 giờ. "
+                "Đội ngũ MeowTea Fresh sẽ liên hệ with bạn trong vòng 24 giờ. "
                 "Xin lỗi bạn vì sự bất tiện này! 😔"
             )
         else:
-            raise Exception("Không nhận được response từ Supabase")
+            raise Exception(data.get("message", "Không nhận được phản hồi từ hệ thống"))
 
     except Exception as e:
         return (

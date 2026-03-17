@@ -21,7 +21,7 @@ try {
 
     $pdo = getDBConnection();
     $sql = "SELECT u.MaUser, u.Username, u.Ho, u.Ten, r.TenRole
-            FROM User u
+            FROM AppUser u
             INNER JOIN Role r ON u.MaRole = r.MaRole
             WHERE u.TrangThai = 1
             ORDER BY u.Ho, u.Ten, u.Username";

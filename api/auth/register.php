@@ -76,14 +76,14 @@ try {
 
     $pdo = getDBConnection();
 
-    $stmt = $pdo->prepare("SELECT MaUser FROM User WHERE Username = ?");
+    $stmt = $pdo->prepare("SELECT MaUser FROM AppUser WHERE Username = ?");
     $stmt->execute([$username]);
     if ($stmt->fetch()) {
         throw new Exception('Tên đăng nhập đã tồn tại. Vui lòng chọn tên khác');
     }
 
     if ($email !== null && !empty($email)) {
-        $stmt = $pdo->prepare("SELECT MaUser FROM User WHERE Email = ?");
+        $stmt = $pdo->prepare("SELECT MaUser FROM AppUser WHERE Email = ?");
         $stmt->execute([$email]);
         if ($stmt->fetch()) {
             throw new Exception('Email đã được sử dụng. Vui lòng sử dụng email khác');
@@ -91,7 +91,7 @@ try {
     }
 
     if ($dienThoai !== null && !empty($dienThoai)) {
-        $stmt = $pdo->prepare("SELECT MaUser FROM User WHERE DienThoai = ?");
+        $stmt = $pdo->prepare("SELECT MaUser FROM AppUser WHERE DienThoai = ?");
         $stmt->execute([$dienThoai]);
         if ($stmt->fetch()) {
             throw new Exception('Số điện thoại đã được sử dụng. Vui lòng sử dụng số khác');
@@ -110,8 +110,8 @@ try {
 
     $hashedPassword = hashPassword($password);
 
-    $sql = "INSERT INTO User (Username, Password, Ho, Ten, GioiTinh, DienThoai, Email, TrangThai, MaRole) 
-            VALUES (?, ?, ?, ?, ?, ?, ?, 1, ?)";
+    $sql = "INSERT INTO AppUser (Username, Password, Ho, Ten, GioiTinh, DienThoai, Email, TrangThai, MaRole) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, 1, 3)";
     
     $stmt = $pdo->prepare($sql);
     $stmt->execute([

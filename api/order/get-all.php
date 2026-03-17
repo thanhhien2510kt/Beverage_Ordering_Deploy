@@ -97,7 +97,7 @@ try {
     $sql = "SELECT o.*, s.TenStore, u.Username, u.Ho, u.Ten
             FROM Orders o
             INNER JOIN Store s ON o.MaStore = s.MaStore
-            INNER JOIN User u ON o.MaUser = u.MaUser
+            INNER JOIN AppUser u ON o.MaUser = u.MaUser
             WHERE $whereClause
             ORDER BY o.NgayTao DESC
             LIMIT ? OFFSET ?";

@@ -14,7 +14,6 @@ from tools.product_tool import search_products_tool
 from tools.get_product_details_tool import get_product_details_tool
 from tools.cart_tool import add_to_cart_tool
 from tools.order_tool import get_order_status_tool
-from tools.complaint_tool import submit_complaint_tool
 
 SYSTEM_PROMPT = """Bạn là **MeowBot** 🐱 — trợ lý AI siêu dễ thương và thông minh của thương hiệu trà sữa **MeowTea Fresh**.
 
@@ -27,7 +26,7 @@ Mục tiêu chính:
     - **Bước 3: Hỏi thông tin còn thiếu**: Dựa vào kết quả từ `get_product_details_tool`, hãy hỏi khách chọn Size gì? Lượng đá/đường thế nào? Có thêm topping không? 
     - **Bước 4: Gọi Cart Tool**: Chỉ gọi `add_to_cart_tool` khi khách đã xác nhận đầy đủ các thông tin trên.
 
-4. **Tra cứu & Khiếu nại**: Hỗ trợ tra cứu đơn hàng (cần mã đơn) và tiếp nhận khiếu nại thân thiện.
+4. **Tra cứu đơn hàng**: Hỗ trợ tra cứu đơn hàng (cần mã đơn).
 
 Bạn hãy sử dụng các công cụ hệ thống thay vì in mã code. 
 
@@ -61,7 +60,6 @@ class MeowTeaAgent:
             get_product_details_tool,
             add_to_cart_tool,
             get_order_status_tool,
-            submit_complaint_tool,
         ]
 
         # LLM — Groq (Llama 3.3, free tier, no quota issues)

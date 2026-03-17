@@ -57,7 +57,7 @@ function searchStoresByName($keyword) {
     
     $params = [];
     if (!empty($keyword)) {
-        $sql .= " AND TenStore LIKE ?";
+        $sql .= " AND TenStore ILIKE ?";
         $params[] = "%{$keyword}%";
     }
     
@@ -73,11 +73,11 @@ function searchStoresByLocation($province = null, $ward = null) {
     
     $params = [];
     if (!empty($province)) {
-        $sql .= " AND DiaChi LIKE ?";
+        $sql .= " AND DiaChi ILIKE ?";
         $params[] = "%{$province}%";
     }
     if (!empty($ward)) {
-        $sql .= " AND DiaChi LIKE ?";
+        $sql .= " AND DiaChi ILIKE ?";
         $params[] = "%{$ward}%";
     }
     
@@ -93,15 +93,15 @@ function getStoresWithFilters($keyword = null, $province = null, $ward = null) {
     
     $params = [];
     if (!empty($keyword)) {
-        $sql .= " AND TenStore LIKE ?";
+        $sql .= " AND TenStore ILIKE ?";
         $params[] = "%{$keyword}%";
     }
     if (!empty($province)) {
-        $sql .= " AND DiaChi LIKE ?";
+        $sql .= " AND DiaChi ILIKE ?";
         $params[] = "%{$province}%";
     }
     if (!empty($ward)) {
-        $sql .= " AND DiaChi LIKE ?";
+        $sql .= " AND DiaChi ILIKE ?";
         $params[] = "%{$ward}%";
     }
     
@@ -117,15 +117,15 @@ function countStores($keyword = null, $province = null, $ward = null) {
     
     $params = [];
     if (!empty($keyword)) {
-        $sql .= " AND TenStore LIKE ?";
+        $sql .= " AND TenStore ILIKE ?";
         $params[] = "%{$keyword}%";
     }
     if (!empty($province)) {
-        $sql .= " AND DiaChi LIKE ?";
+        $sql .= " AND DiaChi ILIKE ?";
         $params[] = "%{$province}%";
     }
     if (!empty($ward)) {
-        $sql .= " AND DiaChi LIKE ?";
+        $sql .= " AND DiaChi ILIKE ?";
         $params[] = "%{$ward}%";
     }
     
@@ -291,7 +291,7 @@ function searchProducts($keyword, $categoryId = null, $page = 1, $perPage = 12) 
     $params = [];
     
     if (!empty($keyword)) {
-        $sql .= " AND sp.TenSP LIKE ?";
+        $sql .= " AND sp.TenSP ILIKE ?";
         $params[] = "%{$keyword}%";
     }
     
@@ -318,7 +318,7 @@ function countProducts($keyword = null, $categoryId = null) {
     $params = [];
     
     if (!empty($keyword)) {
-        $sql .= " AND sp.TenSP LIKE ?";
+        $sql .= " AND sp.TenSP ILIKE ?";
         $params[] = "%{$keyword}%";
     }
     

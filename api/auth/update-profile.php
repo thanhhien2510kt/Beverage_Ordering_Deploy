@@ -57,7 +57,7 @@ try {
     $pdo = getDBConnection();
 
     $stmt = $pdo->prepare("SELECT u.Email, u.DienThoai, u.DiaChi, r.TenRole 
-                          FROM User u 
+                          FROM AppUser u 
                           INNER JOIN Role r ON u.MaRole = r.MaRole 
                           WHERE u.MaUser = ? AND u.TrangThai = 1");
     $stmt->execute([$userId]);
@@ -68,7 +68,7 @@ try {
     }
 
     if ($email !== null && $email !== '' && $email !== $currentUser['Email']) {
-        $stmt = $pdo->prepare("SELECT MaUser FROM User WHERE Email = ? AND MaUser != ?");
+        $stmt = $pdo->prepare("SELECT MaUser FROM AppUser WHERE Email = ? AND MaUser != ?");
         $stmt->execute([$email, $userId]);
         if ($stmt->fetch()) {
             throw new Exception('Email đã được sử dụng. Vui lòng sử dụng email khác');
@@ -76,7 +76,7 @@ try {
     }
 
     if ($dienThoai !== null && $dienThoai !== '' && $dienThoai !== $currentUser['DienThoai']) {
-        $stmt = $pdo->prepare("SELECT MaUser FROM User WHERE DienThoai = ? AND MaUser != ?");
+        $stmt = $pdo->prepare("SELECT MaUser FROM AppUser WHERE DienThoai = ? AND MaUser != ?");
         $stmt->execute([$dienThoai, $userId]);
         if ($stmt->fetch()) {
             throw new Exception('Số điện thoại đã được sử dụng. Vui lòng sử dụng số khác');
@@ -115,7 +115,7 @@ try {
 
     $updateValues[] = $userId;
 
-    $sql = "UPDATE User SET " . implode(', ', $updateFields) . " WHERE MaUser = ?";
+    $sql = "UPDATE AppUser SET " . implode(', ', $updateFields) . " WHERE MaUser = ?";
     $stmt = $pdo->prepare($sql);
     $stmt->execute($updateValues);
 
