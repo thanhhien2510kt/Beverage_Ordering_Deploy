@@ -3,10 +3,10 @@ if (!isset($news)) return;
 
 require_once __DIR__ . '/../functions.php';
 
-$newsTitle = e($news['TieuDe']);
-$newsId = $news['MaNews'];
-$newsDate = !empty($news['NgayTao']) ? date('d', strtotime($news['NgayTao'])) : '24';
-$newsMonth = !empty($news['NgayTao']) ? date('M', strtotime($news['NgayTao'])) : 'THG 12';
+$newsTitle = e($news['tieude']);
+$newsId = $news['manews'];
+$newsDate = !empty($news['ngaytao']) ? date('d', strtotime($news['ngaytao'])) : '24';
+$newsMonth = !empty($news['ngaytao']) ? date('M', strtotime($news['ngaytao'])) : 'THG 12';
 
 
 if (!isset($basePath)) {
@@ -40,12 +40,12 @@ if ($basePath) {
 }
 
 
-$imagePath = !empty($news['HinhAnh']) ? $news['HinhAnh'] : 'assets/img/news/news_one.jpg';
+$imagePath = !empty($news['hinhanh']) ? $news['hinhanh'] : 'assets/img/news/news_one.jpg';
 $imagePath = ltrim($imagePath, '/\\');
 $newsImage = $basePath . $imagePath;
 
 
-$markdownPath = !empty($news['NoiDung']) ? $news['NoiDung'] : '';
+$markdownPath = !empty($news['noidung']) ? $news['noidung'] : '';
 $newsExcerpt = !empty($markdownPath) ? getNewsExcerpt($markdownPath, 100) : 'Lorem ipsum dolor sit amet, consectetur adipiscing elit...';
 
 

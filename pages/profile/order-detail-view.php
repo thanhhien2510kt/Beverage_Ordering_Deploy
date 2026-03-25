@@ -42,7 +42,7 @@ if (!$order) {
 }
 
 
-$paymentMethodId = $order['MaPayment'] ?? null;
+$paymentMethodId = $order['mapayment'] ?? null;
 $paymentMethodName = 'Tiền mặt';
 if ($paymentMethodId) {
     $sql = "SELECT TenPayment FROM Payment_Method WHERE MaPayment = ?";
@@ -50,7 +50,7 @@ if ($paymentMethodId) {
     $stmt->execute([$paymentMethodId]);
     $pm = $stmt->fetch();
     if ($pm) {
-        $paymentMethodName = $pm['TenPayment'];
+        $paymentMethodName = $pm['tenpayment'];
     }
 }
 
@@ -71,7 +71,7 @@ foreach ($orderItems as &$item) {
             INNER JOIN Option_Group og ON ov.MaOptionGroup = og.MaOptionGroup
             WHERE oio.MaOrderItem = ?";
     $stmt = $pdo->prepare($sql);
-    $stmt->execute([$item['MaOrderItem']]);
+    $stmt->execute([$item['maorderitem']]);
     $item['options'] = $stmt->fetchAll();
 }
 unset($item); 
@@ -79,31 +79,31 @@ unset($item);
 
 $subtotal = 0;
 foreach ($orderItems as $item) {
-    $subtotal += ($item['GiaNiemYet'] * $item['SoLuong']);
+    $subtotal += ($item['gianiemyet'] * $item['soluong']);
     if (isset($item['options'])) {
         foreach ($item['options'] as $option) {
-            $subtotal += ($option['GiaThem'] * $item['SoLuong']);
+            $subtotal += ($option['giathem'] * $item['soluong']);
         }
     }
 }
 
-$shippingFee = $order['PhiVanChuyen'] ?? 0;
-$totalAmount = $order['TongTien'] ?? 0;
-$promotionDiscount = $order['GiamGia'] ?? 0;
+$shippingFee = $order['phivanchuyen'] ?? 0;
+$totalAmount = $order['tongtien'] ?? 0;
+$promotionDiscount = $order['giamgia'] ?? 0;
 
 
 $orderCode = 'MTF' . str_pad($orderId, 5, '0', STR_PAD_LEFT);
 
 
-$orderStatus = $order['TrangThai'] ?? 'Payment_Received';
-$orderDate = $order['NgayTao'] ?? date('Y-m-d H:i:s');
+$orderStatus = $order['trangthai'] ?? 'Payment_Received';
+$orderDate = $order['ngaytao'] ?? date('Y-m-d H:i:s');
 $orderDateFormatted = date('d/m/Y H:i:s', strtotime($orderDate));
 
 
-$thoiDiemNhanDon = $order['ThoiDiemNhanDon'] ?? null;
-$thoiDiemGiaoHang = $order['ThoiDiemGiaoHang'] ?? null;
-$thoiDiemNhanHang = $order['ThoiDiemNhanHang'] ?? null;
-$thoiDiemHuyDon = $order['ThoiDiemHuyDon'] ?? null;
+$thoiDiemNhanDon = $order['thoidiemnhandon'] ?? null;
+$thoiDiemGiaoHang = $order['thoidiemgiaohang'] ?? null;
+$thoiDiemNhanHang = $order['thoidiemnhanhang'] ?? null;
+$thoiDiemHuyDon = $order['thoidiemhuydon'] ?? null;
 
 
 $step1Date = $orderDateFormatted; // Always show order creation date
@@ -265,15 +265,15 @@ $statusClass = getStatusClass($orderStatus);
         <div class="order-detail-info-grid">
             <div class="info-item">
                 <span class="info-label">Họ và tên:</span> 
-                <span class="info-value"><?php echo e($order['NguoiNhan'] ?? ''); ?></span>
+                <span class="info-value"><?php echo e($order['nguoinhan'] ?? ''); ?></span>
             </div>
             <div class="info-item">
                 <span class="info-label">Số điện thoại:</span> 
-                <span class="info-value"><?php echo e($order['DienThoaiGiao'] ?? ''); ?></span>
+                <span class="info-value"><?php echo e($order['dienthoaigiao'] ?? ''); ?></span>
             </div>
             <div class="info-item full">
                 <span class="info-label">Địa chỉ nhận hàng:</span> 
-                <span class="info-value"><?php echo e($order['DiaChiGiao'] ?? ''); ?></span>
+                <span class="info-value"><?php echo e($order['diachigiao'] ?? ''); ?></span>
             </div>
         </div>
     </div>
@@ -287,29 +287,29 @@ $statusClass = getStatusClass($orderStatus);
             <?php if (count($orderItems) > 0): ?>
                 <?php foreach ($orderItems as $item): ?>
                     <?php
-                    $img = $item['HinhAnh'] ?? 'assets/img/products/product_one.png';
+                    $img = $item['hinhanh'] ?? 'assets/img/products/product_one.png';
                     if (strpos($img, 'http') !== 0) {
                         $img = $basePath . $img;
                     }
                     
 
-                    $giaHienTai = $item['GiaNiemYet'];
+                    $giaHienTai = $item['gianiemyet'];
                     $optionsText = [];
                     if (isset($item['options']) && count($item['options']) > 0) {
                         foreach ($item['options'] as $opt) {
-                            $giaHienTai += $opt['GiaThem'];
-                            $t = ($opt['GiaThem'] > 0) ? '+ ' . $opt['TenGiaTri'] : $opt['TenGiaTri'];
+                            $giaHienTai += $opt['giathem'];
+                            $t = ($opt['giathem'] > 0) ? '+ ' . $opt['tengiatri'] : $opt['tengiatri'];
                             $optionsText[] = $t;
                         }
                     }
                     ?>
                     <div class="order-detail-product">
                         <div class="order-detail-product-img">
-                            <img src="<?php echo e($img); ?>" alt="<?php echo e($item['TenSP']); ?>">
+                            <img src="<?php echo e($img); ?>" alt="<?php echo e($item['tensp']); ?>">
                         </div>
                         <div class="order-detail-product-info">
                             <p class="order-detail-product-name">
-                                x<?php echo e($item['SoLuong']); ?> <?php echo e($item['TenSP']); ?>
+                                x<?php echo e($item['soluong']); ?> <?php echo e($item['tensp']); ?>
                             </p>
                             <?php if (count($optionsText) > 0): ?>
                                 <div class="order-detail-item-options">

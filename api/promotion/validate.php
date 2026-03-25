@@ -37,23 +37,23 @@ try {
 
     $now = new DateTime();
     
-    if (!empty($promotion['NgayBatDau'])) {
-        $startDate = new DateTime($promotion['NgayBatDau']);
+    if (!empty($promotion['ngaybatdau'])) {
+        $startDate = new DateTime($promotion['ngaybatdau']);
         if ($now < $startDate) {
             throw new Exception('Mã khuyến mãi chưa có hiệu lực');
         }
     }
 
-    if (!empty($promotion['NgayKetThuc'])) {
-        $endDate = new DateTime($promotion['NgayKetThuc']);
+    if (!empty($promotion['ngayketthuc'])) {
+        $endDate = new DateTime($promotion['ngayketthuc']);
         if ($now > $endDate) {
             throw new Exception('Mã khuyến mãi đã hết hạn');
         }
     }
 
-    $loaiGiamGia = $promotion['LoaiGiamGia'] ?? 'Percentage';
-    $giaTri = (float)$promotion['GiaTri'];
-    $giaTriToiDa = isset($promotion['GiaTriToiDa']) && $promotion['GiaTriToiDa'] !== null ? (float)$promotion['GiaTriToiDa'] : null;
+    $loaiGiamGia = $promotion['loaigiamgia'] ?? 'Percentage';
+    $giaTri = (float)$promotion['giatri'];
+    $giaTriToiDa = isset($promotion['giatritoida']) && $promotion['giatritoida'] !== null ? (float)$promotion['giatritoida'] : null;
     $discount = 0;
 
     if ($loaiGiamGia === 'Percentage') {
@@ -80,8 +80,8 @@ try {
         'message' => 'Áp dụng mã khuyến mãi thành công',
         'discount' => $discount,
         'promotion' => [
-            'id' => $promotion['MaPromotion'],
-            'code' => $promotion['Code'],
+            'id' => $promotion['mapromotion'],
+            'code' => $promotion['code'],
             'loai_giam_gia' => $loaiGiamGia,
             'gia_tri' => $giaTri,
             'discount_amount' => $discount

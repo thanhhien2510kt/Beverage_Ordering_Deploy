@@ -43,7 +43,7 @@ try {
         throw new Exception('Đơn hàng không tồn tại');
     }
 
-    $currentStatus = strtolower($order['TrangThai']);
+    $currentStatus = strtolower($order['trangthai']);
 
 
     if ($currentStatus !== 'payment_received' && $currentStatus !== 'pending') {

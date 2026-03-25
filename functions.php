@@ -254,15 +254,16 @@ function enrichCartOptions($options) {
                 WHERE ov.MaOptionValue = ?";
         $stmt = $pdo->prepare($sql);
         $stmt->execute([$optionValueId]);
-        $optionData = $stmt->fetch();
+        $optionDataRaw = $stmt->fetch();
         
-        if ($optionData) {
+        if ($optionDataRaw) {
+            $optionData = array_change_key_case($optionDataRaw, CASE_LOWER);
             $enrichedOptions[] = [
                 'option_value_id' => $optionValueId,
-                'value_name' => $optionData['TenGiaTri'],
-                'group_name' => $optionData['TenNhom'],
-                'IsMultiple' => (bool)$optionData['IsMultiple'],
-                'price' => isset($option['price']) ? (float)$option['price'] : (float)$optionData['GiaThem']
+                'value_name' => $optionData['tengiatri'] ?? $optionDataRaw['tengiatri'] ?? '',
+                'group_name' => $optionData['tennhom'] ?? $optionDataRaw['tennhom'] ?? '',
+                'IsMultiple' => (bool)($optionData['ismultiple'] ?? $optionDataRaw['ismultiple'] ?? false),
+                'price' => isset($option['price']) ? (float)$option['price'] : (float)($optionData['giathem'] ?? $optionDataRaw['giathem'] ?? 0)
             ];
         } else {
 
@@ -270,7 +271,7 @@ function enrichCartOptions($options) {
                 'option_value_id' => $optionValueId,
                 'value_name' => isset($option['value_name']) ? $option['value_name'] : '',
                 'group_name' => isset($option['group_name']) ? $option['group_name'] : '',
-                'IsMultiple' => isset($option['IsMultiple']) ? (bool)$option['IsMultiple'] : false,
+                'IsMultiple' => isset($option['ismultiple']) ? (bool)$option['ismultiple'] : false,
                 'price' => isset($option['price']) ? (float)$option['price'] : 0
             ];
         }
@@ -548,12 +549,12 @@ function getToppings() {
     $formattedToppings = [];
     foreach ($toppings as $topping) {
 
-        $imagePath = !empty($topping['HinhAnh']) ? $topping['HinhAnh'] : $defaultToppingImage;
+        $imagePath = !empty($topping['hinhanh']) ? $topping['hinhanh'] : $defaultToppingImage;
         
         $formattedToppings[] = [
-            'MaSP' => 'topping_' . $topping['MaOptionValue'], // Prefix để phân biệt với sản phẩm thật
-            'TenSP' => $topping['TenGiaTri'],
-            'GiaCoBan' => $topping['GiaThem'],
+            'MaSP' => 'topping_' . $topping['maoptionvalue'], // Prefix để phân biệt với sản phẩm thật
+            'TenSP' => $topping['tengiatri'],
+            'GiaCoBan' => $topping['giathem'],
             'HinhAnh' => $imagePath,
             'Rating' => 4.5, // Default rating
             'SoLuotRating' => 0,
@@ -585,7 +586,7 @@ function saveCartToDB($userId, $storeId) {
         $existingCart = $stmt->fetch();
         
         if ($existingCart) {
-            $cartId = $existingCart['MaCart'];
+            $cartId = $existingCart['macart'];
             error_log("saveCartToDB: Found existing cart ID: $cartId");
 
             $stmt = $pdo->prepare("DELETE FROM Cart_Item WHERE MaCart = ?");
@@ -664,7 +665,7 @@ function loadCartFromDB($userId, $storeId) {
             return true; // No cart in database
         }
         
-        $cartId = $cart['MaCart'];
+        $cartId = $cart['macart'];
         
 
         $stmt = $pdo->prepare("
@@ -689,36 +690,36 @@ function loadCartFromDB($userId, $storeId) {
                 INNER JOIN Option_Group og ON ov.MaOptionGroup = og.MaOptionGroup
                 WHERE cio.MaCartItem = ?
             ");
-            $stmt->execute([$item['MaCartItem']]);
+            $stmt->execute([$item['macartitem']]);
             $options = $stmt->fetchAll();
             
 
             $formattedOptions = [];
-            $totalPrice = $item['GiaNiemYet'];
+            $totalPrice = $item['gianiemyet'];
             
             foreach ($options as $option) {
                 $formattedOptions[] = [
-                    'option_value_id' => $option['MaOptionValue'],
-                    'option_name' => $option['TenGiaTri'],
-                    'group_name' => $option['TenNhom'],
-                    'price' => (float)$option['GiaThem']
+                    'option_value_id' => $option['maoptionvalue'],
+                    'option_name' => $option['tengiatri'],
+                    'group_name' => $option['tennhom'],
+                    'price' => (float)$option['giathem']
                 ];
-                $totalPrice += (float)$option['GiaThem'];
+                $totalPrice += (float)$option['giathem'];
             }
             
-            $totalPrice *= $item['SoLuong'];
+            $totalPrice *= $item['soluong'];
             
 
             $_SESSION['cart'][] = [
-                'product_id' => $item['MaSP'],
-                'product_name' => $item['TenSP'],
-                'product_image' => $item['HinhAnh'] ?? 'assets/img/products/product_one.png',
-                'quantity' => $item['SoLuong'],
-                'base_price' => (float)$item['GiaNiemYet'],
+                'product_id' => $item['masp'],
+                'product_name' => $item['tensp'],
+                'product_image' => $item['hinhanh'] ?? 'assets/img/products/product_one.png',
+                'quantity' => $item['soluong'],
+                'base_price' => (float)$item['gianiemyet'],
                 'total_price' => $totalPrice,
-                'reference_price' => (float)$item['GiaCoBan'],
+                'reference_price' => (float)$item['giacoban'],
                 'options' => $formattedOptions,
-                'note' => $item['GhiChu'] ?? '',
+                'note' => $item['ghichu'] ?? '',
                 'added_at' => date('Y-m-d H:i:s')
             ];
         }

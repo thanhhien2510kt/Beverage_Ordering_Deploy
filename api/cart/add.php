@@ -26,10 +26,11 @@ try {
     }
 
 
-    $product = getProductById($productId);
-    if (!$product) {
+    $productRaw = getProductById($productId);
+    if (!$productRaw) {
         throw new Exception('Sản phẩm không tồn tại');
     }
+    $product = array_change_key_case($productRaw, CASE_LOWER);
 
 
     $enrichedOptions = enrichCartOptions($options);
@@ -37,8 +38,8 @@ try {
 
     $cartItem = [
         'product_id' => $productId,
-        'product_name' => $product['TenSP'],
-        'product_image' => $product['HinhAnh'] ?? 'assets/img/products/product_one.png',
+        'product_name' => $product['tensp'] ?? $productRaw['tensp'] ?? 'Sản phẩm',
+        'product_image' => $product['hinhanh'] ?? $productRaw['hinhanh'] ?? 'assets/img/products/product_one.png',
         'quantity' => $quantity,
         'base_price' => $basePrice,
         'total_price' => $totalPrice,
@@ -52,8 +53,8 @@ try {
     $_SESSION['cart'][] = $cartItem;
 
 
-    if (isset($_SESSION['user']) && isset($_SESSION['user']['MaUser'])) {
-        $userId = $_SESSION['user']['MaUser'];
+    if (isset($_SESSION['user']) && isset($_SESSION['user']['mauser'])) {
+        $userId = $_SESSION['user']['mauser'];
         $storeId = isset($_SESSION['selected_store']) ? (int)$_SESSION['selected_store'] : 1;
         
 

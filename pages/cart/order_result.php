@@ -105,7 +105,7 @@ if ($paymentMethodId) {
     $stmt->execute([$paymentMethodId]);
     $pm = $stmt->fetch();
     if ($pm) {
-        $paymentMethodName = $pm['TenPayment'];
+        $paymentMethodName = $pm['tenpayment'];
     }
 }
 $order['PaymentMethod'] = $paymentMethodName;
@@ -127,7 +127,7 @@ foreach ($orderItems as &$item) {
             INNER JOIN Option_Group og ON ov.MaOptionGroup = og.MaOptionGroup
             WHERE oio.MaOrderItem = ?";
     $stmt = $pdo->prepare($sql);
-    $stmt->execute([$item['MaOrderItem']]);
+    $stmt->execute([$item['maorderitem']]);
     $item['options'] = $stmt->fetchAll();
 }
 unset($item); 
@@ -135,17 +135,17 @@ unset($item);
 
 $subtotal = 0;
 foreach ($orderItems as $item) {
-    $subtotal += ($item['GiaNiemYet'] * $item['SoLuong']);
+    $subtotal += ($item['gianiemyet'] * $item['soluong']);
     if (isset($item['options'])) {
         foreach ($item['options'] as $option) {
-            $subtotal += ($option['GiaThem'] * $item['SoLuong']);
+            $subtotal += ($option['giathem'] * $item['soluong']);
         }
     }
 }
 
-$shippingFee = $order['PhiVanChuyen'] ?? 0;
-$totalAmount = $order['TongTien'] ?? 0;
-$promotionDiscount = $order['GiamGia'] ?? 0;
+$shippingFee = $order['phivanchuyen'] ?? 0;
+$totalAmount = $order['tongtien'] ?? 0;
+$promotionDiscount = $order['giamgia'] ?? 0;
 
 
 $orderCode = 'MTF' . str_pad($orderId, 5, '0', STR_PAD_LEFT);
@@ -154,8 +154,8 @@ $orderCode = 'MTF' . str_pad($orderId, 5, '0', STR_PAD_LEFT);
 $estimatedDelivery = date('H:i d/m/Y', strtotime('+1 hour'));
 
 
-$orderStatus = $order['TrangThai'] ?? 'Payment_Received';
-$orderDate = $order['NgayTao'] ?? date('Y-m-d H:i:s');
+$orderStatus = $order['trangthai'] ?? 'Payment_Received';
+$orderDate = $order['ngaytao'] ?? date('Y-m-d H:i:s');
 
 
 $step1Completed = in_array($orderStatus, ['Payment_Received', 'Pending', 'Processing', 'Order_Received', 'Delivering', 'Completed']);

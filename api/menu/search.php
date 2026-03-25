@@ -29,8 +29,8 @@ try {
         $selectedCategoryName = 'Topping';
     } elseif ($categoryId) {
         foreach ($categories as $cat) {
-            if ($cat['MaCategory'] == $categoryId) {
-                $selectedCategoryName = $cat['TenCategory'];
+            if ($cat['macategory'] == $categoryId) {
+                $selectedCategoryName = $cat['tencategory'];
                 break;
             }
         }

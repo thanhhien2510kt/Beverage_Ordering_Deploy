@@ -59,30 +59,30 @@ try {
         throw new Exception('Đơn hàng không tồn tại');
     }
 
-    $order['OrderCode'] = '#MTF' . str_pad($order['MaOrder'], 5, '0', STR_PAD_LEFT);
-    $order['NgayTaoFormatted'] = date('d/m/Y H:i:s', strtotime($order['NgayTao']));
+    $order['OrderCode'] = '#MTF' . str_pad($order['maorder'], 5, '0', STR_PAD_LEFT);
+    $order['NgayTaoFormatted'] = date('d/m/Y H:i:s', strtotime($order['ngaytao']));
 
-    $order['CustomerName'] = trim(($order['Ho'] ?? '') . ' ' . ($order['Ten'] ?? ''));
+    $order['CustomerName'] = trim(($order['ho'] ?? '') . ' ' . ($order['ten'] ?? ''));
     if (empty($order['CustomerName'])) {
-        $order['CustomerName'] = $order['Username'];
+        $order['CustomerName'] = $order['username'];
     }
 
     $paymentMethodName = 'Chưa xác định';
-    $paymentId = $order['MaPayment'] ?? null;
+    $paymentId = $order['mapayment'] ?? null;
     if ($paymentId) {
         $st = $pdo->prepare("SELECT TenPayment FROM Payment_Method WHERE MaPayment = ?");
         $st->execute([$paymentId]);
         $pm = $st->fetch();
         if ($pm) {
-            $paymentMethodName = $pm['TenPayment'];
+            $paymentMethodName = $pm['tenpayment'];
         }
     }
     $order['PaymentMethod'] = $paymentMethodName;
-    if (empty($order['NguoiNhan'])) {
-        $order['NguoiNhan'] = $order['CustomerName'];
+    if (empty($order['nguoinhan'])) {
+        $order['nguoinhan'] = $order['CustomerName'];
     }
-    if (empty($order['DienThoaiGiao'])) {
-        $order['DienThoaiGiao'] = $order['DienThoai'] ?? '';
+    if (empty($order['dienthoaigiao'])) {
+        $order['dienthoaigiao'] = $order['dienthoai'] ?? '';
     }
 
     $sql = "SELECT oi.*, sp.TenSP, sp.HinhAnh, sp.GiaCoBan AS GiaThamKhao
@@ -100,12 +100,12 @@ try {
                 INNER JOIN Option_Value ov ON oio.MaOptionValue = ov.MaOptionValue
                 INNER JOIN Option_Group og ON ov.MaOptionGroup = og.MaOptionGroup
                 WHERE oio.MaOrderItem = ?");
-        $st->execute([$item['MaOrderItem']]);
+        $st->execute([$item['maorderitem']]);
         $item['options'] = $st->fetchAll(PDO::FETCH_ASSOC);
-        $item['GiaCoBan'] = $item['GiaNiemYet'];
-        $itemTotal = (float)$item['GiaNiemYet'] * (int)$item['SoLuong'];
+        $item['giacoban'] = $item['gianiemyet'];
+        $itemTotal = (float)$item['gianiemyet'] * (int)$item['soluong'];
         foreach ($item['options'] as $opt) {
-            $itemTotal += (float)$opt['GiaThem'] * (int)$item['SoLuong'];
+            $itemTotal += (float)$opt['giathem'] * (int)$item['soluong'];
         }
         $item['ItemTotal'] = $itemTotal;
         $subtotal += $itemTotal;
@@ -114,9 +114,9 @@ try {
 
     $order['items'] = $items;
     $order['Subtotal'] = $subtotal;
-    $order['PhiVanChuyen'] = (float)($order['PhiVanChuyen'] ?? 0);
-    $order['GiamGia'] = (float)($order['GiamGia'] ?? 0);
-    $order['TongTien'] = (float)$order['TongTien'];
+    $order['phivanchuyen'] = (float)($order['phivanchuyen'] ?? 0);
+    $order['giamgia'] = (float)($order['giamgia'] ?? 0);
+    $order['tongtien'] = (float)$order['tongtien'];
 
     $response = ['success' => true, 'message' => 'OK', 'order' => $order];
 

@@ -9,9 +9,10 @@ require_once '../../functions.php';
 $response = ['success' => false, 'products' => [], 'message' => ''];
 
 try {
-    // Kiểm tra secret key
-    $headers = getallheaders();
-    $secret = $headers['X-Chatbot-Secret'] ?? ($_GET['secret'] ?? '');
+    // Kiểm tra secret key - hỗ trợ cả uppercase/lowercase header
+    $headers = array_change_key_case(getallheaders(), CASE_LOWER);
+    $secret = $headers['x-chatbot-secret']
+        ?? ($_SERVER['HTTP_X_CHATBOT_SECRET'] ?? ($_GET['secret'] ?? ''));
     $expectedSecret = 'MeowTea_Secret_2026_@abcxyz';
 
     if ($secret !== $expectedSecret) {
@@ -21,12 +22,12 @@ try {
 
     $pdo = getDBConnection();
 
-    $sql = "SELECT sp.MaSP, sp.TenSP, sp.GiaCoBan, sp.GiaNiemYet, sp.HinhAnh,
-                   c.TenCategory
-            FROM SanPham sp
-            INNER JOIN Category c ON sp.MaCategory = c.MaCategory
-            WHERE sp.TrangThai = 1
-            ORDER BY c.TenCategory, sp.TenSP";
+    $sql = "SELECT sp.masp, sp.tensp, sp.giacoban, sp.gianiemyet, sp.hinhanh,
+                   sp.rating, sp.soluotrating, sp.daban, c.tencategory
+            FROM sanpham sp
+            INNER JOIN category c ON sp.macategory = c.macategory
+            WHERE sp.trangthai = 1
+            ORDER BY sp.daban DESC NULLS LAST, sp.rating DESC NULLS LAST, sp.soluotrating DESC, c.tencategory, sp.tensp";
 
     $stmt = $pdo->prepare($sql);
     $stmt->execute();

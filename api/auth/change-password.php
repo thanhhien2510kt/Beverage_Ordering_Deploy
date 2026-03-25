@@ -57,10 +57,10 @@ try {
 
     $passwordMatch = false;
     
-    if (strpos($user['Password'], '$2y$') === 0) {
-        $passwordMatch = password_verify($currentPassword, $user['Password']);
+    if (strpos($user['password'], '$2y$') === 0) {
+        $passwordMatch = password_verify($currentPassword, $user['password']);
     } else {
-        $passwordMatch = ($user['Password'] === $currentPassword);
+        $passwordMatch = ($user['password'] === $currentPassword);
     }
 
     if (!$passwordMatch) {

@@ -1,17 +1,17 @@
 <?php
 if (!isset($product)) return;
 
-$productName = e($product['TenSP']);
-$isTopping = isset($product['IsTopping']) && $product['IsTopping'] === true;
-$giaNiemYet = isset($product['GiaNiemYet']) ? (float)$product['GiaNiemYet'] : (float)($product['GiaCoBan'] ?? 0);
-$giaCoBan = isset($product['GiaCoBan']) ? (float)$product['GiaCoBan'] : $giaNiemYet;
+$productName = e($product['tensp']);
+$isTopping = isset($product['istopping']) && $product['istopping'] === true;
+$giaNiemYet = isset($product['gianiemyet']) ? (float)$product['gianiemyet'] : (float)($product['giacoban'] ?? 0);
+$giaCoBan = isset($product['giacoban']) ? (float)$product['giacoban'] : $giaNiemYet;
 $productPrice = formatCurrency($giaNiemYet);
-$productId = $product['MaSP'];
+$productId = $product['masp'];
 $showOldPrice = (!$isTopping && $giaCoBan > $giaNiemYet);
 
 
-$rating = isset($product['Rating']) && $product['Rating'] !== null ? (float)$product['Rating'] : 0;
-$ratingCount = isset($product['SoLuotRating']) ? (int)$product['SoLuotRating'] : 0;
+$rating = isset($product['rating']) && $product['rating'] !== null ? (float)$product['rating'] : 0;
+$ratingCount = isset($product['soluotrating']) ? (int)$product['soluotrating'] : 0;
 
 
 $ratingValue = $rating > 0 ? number_format($rating, 1, ',', '.') : '0,0';
@@ -20,7 +20,7 @@ $ratingValue = $rating > 0 ? number_format($rating, 1, ',', '.') : '0,0';
 $starsDisplay = renderStars($rating);
 
 
-$imagePath = !empty($product['HinhAnh']) ? $product['HinhAnh'] : 'assets/img/products/product_one.png';
+$imagePath = !empty($product['hinhanh']) ? $product['hinhanh'] : 'assets/img/products/product_one.png';
 
 
 if (!isset($basePath)) {

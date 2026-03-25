@@ -120,7 +120,7 @@ $basePath = '../../';
 
                                 $provinceOptions = ['Hồ Chí Minh', 'Hà Nội', 'Đà Nẵng', 'Cần Thơ'];
                                 foreach ($stores as $store): 
-                                    $address = $store['DiaChi'] ?? '';
+                                    $address = $store['diachi'] ?? '';
                                     $matchedProvince = '';
                                     foreach ($provinceOptions as $provinceName) {
                                         if (mb_stripos($address, $provinceName) !== false) {
@@ -129,11 +129,11 @@ $basePath = '../../';
                                         }
                                     }
                                 ?>
-                                    <option value="<?php echo $store['MaStore']; ?>" 
-                                            data-phone="<?php echo e($store['DienThoai'] ?? ''); ?>"
-                                            data-address="<?php echo e($store['DiaChi']); ?>"
+                                    <option value="<?php echo $store['mastore']; ?>" 
+                                            data-phone="<?php echo e($store['dienthoai'] ?? ''); ?>"
+                                            data-address="<?php echo e($store['diachi']); ?>"
                                             data-province="<?php echo e($matchedProvince); ?>">
-                                        <?php echo e($store['TenStore']); ?>
+                                        <?php echo e($store['tenstore']); ?>
                                     </option>
                                 <?php endforeach; ?>
                             </select>
@@ -204,13 +204,13 @@ $basePath = '../../';
                                 'Ví điện tử VNPAY' => 'vnpay'
                             ];
                             foreach ($paymentMethods as $index => $method): 
-                                $methodName = $method['TenPayment'];
+                                $methodName = $method['tenpayment'];
                                 $isChecked = $index === 0;
                             ?>
                                 <label class="payment-method-option">
                                     <input type="radio" 
                                            name="payment_method" 
-                                           value="<?php echo $method['MaPayment']; ?>" 
+                                           value="<?php echo $method['mapayment']; ?>" 
                                            <?php echo $isChecked ? 'checked' : ''; ?>>
                                     <span class="payment-method-name"><?php echo e($methodName); ?></span>
                                     <?php if (isset($paymentIcons[$methodName])): ?>

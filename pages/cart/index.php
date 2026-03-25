@@ -109,8 +109,8 @@ $basePath = '../../';
 
 
                                                     $isAddon = false;
-                                                    if (isset($option['IsMultiple'])) {
-                                                        $isAddon = (bool)$option['IsMultiple'];
+                                                    if (isset($option['ismultiple'])) {
+                                                        $isAddon = (bool)$option['ismultiple'];
                                                     } elseif (isset($option['option_value_id'])) {
 
 

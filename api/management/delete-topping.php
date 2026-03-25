@@ -67,7 +67,7 @@ try {
 
     $response = [
         'success' => true,
-        'message' => 'Xóa topping "' . $topping['TenGiaTri'] . '" thành công'
+        'message' => 'Xóa topping "' . $topping['tengiatri'] . '" thành công'
     ];
 
 } catch (Exception $e) {

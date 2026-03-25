@@ -108,23 +108,23 @@ try {
     $orders = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     foreach ($orders as &$order) {
-        $orderId = $order['MaOrder'];
+        $orderId = $order['maorder'];
         $order['OrderCode'] = '#MTF' . str_pad($orderId, 5, '0', STR_PAD_LEFT);
         
 
-        $order['CustomerName'] = trim(($order['Ho'] ?? '') . ' ' . ($order['Ten'] ?? ''));
+        $order['CustomerName'] = trim(($order['ho'] ?? '') . ' ' . ($order['ten'] ?? ''));
         if (empty($order['CustomerName'])) {
-            $order['CustomerName'] = $order['Username'];
+            $order['CustomerName'] = $order['username'];
         }
 
         $paymentMethodName = 'Chưa xác định';
-        $paymentId = $order['MaPayment'] ?? null;
+        $paymentId = $order['mapayment'] ?? null;
         if ($paymentId) {
             $st = $pdo->prepare("SELECT TenPayment FROM Payment_Method WHERE MaPayment = ?");
             $st->execute([$paymentId]);
             $pm = $st->fetch();
             if ($pm) {
-                $paymentMethodName = $pm['TenPayment'];
+                $paymentMethodName = $pm['tenpayment'];
             }
         }
         $order['PaymentMethod'] = $paymentMethodName;
@@ -134,8 +134,8 @@ try {
         $st->execute([$orderId]);
         $order['ItemCount'] = (int)$st->fetch(PDO::FETCH_ASSOC)['n'];
 
-        $order['NgayTaoFormatted'] = date('d/m/Y', strtotime($order['NgayTao']));
-        $order['NgayTaoTime'] = date('H:i:s', strtotime($order['NgayTao']));
+        $order['NgayTaoFormatted'] = date('d/m/Y', strtotime($order['ngaytao']));
+        $order['NgayTaoTime'] = date('H:i:s', strtotime($order['ngaytao']));
     }
     unset($order); 
 

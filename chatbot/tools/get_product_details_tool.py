@@ -28,6 +28,8 @@ def get_product_details_tool(product_id: int) -> str:
             headers={"X-Chatbot-Secret": CHATBOT_SECRET_KEY},
             timeout=5.0
         )
+        if r.status_code != 200 or not r.text.strip():
+            return f"Không lấy được thông tin sản phẩm #{product_id} (HTTP {r.status_code}). Vui lòng thử lại!"
         data = r.json()
         
         if not data.get("success"):
@@ -37,17 +39,24 @@ def get_product_details_tool(product_id: int) -> str:
         product = product_info.get("product", {})
         option_groups = product_info.get("optionGroups", [])
         
-        res = [f"### Chi tiết sản phẩm: {product.get('TenSP')}"]
-        res.append(f"Mã SP: {product.get('MaSP')}")
-        res.append(f"Giá cơ bản: {int(product.get('GiaCoBan', 0)):,}₫".replace(",", "."))
+        res = [f"### Chi tiết sản phẩm: {product.get('tensp', product.get('TenSP'))}"]
+        res.append(f"Mã SP: {product.get('masp', product.get('MaSP'))}")
+        
+        price = product.get("gianiemyet") or product.get("GiaNiemYet") or product.get("giacoban") or product.get("GiaCoBan", 0)
+        res.append(f"Giá bán: {int(price):,}đ".replace(",", "."))
         
         if option_groups:
             res.append("\n**Các tùy chọn có sẵn (Bạn hãy hỏi khách chọn những thứ này):**")
             for group in option_groups:
-                res.append(f"\n+ Nhóm: {group['TenNhom']} (Chọn {'nhiều' if group['IsMultiple'] else 'một'}):")
-                for opt in group['options']:
-                    extra_price = f" (+{int(opt['GiaThem']):,}₫)".replace(",", ".") if opt['GiaThem'] > 0 else ""
-                    res.append(f"  - {opt['TenGiaTri']} [Mã tùy chọn: {opt['MaOptionValue']}]{extra_price}")
+                tennhom = group.get('tennhom', group.get('TenNhom'))
+                ismulti = group.get('ismultiple', group.get('IsMultiple'))
+                res.append(f"\n+ Nhóm: {tennhom} (Chọn {'nhiều' if ismulti else 'một'}):")
+                for opt in group.get('options', []):
+                    tengiatri = opt.get('tengiatri', opt.get('TenGiaTri'))
+                    maoption = opt.get('maoptionvalue', opt.get('MaOptionValue'))
+                    giathem = int(opt.get('giathem', opt.get('GiaThem', 0)))
+                    extra_price = f" (+{giathem:,}đ)".replace(",", ".") if giathem > 0 else ""
+                    res.append(f"  - {tengiatri} [Mã tùy chọn: {maoption}]{extra_price}")
         else:
             res.append("\nSản phẩm này không có tùy chọn thêm.")
             

@@ -67,7 +67,7 @@ try {
         throw new Exception('Không tìm thấy người dùng');
     }
 
-    if ($email !== null && $email !== '' && $email !== $currentUser['Email']) {
+    if ($email !== null && $email !== '' && $email !== $currentUser['email']) {
         $stmt = $pdo->prepare("SELECT MaUser FROM AppUser WHERE Email = ? AND MaUser != ?");
         $stmt->execute([$email, $userId]);
         if ($stmt->fetch()) {
@@ -75,7 +75,7 @@ try {
         }
     }
 
-    if ($dienThoai !== null && $dienThoai !== '' && $dienThoai !== $currentUser['DienThoai']) {
+    if ($dienThoai !== null && $dienThoai !== '' && $dienThoai !== $currentUser['dienthoai']) {
         $stmt = $pdo->prepare("SELECT MaUser FROM AppUser WHERE DienThoai = ? AND MaUser != ?");
         $stmt->execute([$dienThoai, $userId]);
         if ($stmt->fetch()) {
@@ -102,7 +102,7 @@ try {
     }
 
     if ($diaChi !== null) {
-        $userRole = strtolower($currentUser['TenRole'] ?? '');
+        $userRole = strtolower($currentUser['tenrole'] ?? '');
         if ($userRole === 'customer') {
             $updateFields[] = "DiaChi = ?";
             $updateValues[] = ($diaChi === '') ? null : $diaChi;
@@ -130,19 +130,19 @@ try {
         throw new Exception('Không thể lấy thông tin người dùng sau khi cập nhật');
     }
 
-    $_SESSION['user_gioi_tinh'] = $updatedUser['GioiTinh'] ?? null;
-    $_SESSION['user_email'] = $updatedUser['Email'] ?? '';
-    $_SESSION['user_phone'] = $updatedUser['DienThoai'] ?? '';
-    $_SESSION['user_dia_chi'] = $updatedUser['DiaChi'] ?? '';
+    $_SESSION['user_gioi_tinh'] = $updatedUser['gioitinh'] ?? null;
+    $_SESSION['user_email'] = $updatedUser['email'] ?? '';
+    $_SESSION['user_phone'] = $updatedUser['dienthoai'] ?? '';
+    $_SESSION['user_dia_chi'] = $updatedUser['diachi'] ?? '';
 
     $response = [
         'success' => true,
         'message' => 'Cập nhật thông tin thành công!',
         'user' => [
-            'gioi_tinh' => $updatedUser['GioiTinh'] ?? null,
-            'email' => $updatedUser['Email'] ?? '',
-            'phone' => $updatedUser['DienThoai'] ?? '',
-            'dia_chi' => $updatedUser['DiaChi'] ?? ''
+            'gioi_tinh' => $updatedUser['gioitinh'] ?? null,
+            'email' => $updatedUser['email'] ?? '',
+            'phone' => $updatedUser['dienthoai'] ?? '',
+            'dia_chi' => $updatedUser['diachi'] ?? ''
         ]
     ];
 

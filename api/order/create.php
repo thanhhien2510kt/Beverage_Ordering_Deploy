@@ -67,15 +67,15 @@ try {
             $now = new DateTime();
             $isValid = true;
             
-            if (!empty($promotion['NgayBatDau'])) {
-                $startDate = new DateTime($promotion['NgayBatDau']);
+            if (!empty($promotion['ngaybatdau'])) {
+                $startDate = new DateTime($promotion['ngaybatdau']);
                 if ($now < $startDate) {
                     $isValid = false;
                 }
             }
             
-            if (!empty($promotion['NgayKetThuc'])) {
-                $endDate = new DateTime($promotion['NgayKetThuc']);
+            if (!empty($promotion['ngayketthuc'])) {
+                $endDate = new DateTime($promotion['ngayketthuc']);
                 if ($now > $endDate) {
                     $isValid = false;
                 }
@@ -86,9 +86,9 @@ try {
                 $promotionCode = '';
                 $promotionId = 0;
             } else {
-                $loaiGiamGia = $promotion['LoaiGiamGia'] ?? 'Percentage';
-                $giaTri = (float)$promotion['GiaTri'];
-                $giaTriToiDa = isset($promotion['GiaTriToiDa']) && $promotion['GiaTriToiDa'] !== null ? (float)$promotion['GiaTriToiDa'] : null;
+                $loaiGiamGia = $promotion['loaigiamgia'] ?? 'Percentage';
+                $giaTri = (float)$promotion['giatri'];
+                $giaTriToiDa = isset($promotion['giatritoida']) && $promotion['giatritoida'] !== null ? (float)$promotion['giatritoida'] : null;
                 
                 if ($loaiGiamGia === 'Percentage') {
                     $promotionDiscount = ($subtotal * $giaTri) / 100;

@@ -106,7 +106,7 @@ try {
         throw new Exception('Không tìm thấy role Customer. Vui lòng liên hệ quản trị viên');
     }
 
-    $maRole = $role['MaRole'];
+    $maRole = $role['marole'];
 
     $hashedPassword = hashPassword($password);
 

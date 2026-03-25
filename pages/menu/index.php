@@ -41,8 +41,8 @@ if ($showBestSeller) {
     $selectedCategoryName = 'Topping';
 } elseif ($categoryId) {
     foreach ($categories as $cat) {
-        if ($cat['MaCategory'] == $categoryId) {
-            $selectedCategoryName = $cat['TenCategory'];
+        if ($cat['macategory'] == $categoryId) {
+            $selectedCategoryName = $cat['tencategory'];
             break;
         }
     }
@@ -120,11 +120,11 @@ if ($showBestSeller) {
                             </a>
                         </li>
                         <?php foreach ($categories as $category): ?>
-                            <li class="category-item <?php echo $categoryId == $category['MaCategory'] ? 'active' : ''; ?>">
-                                <a href="?category=<?php echo $category['MaCategory']; ?>&search=<?php echo urlencode($keyword); ?>" class="category-link">
+                            <li class="category-item <?php echo $categoryId == $category['macategory'] ? 'active' : ''; ?>">
+                                <a href="?category=<?php echo $category['macategory']; ?>&search=<?php echo urlencode($keyword); ?>" class="category-link">
                                     <span class="category-icon">
                                         <?php
-                                        $icon = getCategoryIcon($category['TenCategory']);
+                                        $icon = getCategoryIcon($category['tencategory']);
                                         $iconMap = [
                                             'coffee' => 'coffee.svg',
                                             'milk-tea' => 'milk_tea.svg',
@@ -137,7 +137,7 @@ if ($showBestSeller) {
                                         $iconFile = $iconMap[$icon] ?? 'coffee.svg';
                                         ?>
                                         <img src="../../assets/img/products/menu/<?php echo $iconFile; ?>" 
-                                             alt="<?php echo e($category['TenCategory']); ?>" 
+                                             alt="<?php echo e($category['tencategory']); ?>" 
                                              class="category-icon-img">
                                     </span>
                                     

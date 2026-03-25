@@ -73,8 +73,8 @@ if ($isLoggedIn && !isset($_SESSION['user'])) {
 }
 
 
-if ($isLoggedIn && $canUseCart && isset($_SESSION['user']['MaUser']) && !isset($_SESSION['cart_loaded_from_db'])) {
-    $userId = $_SESSION['user']['MaUser'];
+if ($isLoggedIn && $canUseCart && isset($_SESSION['user']['mauser']) && !isset($_SESSION['cart_loaded_from_db'])) {
+    $userId = $_SESSION['user']['mauser'];
     $storeId = isset($_SESSION['selected_store']) ? (int)$_SESSION['selected_store'] : 1;
     
 

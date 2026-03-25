@@ -16,11 +16,11 @@ try {
     $formattedStores = [];
     foreach ($stores as $store) {
         $formattedStores[] = [
-            'MaStore' => (int)$store['MaStore'],
-            'TenStore' => $store['TenStore'],
-            'DiaChi' => $store['DiaChi'],
-            'DienThoai' => $store['DienThoai'],
-            'HinhAnh' => $store['HinhAnh'] ?? 'assets/img/stores/store_default.jpg',
+            'MaStore' => (int)$store['mastore'],
+            'TenStore' => $store['tenstore'],
+            'DiaChi' => $store['diachi'],
+            'DienThoai' => $store['dienthoai'],
+            'HinhAnh' => $store['hinhanh'] ?? 'assets/img/stores/store_default.jpg',
             'GioMoCua' => $store['GioMoCua'] ?? '22:00'
         ];
     }

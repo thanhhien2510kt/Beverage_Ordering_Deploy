@@ -48,7 +48,7 @@ try {
 
     $response = [
         'success' => true,
-        'message' => 'Xóa sản phẩm "' . $product['TenSP'] . '" thành công'
+        'message' => 'Xóa sản phẩm "' . $product['tensp'] . '" thành công'
     ];
 
 } catch (Exception $e) {

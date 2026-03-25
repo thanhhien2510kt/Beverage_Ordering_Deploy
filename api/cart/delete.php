@@ -18,9 +18,9 @@ try {
 
     array_splice($_SESSION['cart'], $itemIndex, 1);
 
-    if (isset($_SESSION['user']) && isset($_SESSION['user']['MaUser'])) {
+    if (isset($_SESSION['user']) && isset($_SESSION['user']['mauser'])) {
         require_once '../../functions.php';
-        $userId = $_SESSION['user']['MaUser'];
+        $userId = $_SESSION['user']['mauser'];
         $storeId = isset($_SESSION['selected_store']) ? (int)$_SESSION['selected_store'] : 1;
         
         $dbSaved = saveCartToDB($userId, $storeId);

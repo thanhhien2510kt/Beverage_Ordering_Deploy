@@ -28,72 +28,75 @@ try {
     
     $stmt = $pdo->prepare($sql);
     $stmt->execute([$usernameOrEmail, $usernameOrEmail]);
-    $user = $stmt->fetch();
+    $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
     if (!$user) {
         throw new Exception('Tên đăng nhập/email hoặc mật khẩu không đúng');
     }
 
+    // Convert keys to lowercase to avoid case-sensitivity issues
+    $user = array_change_key_case($user, CASE_LOWER);
+
     $passwordMatch = false;
     
-    if (strpos($user['Password'], '$2y$') === 0) {
-        $passwordMatch = password_verify($password, $user['Password']);
+    if (strpos($user['password'], '$2y$') === 0) {
+        $passwordMatch = password_verify($password, $user['password']);
     } else {
-        $passwordMatch = ($user['Password'] === $password);
+        $passwordMatch = ($user['password'] === $password);
     }
 
     if (!$passwordMatch) {
         throw new Exception('Tên đăng nhập/email hoặc mật khẩu không đúng');
     }
 
-    $fullName = trim($user['Ho'] . ' ' . $user['Ten']);
-    $_SESSION['user_id'] = $user['MaUser'];
-    $_SESSION['username'] = $user['Username'];
-    $_SESSION['user_ho'] = $user['Ho'];
-    $_SESSION['user_ten'] = $user['Ten'];
+    $fullName = trim($user['ho'] . ' ' . $user['ten']);
+    $_SESSION['user_id'] = $user['mauser'];
+    $_SESSION['username'] = $user['username'];
+    $_SESSION['user_ho'] = $user['ho'];
+    $_SESSION['user_ten'] = $user['ten'];
     $_SESSION['user_name'] = $fullName;
-    $_SESSION['user_gioi_tinh'] = $user['GioiTinh'] ?? null;
-    $_SESSION['user_email'] = $user['Email'];
-    $_SESSION['user_phone'] = $user['DienThoai'];
-    $_SESSION['user_dia_chi'] = $user['DiaChi'] ?? '';
-    $_SESSION['user_role'] = $user['MaRole'];
-    $_SESSION['user_role_name'] = $user['TenRole'];
+    $_SESSION['user_gioi_tinh'] = $user['gioitinh'] ?? null;
+    $_SESSION['user_email'] = $user['email'];
+    $_SESSION['user_phone'] = $user['dienthoai'];
+    $_SESSION['user_dia_chi'] = $user['diachi'] ?? '';
+    $_SESSION['user_role'] = $user['marole'];
+    $_SESSION['user_role_name'] = $user['tenrole'];
     $_SESSION['logged_in'] = true;
 
     $_SESSION['user'] = [
-        'MaUser' => $user['MaUser'],
-        'Username' => $user['Username'],
-        'Ho' => $user['Ho'],
-        'Ten' => $user['Ten'],
-        'Email' => $user['Email'],
-        'DienThoai' => $user['DienThoai'],
-        'DiaChi' => $user['DiaChi'] ?? '',
-        'MaRole' => $user['MaRole'],
-        'TenRole' => $user['TenRole']
+        'MaUser' => $user['mauser'],
+        'Username' => $user['username'],
+        'Ho' => $user['ho'],
+        'Ten' => $user['ten'],
+        'Email' => $user['email'],
+        'DienThoai' => $user['dienthoai'],
+        'DiaChi' => $user['diachi'] ?? '',
+        'MaRole' => $user['marole'],
+        'TenRole' => $user['tenrole']
     ];
 
     require_once '../../functions.php';
     $storeId = isset($_SESSION['selected_store']) ? (int)$_SESSION['selected_store'] : 1;
     
-    $cartMerged = mergeCartWithDB($user['MaUser'], $storeId);
+    $cartMerged = mergeCartWithDB($user['mauser'], $storeId);
     if (!$cartMerged) {
-        error_log("Warning: Failed to merge cart from database for user " . $user['MaUser']);
+        error_log("Warning: Failed to merge cart from database for user " . $user['mauser']);
     }
 
     $response = [
         'success' => true,
         'message' => 'Đăng nhập thành công',
         'user' => [
-            'id' => $user['MaUser'],
-            'username' => $user['Username'],
-            'ho' => $user['Ho'],
-            'ten' => $user['Ten'],
+            'id' => $user['mauser'],
+            'username' => $user['username'],
+            'ho' => $user['ho'],
+            'ten' => $user['ten'],
             'name' => $fullName,
-            'gioi_tinh' => $user['GioiTinh'] ?? null,
-            'email' => $user['Email'],
-            'phone' => $user['DienThoai'],
-            'dia_chi' => $user['DiaChi'] ?? '',
-            'role' => $user['TenRole']
+            'gioi_tinh' => $user['gioitinh'] ?? null,
+            'email' => $user['email'],
+            'phone' => $user['dienthoai'],
+            'dia_chi' => $user['diachi'] ?? '',
+            'role' => $user['tenrole']
         ]
     ];
 
