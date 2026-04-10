@@ -49,8 +49,8 @@ try {
     $params = [$userId];
 
     if ($days > 0) {
-        $where[] = "o.NgayTao >= DATE_SUB(NOW(), INTERVAL ? DAY)";
-        $params[] = $days;
+        $where[] = "o.NgayTao >= ?";
+        $params[] = date('Y-m-d H:i:s', strtotime("-$days days"));
     }
 
     if ($status !== '') {

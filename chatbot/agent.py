@@ -14,7 +14,7 @@ from config import GROQ_API_KEY, GROQ_MODEL
 from tools.product_tool import search_products_tool
 from tools.get_product_details_tool import get_product_details_tool
 from tools.cart_tool import add_to_cart_tool
-from tools.order_tool import get_order_status_tool
+from tools.order_tool import get_order_status_tool, get_recent_orders_tool
 from tools.search_store_tool import search_store_tool
 
 SYSTEM_PROMPT = """Bạn là **MeowBot** 🐱 — trợ lý AI siêu dễ thương và thông minh của thương hiệu trà sữa **MeowTea Fresh**.
@@ -25,8 +25,11 @@ SYSTEM_PROMPT = """Bạn là **MeowBot** 🐱 — trợ lý AI siêu dễ thươ
 - **GIỮ NGUYÊN ĐỊNH DẠNG TOOL:** Sau khi gọi tool search_products_tool hoặc search_store_tool, hãy **BÊ NGUYÊN VĂN** từng dòng kết quả (đã có sẵn emoji và cách dòng) vào câu trả lời. TUYỆT ĐỐI KHÔNG viết lại thành dạng gạch đầu dòng ngắn gọn.
 - Chỉ việc chào hỏi ở đầu câu và hỏi han ở cuối câu, ĐỂ NGUYÊN phần thân kết quả.
 
-**Quy tắc giao tiếp:**
-Giao tiếp ngọt ngào, xì teen, xưng "mình/MeowBot" và "bạn/cậu". Dùng emoji 🍵🧋✨🐱.
+**Quy tắc giao tiếp & Xưng hô (BẮT BUỘC):**
+1. LÚC NÀO cũng gọi khách hàng là **"bạn"**.
+2. LÚC NÀO cũng xưng là **"mình"** hoặc **"MeowBot"**.
+3. TUYỆT ĐỐI KHÔNG DÙNG từ **"cậu"**, **"anh"**, **"chị"**, **"em"** hay bất kỳ đại từ nào khác để gọi khách hàng, DÙ TRONG BẤT KỲ HOÀN CẢNH NÀO, CŨNG NHƯ KHÔNG BẮT CHƯỚC THEO LỊCH SỬ. (Lỗi xưng "cậu" là lỗi nghiêm trọng).
+4. Giao tiếp ngọt ngào, xì teen, thường xuyên dùng emoji 🍵🧋✨🐱.
 
 **Phân loại yêu cầu:**
 
@@ -82,6 +85,7 @@ class MeowTeaAgent:
             get_product_details_tool,
             add_to_cart_tool,
             get_order_status_tool,
+            get_recent_orders_tool,
             search_store_tool,
         ]
 

@@ -517,10 +517,12 @@ $(document).ready(function () {
 
           if (response.data && response.data.length > 0) {
             response.data.forEach(function (category) {
+              const maCategory = category.MaCategory !== undefined ? category.MaCategory : category.macategory;
+              const tenCategory = category.TenCategory !== undefined ? category.TenCategory : category.tencategory;
               $select.append(
                 $("<option></option>")
-                  .attr("value", category.MaCategory)
-                  .text(category.TenCategory)
+                  .attr("value", maCategory)
+                  .text(tenCategory)
               );
             });
 
@@ -566,7 +568,8 @@ $(document).ready(function () {
 
     const productsByCategory = {};
     products.forEach(function (product) {
-      const categoryName = product.TenCategory || "Khác";
+      const tenCategory = product.TenCategory !== undefined ? product.TenCategory : product.tencategory;
+      const categoryName = tenCategory || "Khác";
       if (!productsByCategory[categoryName]) {
         productsByCategory[categoryName] = [];
       }
@@ -618,21 +621,27 @@ $(document).ready(function () {
         html += "<tbody>";
 
         categoryProducts.forEach(function (product) {
+          const maSP = product.MaSP !== undefined ? product.MaSP : product.masp;
+          const tenSP = product.TenSP !== undefined ? product.TenSP : product.tensp;
+          const hinhAnh = product.HinhAnh !== undefined ? product.HinhAnh : product.hinhanh;
+          const giaNiemYet = product.GiaNiemYet !== undefined ? product.GiaNiemYet : product.gianiemyet;
+          const giaCoBan = product.GiaCoBan !== undefined ? product.GiaCoBan : product.giacoban;
+
           const imagePath =
-            product.HinhAnh || "assets/img/products/product_one.png";
-          const price = formatCurrency(product.GiaNiemYet || product.GiaCoBan);
+            hinhAnh || "assets/img/products/product_one.png";
+          const price = formatCurrency(giaNiemYet || giaCoBan);
 
           html += "<tr>";
-          html += "<td>" + product.MaSP + "</td>";
+          html += "<td>" + maSP + "</td>";
           html +=
             '<td><img src="../../' +
             imagePath +
             '" alt="' +
-            escapeHtml(product.TenSP) +
+            escapeHtml(tenSP) +
             '" class="product-image"></td>';
           html +=
             '<td><div class="product-name">' +
-            escapeHtml(product.TenSP) +
+            escapeHtml(tenSP) +
             "</div></td>";
           html += '<td><div class="product-price">' + price + "</div></td>";
 
@@ -642,13 +651,13 @@ $(document).ready(function () {
             html +=
               '<button type="button" class="btn btn-edit btn-edit-price" ' +
               'data-product-id="' +
-              product.MaSP +
+              maSP +
               '" ' +
               'data-product-name="' +
-              escapeHtml(product.TenSP) +
+              escapeHtml(tenSP) +
               '" ' +
               'data-product-price="' +
-              (product.GiaNiemYet || product.GiaCoBan) +
+              (giaNiemYet || giaCoBan) +
               '">';
             html +=
               '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">';
@@ -662,10 +671,10 @@ $(document).ready(function () {
             html +=
               '<button type="button" class="btn btn-delete btn-delete-product" ' +
               'data-product-id="' +
-              product.MaSP +
+              maSP +
               '" ' +
               'data-product-name="' +
-              escapeHtml(product.TenSP) +
+              escapeHtml(tenSP) +
               '">';
             html +=
               '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">';
@@ -767,21 +776,25 @@ $(document).ready(function () {
     html += "<tbody>";
 
     toppings.forEach(function (topping) {
+      const maOptionValue = topping.MaOptionValue !== undefined ? topping.MaOptionValue : topping.maoptionvalue;
+      const tenGiaTri = topping.TenGiaTri !== undefined ? topping.TenGiaTri : topping.tengiatri;
+      const hinhAnh = topping.HinhAnh !== undefined ? topping.HinhAnh : topping.hinhanh;
+      const giaThem = topping.GiaThem !== undefined ? topping.GiaThem : topping.giathem;
 
-      const imagePath = topping.HinhAnh || defaultToppingImage;
-      const price = formatCurrency(topping.GiaThem);
+      const imagePath = hinhAnh || defaultToppingImage;
+      const price = formatCurrency(giaThem);
 
       html += "<tr>";
-      html += "<td>" + topping.MaOptionValue + "</td>";
+      html += "<td>" + maOptionValue + "</td>";
       html +=
         '<td><img src="../../' +
         imagePath +
         '" alt="' +
-        escapeHtml(topping.TenGiaTri) +
+        escapeHtml(tenGiaTri) +
         '" class="product-image"></td>';
       html +=
         '<td><div class="product-name">' +
-        escapeHtml(topping.TenGiaTri) +
+        escapeHtml(tenGiaTri) +
         "</div></td>";
       html += '<td><div class="product-price">' + price + "</div></td>";
 
@@ -791,13 +804,13 @@ $(document).ready(function () {
         html +=
           '<button type="button" class="btn btn-edit btn-edit-topping-price" ' +
           'data-topping-id="' +
-          topping.MaOptionValue +
+          maOptionValue +
           '" ' +
           'data-topping-name="' +
-          escapeHtml(topping.TenGiaTri) +
+          escapeHtml(tenGiaTri) +
           '" ' +
           'data-topping-price="' +
-          topping.GiaThem +
+          giaThem +
           '">';
         html +=
           '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">';

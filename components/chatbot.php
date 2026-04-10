@@ -88,5 +88,6 @@
 <link rel="stylesheet" href="<?php echo $basePath; ?>assets/css/chatbot.css">
 <script>
     window.MEOWBOT_PROXY_URL = '<?php echo $basePath; ?>api/chatbot/proxy.php';
+    window.MEOWBOT_HISTORY_URL = '<?php echo $basePath; ?>api/chatbot/get_history.php';
 </script>
 <script src="<?php echo $basePath; ?>assets/js/chatbot.js" defer></script>

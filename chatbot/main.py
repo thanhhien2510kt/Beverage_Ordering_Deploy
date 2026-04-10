@@ -52,12 +52,31 @@ class ChatResponse(BaseModel):
 _agents: dict[str, MeowTeaAgent] = {}
 
 def get_agent(session_id: str, user_id: Optional[int], user_role: Optional[str]) -> MeowTeaAgent:
+    # Nếu session đã tồn tại nhưng user_id thay đổi (do user vừa login hoặc logout)
+    if session_id in _agents:
+        existing_agent = _agents[session_id]
+        if existing_agent.user_id != user_id:
+            # Lưu lại lịch sử cũ
+            old_history = existing_agent._history
+            
+            # Khởi tạo lại agent để render lại System Prompt với user_context mới
+            new_agent = MeowTeaAgent(
+                session_id=session_id,
+                user_id=user_id,
+                user_role=user_role
+            )
+            # Khôi phục lịch sử
+            new_agent._history = old_history
+            _agents[session_id] = new_agent
+
+    # Nếu session chưa từng có
     if session_id not in _agents:
         _agents[session_id] = MeowTeaAgent(
             session_id=session_id,
             user_id=user_id,
             user_role=user_role
         )
+        
     return _agents[session_id]
 
 

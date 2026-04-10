@@ -213,3 +213,14 @@ CREATE TABLE news (
     TrangThai INT DEFAULT 1,
     NgayTao TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+-- 19. Bảng Chat_Message
+DROP TABLE IF EXISTS chat_message CASCADE;
+CREATE TABLE chat_message (
+    MaChat SERIAL PRIMARY KEY,
+    SessionID VARCHAR(100) NOT NULL,
+    Role VARCHAR(20) NOT NULL,
+    Content TEXT NOT NULL,
+    NgayTao TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+CREATE INDEX idx_chat_session ON chat_message(SessionID);

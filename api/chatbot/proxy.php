@@ -33,6 +33,19 @@ $user = getCurrentUser();
 $payload['user_id']   = $user['id'] ?? null;
 $payload['user_role'] = $user['role_name'] ?? null;
 
+if (empty($payload['session_id'])) {
+    $payload['session_id'] = 'session_' . bin2hex(random_bytes(8));
+}
+
+try {
+    $pdo = getDBConnection();
+    // Lưu tin nhắn của user vào DB
+    $stmt = $pdo->prepare("INSERT INTO Chat_Message (SessionID, Role, Content) VALUES (?, ?, ?)");
+    $stmt->execute([$payload['session_id'], 'user', $payload['message']]);
+} catch (Exception $e) {
+    // Bỏ qua lỗi DB để không làm gián đoạn chatbot, có thể ghi log nếu cần
+}
+
 // FastAPI endpoint
 $fastapiUrl = 'http://localhost:8000/chat';
 
@@ -74,6 +87,20 @@ if ($curlError) {
         'error'      => $curlError   // trả về lỗi thật để debug
     ], JSON_UNESCAPED_UNICODE);
     exit;
+}
+
+// Lưu tin nhắn của bot vào DB
+if ($httpCode >= 200 && $httpCode < 300) {
+    $responseJson = json_decode($result, true);
+    if (isset($responseJson['reply'])) {
+        try {
+            $pdo = getDBConnection();
+            $stmt = $pdo->prepare("INSERT INTO Chat_Message (SessionID, Role, Content) VALUES (?, ?, ?)");
+            $stmt->execute([$payload['session_id'], 'assistant', $responseJson['reply']]);
+        } catch (Exception $e) {
+            // Bỏ qua lỗi DB
+        }
+    }
 }
 
 http_response_code($httpCode);

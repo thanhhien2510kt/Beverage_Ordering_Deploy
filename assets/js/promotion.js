@@ -324,25 +324,34 @@ $(document).ready(function () {
     html += "<tbody>";
 
     promotions.forEach(function (promotion) {
-      const loaiGiamGia = promotion.LoaiGiamGia || "Percentage";
-      const giaTri = parseFloat(promotion.GiaTri);
+      const pLoaiGiamGia = promotion.LoaiGiamGia !== undefined ? promotion.LoaiGiamGia : promotion.loaigiamgia;
+      const pGiaTri = promotion.GiaTri !== undefined ? promotion.GiaTri : promotion.giatri;
+      const pNgayBatDau = promotion.NgayBatDau !== undefined ? promotion.NgayBatDau : promotion.ngaybatdau;
+      const pNgayKetThuc = promotion.NgayKetThuc !== undefined ? promotion.NgayKetThuc : promotion.ngayketthuc;
+      const pTrangThai = promotion.TrangThai !== undefined ? promotion.TrangThai : promotion.trangthai;
+      const pMaPromotion = promotion.MaPromotion !== undefined ? promotion.MaPromotion : promotion.mapromotion;
+      const pCode = promotion.Code !== undefined ? promotion.Code : promotion.code;
+      const pGiaTriToiDa = promotion.GiaTriToiDa !== undefined ? promotion.GiaTriToiDa : promotion.giatritoida;
+
+      const loaiGiamGia = pLoaiGiamGia || "Percentage";
+      const giaTri = parseFloat(pGiaTri);
       const giaTriDisplay =
         loaiGiamGia === "Percentage" ? giaTri + "%" : formatCurrency(giaTri);
-      const ngayBatDau = promotion.NgayBatDau
-        ? formatDateTime(promotion.NgayBatDau)
+      const ngayBatDau = pNgayBatDau
+        ? formatDateTime(pNgayBatDau)
         : "-";
-      const ngayKetThuc = promotion.NgayKetThuc
-        ? formatDateTime(promotion.NgayKetThuc)
+      const ngayKetThuc = pNgayKetThuc
+        ? formatDateTime(pNgayKetThuc)
         : "-";
-      const trangThai = promotion.TrangThai == 1 ? "Kích hoạt" : "Vô hiệu hóa";
+      const trangThai = pTrangThai == 1 ? "Kích hoạt" : "Vô hiệu hóa";
       const trangThaiClass =
-        promotion.TrangThai == 1 ? "status-active" : "status-inactive";
+        pTrangThai == 1 ? "status-active" : "status-inactive";
 
       html += "<tr>";
-      html += "<td>" + promotion.MaPromotion + "</td>";
+      html += "<td>" + pMaPromotion + "</td>";
       html +=
         '<td><div class="promotion-code">' +
-        escapeHtml(promotion.Code) +
+        escapeHtml(pCode) +
         "</div></td>";
       html +=
         '<td><div class="promotion-type">' +
@@ -363,28 +372,28 @@ $(document).ready(function () {
       html +=
         '<button type="button" class="btn btn-edit btn-edit-promotion" ' +
         'data-promotion-id="' +
-        promotion.MaPromotion +
+        pMaPromotion +
         '" ' +
         'data-promotion-code="' +
-        escapeHtml(promotion.Code) +
+        escapeHtml(pCode) +
         '" ' +
         'data-loai-giam-gia="' +
         escapeHtml(loaiGiamGia) +
         '" ' +
         'data-gia-tri="' +
-        promotion.GiaTri +
+        pGiaTri +
         '" ' +
         'data-gia-tri-toi-da="' +
-        (promotion.GiaTriToiDa || "") +
+        (pGiaTriToiDa || "") +
         '" ' +
         'data-ngay-bat-dau="' +
-        (promotion.NgayBatDau || "") +
+        (pNgayBatDau || "") +
         '" ' +
         'data-ngay-ket-thuc="' +
-        (promotion.NgayKetThuc || "") +
+        (pNgayKetThuc || "") +
         '" ' +
         'data-trang-thai="' +
-        promotion.TrangThai +
+        pTrangThai +
         '">';
       html +=
         '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">';

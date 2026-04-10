@@ -67,8 +67,12 @@ $(document).ready(function() {
 
                     $select.find('option:not(:first)').remove();
                     res.users.forEach(function(user) {
-                        var userName = (user.Ho + ' ' + user.Ten).trim() || user.Username;
-                        $select.append('<option value="' + user.MaUser + '">' + escapeHtml(userName) + ' (@' + escapeHtml(user.Username) + ')</option>');
+                        var ho = user.Ho !== undefined ? user.Ho : user.ho;
+                        var ten = user.Ten !== undefined ? user.Ten : user.ten;
+                        var username = user.Username !== undefined ? user.Username : user.username;
+                        var maUser = user.MaUser !== undefined ? user.MaUser : user.mauser;
+                        var userName = ((ho || '') + ' ' + (ten || '')).trim() || username;
+                        $select.append('<option value="' + maUser + '">' + escapeHtml(userName) + ' (@' + escapeHtml(username) + ')</option>');
                     });
                 }
             },
@@ -138,9 +142,15 @@ $(document).ready(function() {
         var $list = $('#manageOrdersList');
         $list.empty();
         orders.forEach(function(o) {
+            var maOrder = o.MaOrder !== undefined ? o.MaOrder : o.maorder;
+            var trangThai = o.TrangThai !== undefined ? o.TrangThai : o.trangthai;
+            var customerName = o.CustomerName !== undefined ? o.CustomerName : o.customername;
+            var tenStore = o.TenStore !== undefined ? o.TenStore : o.tenstore;
+            var tongTien = o.TongTien !== undefined ? o.TongTien : o.tongtien;
+
             var dateTime = (o.NgayTaoFormatted || '') + ' | ' + (o.NgayTaoTime || '');
-            var statusClass = getManageStatusClass(o.TrangThai);
-            var statusText = getManageStatusText(o.TrangThai);
+            var statusClass = getManageStatusClass(trangThai);
+            var statusText = getManageStatusText(trangThai);
             var card = $('<div class="order-card order-card-compact">')
                 .append(
                     '<div class="order-card-header">' +
@@ -149,12 +159,12 @@ $(document).ready(function() {
                     '<div class="order-card-body">' +
                     '<h3 class="order-card-code">Mã đơn ' + escapeHtml(o.OrderCode) + '</h3>' +
                     '<p class="order-card-date">' + escapeHtml(dateTime) + '</p>' +
-                    '<p class="order-card-store">Khách hàng: ' + escapeHtml(o.CustomerName) + '</p>' +
-                    '<p class="order-card-store">Cửa hàng: ' + escapeHtml(o.TenStore) + '</p>' +
+                    '<p class="order-card-store">Khách hàng: ' + escapeHtml(customerName) + '</p>' +
+                    '<p class="order-card-store">Cửa hàng: ' + escapeHtml(tenStore) + '</p>' +
                     '<p class="order-card-qty">Số lượng: ' + (o.ItemCount || 0) + ' Sản phẩm</p>' +
                     '<div class="order-card-footer">' +
-                    '<a href="#" class="order-card-detail-link" data-order-id="' + o.MaOrder + '">Xem chi tiết</a>' +
-                    '<span class="order-card-total">Tổng tiền: ' + formatCurrency(o.TongTien) + '</span>' +
+                    '<a href="#" class="order-card-detail-link" data-order-id="' + maOrder + '">Xem chi tiết</a>' +
+                    '<span class="order-card-total">Tổng tiền: ' + formatCurrency(tongTien) + '</span>' +
                     '</div>' +
                     '</div>'
                 );
@@ -247,8 +257,17 @@ $(document).ready(function() {
 
 
     function renderManageOrderDetail(o) {
-        var statusClass = getManageStatusClass(o.TrangThai);
-        var statusText = getManageStatusText(o.TrangThai);
+        var trangThai = o.TrangThai !== undefined ? o.TrangThai : o.trangthai;
+        var nguoiNhan = o.NguoiNhan !== undefined ? o.NguoiNhan : o.nguoinhan;
+        var dienThoaiGiao = o.DienThoaiGiao !== undefined ? o.DienThoaiGiao : o.dienthoaigiao;
+        var diaChiGiao = o.DiaChiGiao !== undefined ? o.DiaChiGiao : o.diachigiao;
+        var subTotal = o.Subtotal !== undefined ? o.Subtotal : o.subtotal;
+        var phiVanChuyen = o.PhiVanChuyen !== undefined ? o.PhiVanChuyen : o.phivanchuyen;
+        var giamGia = o.GiamGia !== undefined ? o.GiamGia : o.giamgia;
+        var tongTien = o.TongTien !== undefined ? o.TongTien : o.tongtien;
+
+        var statusClass = getManageStatusClass(trangThai);
+        var statusText = getManageStatusText(trangThai);
         var basePath = '../../';
         
         var sect1 = '<div class="order-detail-section collapsible">' +
@@ -266,35 +285,43 @@ $(document).ready(function() {
             '<h3 class="order-detail-section-title">Thông tin nhận hàng</h3>' +
             '<div class="order-detail-section-content">' +
             '<div class="order-detail-info-grid">' +
-            '<div class="info-item"><span class="info-label">Họ và tên:</span> <span class="info-value">' + escapeHtml(o.NguoiNhan || '') + '</span></div>' +
-            '<div class="info-item"><span class="info-label">Số điện thoại:</span> <span class="info-value">' + escapeHtml(o.DienThoaiGiao || '') + '</span></div>' +
-            '<div class="info-item full"><span class="info-label">Địa chỉ nhận hàng:</span> <span class="info-value">' + escapeHtml(o.DiaChiGiao || '') + '</span></div>' +
+            '<div class="info-item"><span class="info-label">Họ và tên:</span> <span class="info-value">' + escapeHtml(nguoiNhan || '') + '</span></div>' +
+            '<div class="info-item"><span class="info-label">Số điện thoại:</span> <span class="info-value">' + escapeHtml(dienThoaiGiao || '') + '</span></div>' +
+            '<div class="info-item full"><span class="info-label">Địa chỉ nhận hàng:</span> <span class="info-value">' + escapeHtml(diaChiGiao || '') + '</span></div>' +
             '</div></div></div>';
 
         var productsHtml = '';
         if (o.items && o.items.length > 0) {
             o.items.forEach(function(it) {
-                var img = (it.HinhAnh && it.HinhAnh.indexOf('http') !== 0) ? (basePath + (it.HinhAnh || 'assets/img/products/product_one.png')) : (it.HinhAnh || (basePath + 'assets/img/products/product_one.png'));
+                var itHinhAnh = it.HinhAnh !== undefined ? it.HinhAnh : it.hinhanh;
+                var itTenSP = it.TenSP !== undefined ? it.TenSP : it.tensp;
+                var itSoLuong = it.SoLuong !== undefined ? it.SoLuong : it.soluong;
+                var itGiaCoBan = it.GiaCoBan !== undefined ? it.GiaCoBan : it.giacoban;
+
+                var img = (itHinhAnh && itHinhAnh.indexOf('http') !== 0) ? (basePath + (itHinhAnh || 'assets/img/products/product_one.png')) : (itHinhAnh || (basePath + 'assets/img/products/product_one.png'));
                 var opts = [];
                 if (it.options && it.options.length) {
                     it.options.forEach(function(opt) {
-                        var t = (parseFloat(opt.GiaThem) || 0) > 0 ? '+ ' + (opt.TenGiaTri || '') : (opt.TenGiaTri || '');
+                        var optGiaThem = opt.GiaThem !== undefined ? opt.GiaThem : opt.giathem;
+                        var optTenGiaTri = opt.TenGiaTri !== undefined ? opt.TenGiaTri : opt.tengiatri;
+                        var t = (parseFloat(optGiaThem) || 0) > 0 ? '+ ' + (optTenGiaTri || '') : (optTenGiaTri || '');
                         opts.push(escapeHtml(t));
                     });
                 }
                 var optsStr = opts.length ? '<div class="order-detail-item-options">' + opts.join(', ') + '</div>' : '';
                 
-                var giaHienTai = parseFloat(it.GiaCoBan);
+                var giaHienTai = parseFloat(itGiaCoBan);
                 if (it.options && it.options.length) {
                     it.options.forEach(function(opt) {
-                        giaHienTai += parseFloat(opt.GiaThem || 0);
+                        var optGiaThem = opt.GiaThem !== undefined ? opt.GiaThem : opt.giathem;
+                        giaHienTai += parseFloat(optGiaThem || 0);
                     });
                 }
                 
                 productsHtml += '<div class="order-detail-product">' +
                     '<div class="order-detail-product-img"><img src="' + escapeHtml(img) + '" alt=""></div>' +
                     '<div class="order-detail-product-info">' +
-                    '<p class="order-detail-product-name">x' + (it.SoLuong || 1) + ' ' + escapeHtml(it.TenSP || '') + '</p>' +
+                    '<p class="order-detail-product-name">x' + (itSoLuong || 1) + ' ' + escapeHtml(itTenSP || '') + '</p>' +
                     optsStr +
                     '<div class="order-detail-product-price">' +
                     '<span class="order-detail-item-current-price">' + formatCurrency(giaHienTai) + '</span>' +
@@ -309,15 +336,15 @@ $(document).ready(function() {
         var sect4 = '<div class="order-detail-section">' +
             '<h3 class="order-detail-section-title">Số tiền thanh toán</h3>' +
             '<div class="order-detail-summary">' +
-            '<div class="order-detail-summary-row"><span class="info-label">Tạm tính:</span> <span class="info-value">' + formatCurrency(o.Subtotal || 0) + '</span></div>' +
-            '<div class="order-detail-summary-row"><span class="info-label">Phí vận chuyển:</span> <span class="info-value">' + formatCurrency(o.PhiVanChuyen || 0) + '</span></div>' +
-            '<div class="order-detail-summary-row"><span class="info-label">Khuyến mãi:</span> <span class="info-value">' + ((o.GiamGia || 0) > 0 ? '-' : '') + formatCurrency(o.GiamGia || 0) + '</span></div>' +
-            '<div class="order-detail-summary-row total"><span class="info-label">Số tiền thanh toán:</span> <span class="info-value">' + formatCurrency(o.TongTien || 0) + '</span></div>' +
+            '<div class="order-detail-summary-row"><span class="info-label">Tạm tính:</span> <span class="info-value">' + formatCurrency(subTotal || 0) + '</span></div>' +
+            '<div class="order-detail-summary-row"><span class="info-label">Phí vận chuyển:</span> <span class="info-value">' + formatCurrency(phiVanChuyen || 0) + '</span></div>' +
+            '<div class="order-detail-summary-row"><span class="info-label">Khuyến mãi:</span> <span class="info-value">' + ((giamGia || 0) > 0 ? '-' : '') + formatCurrency(giamGia || 0) + '</span></div>' +
+            '<div class="order-detail-summary-row total"><span class="info-label">Số tiền thanh toán:</span> <span class="info-value">' + formatCurrency(tongTien || 0) + '</span></div>' +
             '</div></div>';
 
 
         var actionsHtml = '';
-        var currentStatus = (o.TrangThai || '').toLowerCase();
+        var currentStatus = (trangThai || '').toLowerCase();
         if (currentStatus === 'payment_received' || currentStatus === 'pending') {
             actionsHtml = '<div class="order-detail-section">' +
                 '<h3 class="order-detail-section-title">Thao tác</h3>' +

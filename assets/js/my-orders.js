@@ -116,9 +116,14 @@ $(document).ready(function() {
         var $list = $('#myOrdersList');
         $list.empty();
         orders.forEach(function(o) {
+            var maOrder = o.MaOrder !== undefined ? o.MaOrder : o.maorder;
+            var trangThai = o.TrangThai !== undefined ? o.TrangThai : o.trangthai;
+            var tenStore = o.TenStore !== undefined ? o.TenStore : o.tenstore;
+            var tongTien = o.TongTien !== undefined ? o.TongTien : o.tongtien;
+
             var dateTime = (o.NgayTaoFormatted || '') + ' | ' + (o.NgayTaoTime || '');
-            var statusClass = getStatusClass(o.TrangThai);
-            var statusText = getStatusText(o.TrangThai);
+            var statusClass = getStatusClass(trangThai);
+            var statusText = getStatusText(trangThai);
             var card = $('<div class="order-card order-card-compact">')
                 .append(
                     '<div class="order-card-header">' +
@@ -127,11 +132,11 @@ $(document).ready(function() {
                     '<div class="order-card-body">' +
                     '<h3 class="order-card-code">Mã đơn ' + escapeHtml(o.OrderCode) + '</h3>' +
                     '<p class="order-card-date">' + escapeHtml(dateTime) + '</p>' +
-                    '<p class="order-card-store">Cửa hàng: ' + escapeHtml(o.TenStore) + '</p>' +
+                    '<p class="order-card-store">Cửa hàng: ' + escapeHtml(tenStore) + '</p>' +
                     '<p class="order-card-qty">Số lượng: ' + (o.ItemCount || 0) + ' Sản phẩm</p>' +
                     '<div class="order-card-footer">' +
-                    '<a href="#" class="order-card-detail-link" data-order-id="' + o.MaOrder + '">Xem chi tiết</a>' +
-                    '<span class="order-card-total">Tổng tiền: ' + formatCurrency(o.TongTien) + '</span>' +
+                    '<a href="#" class="order-card-detail-link" data-order-id="' + maOrder + '">Xem chi tiết</a>' +
+                    '<span class="order-card-total">Tổng tiền: ' + formatCurrency(tongTien) + '</span>' +
                     '</div>' +
                     '</div>'
                 );

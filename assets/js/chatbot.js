@@ -6,12 +6,26 @@
     'use strict';
 
     const PROXY_URL = window.MEOWBOT_PROXY_URL || 'api/chatbot/proxy.php';
+    const HISTORY_URL = window.MEOWBOT_HISTORY_URL || 'api/chatbot/get_history.php';
     const STORAGE_KEY = 'meowbot_session';
-    const HISTORY_KEY = 'meowbot_history';
+
+    // ── Cookie Helpers ─────────────────────────────────────
+    function getCookie(name) {
+        const v = document.cookie.match('(^|;) ?' + name + '=([^;]*)(;|$)');
+        return v ? v[2] : null;
+    }
+    function setSessionCookie(name, value) {
+        document.cookie = name + '=' + value + '; path=/';
+    }
 
     // ── State ──────────────────────────────────────────────
-    let sessionId = sessionStorage.getItem(STORAGE_KEY) || null;
-    let history   = JSON.parse(sessionStorage.getItem(HISTORY_KEY) || '[]');
+    let sessionId = getCookie(STORAGE_KEY);
+    if (!sessionId) {
+        sessionId = 'session_' + Math.random().toString(36).substring(2, 15);
+        setSessionCookie(STORAGE_KEY, sessionId);
+    }
+    
+    let history   = [];
     let isOpen    = false;
     let isLoading = false;
 
@@ -29,6 +43,31 @@
     const iconClose   = toggleBtn.querySelector('.meowbot-icon-close');
 
     if (!widget) return; // widget not in DOM
+
+    // ── Load history ───────────────────────────────────────
+    async function loadHistory() {
+        if (!sessionId) return;
+        try {
+            const response = await fetch(`${HISTORY_URL}?session_id=${encodeURIComponent(sessionId)}`);
+            const data = await response.json();
+            
+            if (data.history && data.history.length > 0) {
+                // Xoá nội dung tĩnh mặc định nếu đã có lịch sử chat
+                messages.innerHTML = '';
+                history = data.history;
+                
+                history.forEach(msg => {
+                    const role = msg.role === 'assistant' ? 'bot' : 'user';
+                    appendMessage(role, msg.content);
+                });
+            }
+        } catch (err) {
+            console.error('Failed to load chat history:', err);
+        }
+    }
+    
+    // Gọi tải lịch sử ngay khi load script
+    loadHistory();
 
     // ── Toggle panel ───────────────────────────────────────
     function openPanel() {
@@ -103,6 +142,7 @@
             const response = await fetch(PROXY_URL, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
+                credentials: 'same-origin',
                 body: JSON.stringify({
                     message: text,
                     session_id: sessionId,
@@ -115,7 +155,7 @@
             // Persist session id
             if (data.session_id) {
                 sessionId = data.session_id;
-                sessionStorage.setItem(STORAGE_KEY, sessionId);
+                setSessionCookie(STORAGE_KEY, sessionId);
             }
 
             const reply = data.reply || 'Xin lỗi, mình không hiểu yêu cầu này. Bạn thử lại nhé!';
@@ -123,7 +163,6 @@
             appendMessage('bot', reply);
 
             history.push({ role: 'assistant', content: reply });
-            sessionStorage.setItem(HISTORY_KEY, JSON.stringify(history.slice(-20)));
 
             // Process special actions (add_to_cart etc.)
             if (data.actions && data.actions.length > 0) {

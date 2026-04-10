@@ -81,12 +81,23 @@ def search_products_tool(query: str, category: str = "", is_specific_search: boo
             return "🍹"
 
         # So sánh sau khi bỏ dấu: 'cà phè' → 'ca phe' match 'Cà phê Cappuccino'
-        norm_query = _normalize(search_text)
+        norm_query = _normalize(query.strip())
+        norm_cat_param = _normalize(category.strip())
+        
+        # Xử lý đồng nghĩa: khách gọi 'sữa chua' nhưng db lưu 'yogurt'
+        if "sua chua" in norm_query and "yogurt" not in norm_query:
+            norm_query += " yogurt"
+            
+        if not norm_query and norm_cat_param:
+            norm_query = norm_cat_param
+            
+        if not norm_query:
+            norm_query = "do uong"
         
         # Tự động trả về danh mục nếu khách hỏi menu chung chung
         menu_keywords = ["menu", "thuc don", "danh muc"]
         # Chỉ trả về danh mục nếu từ khóa quá ngắn hoặc đích danh hỏi menu
-        if not query.strip() or any(hw in norm_query.split() for hw in menu_keywords) or norm_query in ["xem", "tat ca"]:
+        if norm_query in ["xem", "tat ca"] or any(hw in norm_query.split() for hw in menu_keywords):
             categories = list(set(p.get("tencategory") or p.get("TenCategory", "") for p in mgmt_products))
             categories = [c for c in categories if c]
             if categories:
@@ -111,6 +122,11 @@ def search_products_tool(query: str, category: str = "", is_specific_search: boo
             cat_words = set(norm_cat.split())
 
             score = 0
+            
+            # 0. Ưu tiên tuyệt đối nều AI xác định được danh mục (Category Parameter)
+            if norm_cat_param and norm_cat_param in norm_cat:
+                score += 5000
+
             # 1. Exact phrase match
             if cleaned_query and cleaned_query in norm_name:
                 score += 1000
