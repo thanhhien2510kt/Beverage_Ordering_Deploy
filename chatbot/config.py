@@ -17,17 +17,20 @@ FASTAPI_RELOAD: bool = os.getenv("FASTAPI_RELOAD", "true").lower() == "true"
 # --- Security ---
 CHATBOT_SECRET_KEY: str = os.getenv("CHATBOT_SECRET_KEY", "changeme")
 
-# --- AI Chat Model (Groq - free, no quota issues) ---
+# --- AI Chat Model ---
+# Ưu tiên dùng GEMINI_API_KEY (hoặc GOOGLE_API_KEY)
+GOOGLE_API_KEY: str = os.getenv("GEMINI_API_KEY", os.getenv("GOOGLE_API_KEY", ""))
+
 GROQ_API_KEY: str = os.getenv("GROQ_API_KEY", "")
 GROQ_MODEL: str = os.getenv("GROQ_MODEL", "llama-3.3-70b-versatile")
 
 # Validation
 def validate_config():
     missing = []
-    if not GROQ_API_KEY:
-        missing.append("GROQ_API_KEY")
+    if not GOOGLE_API_KEY and not GROQ_API_KEY:
+        missing.append("GEMINI_API_KEY (hoặc GROQ_API_KEY)")
     if missing:
         raise EnvironmentError(
             f"Thiếu biến môi trường bắt buộc: {', '.join(missing)}. "
-            "Vui lòng copy .env.example thành .env và điền đầy đủ."
+            "Vui lòng thiết lập key AI để chatbot có thể hoạt động."
         )

@@ -10,7 +10,7 @@ from langchain_core.runnables.history import RunnableWithMessageHistory
 from langchain_core.messages import HumanMessage, AIMessage
 import json
 
-from config import GROQ_API_KEY, GROQ_MODEL
+from config import GROQ_API_KEY, GROQ_MODEL, GOOGLE_API_KEY
 from tools.product_tool import search_products_tool
 from tools.get_product_details_tool import get_product_details_tool
 from tools.cart_tool import add_to_cart_tool
@@ -89,12 +89,20 @@ class MeowTeaAgent:
             search_store_tool,
         ]
 
-        # LLM — Groq (Llama 3.3, free tier, no quota issues)
-        llm = ChatGroq(
-            model=GROQ_MODEL,
-            groq_api_key=GROQ_API_KEY,
-            temperature=0.4,
-        )
+        # LLM — Gemini or Groq
+        if GOOGLE_API_KEY:
+            from langchain_google_genai import ChatGoogleGenerativeAI
+            llm = ChatGoogleGenerativeAI(
+                model="gemini-2.0-flash",
+                google_api_key=GOOGLE_API_KEY,
+                temperature=0.4,
+            )
+        else:
+            llm = ChatGroq(
+                model=GROQ_MODEL,
+                groq_api_key=GROQ_API_KEY,
+                temperature=0.4,
+            )
 
         # Prompt
         user_context = _build_user_context(user_id, user_role)
