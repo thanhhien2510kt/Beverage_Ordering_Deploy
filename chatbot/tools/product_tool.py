@@ -30,20 +30,18 @@ def _format_product(p: dict) -> str:
 
 
 @tool
-def search_products_tool(query: str, category: str = "", is_specific_search: bool = False) -> str:
+def search_products_tool(query: str) -> str:
     """
     Tìm kiếm sản phẩm trong menu. Hỗ trợ tìm kiếm mờ không dấu.
-    - Dùng khi khách muốn xem menu, tìm món chung chung (cà phê, trà, trà sữa) hoặc tìm món cụ thể.
+    - Dùng khi khách muốn xem menu, tìm món chung (cà phê, trà) hoặc món cụ thể.
     - query: Mô tả món khách muốn (VD: "cà phê", "nước uống", "trà sữa dâu tây"). Nếu khách hỏi toàn bộ menu thì truyền "".
-    - is_specific_search: Bắt buộc truyền là True nếu khách hàng đang hỏi đích danh MỘT MÓN CỤ THỂ (VD: "Trà sữa Thái Đỏ", "Có bán cà phê muối không?"). Truyền là False nếu khách rủ rê, nhờ gợi ý (VD: "gợi ý đồ uống mát", "món nào ngon").
-    - Danh sách trả về đã tự động được sắp xếp giảm dần theo lượt bán (Đã bán/DaBan DESC) để gợi ý các món được yêu thích nhất.
-    Nếu khách hỏi "món nào bán chạy nhất", HÃY LẤY NGAY CÁC MÓN ĐẦU TIÊN mà tool trả về và tự tin giới thiệu với khách vì đó là số liệu bán chạy chính thức từ quán, kèm theo số lượng Đã bán!
+    - Danh sách trả về đã tự động được sắp xếp giảm dần theo lượt bán.
 
     Args:
-        query: Mô tả hoặc tên sản phẩm (vd: "trà sữa bán chạy nhất", "cà phê đá")
-        category: Danh mục tùy chọn để lọc thêm
-        Danh sách sản phẩm (đã được sắp xếp xếp hạng bán chạy nhất từ trên xuống dưới)
+        query: Tên danh mục hoặc sản phẩm (vd: "trà sữa", "cà phê đá")
     """
+    category = ""
+    is_specific_search = False
     try:
         # Decode literal \u00e0-style escapes Groq may pass instead of real Unicode
         query = _decode_unicode_escapes(query)
