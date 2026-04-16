@@ -90,17 +90,17 @@ class MeowTeaAgent:
         ]
 
         # LLM — Gemini or Groq
-        if GROQ_API_KEY:
-            llm = ChatGroq(
-                model=GROQ_MODEL,
-                api_key=GROQ_API_KEY,
-                temperature=0.4,
-            )
-        elif GOOGLE_API_KEY:
+        if GOOGLE_API_KEY:
             from langchain_google_genai import ChatGoogleGenerativeAI
             llm = ChatGoogleGenerativeAI(
                 model="gemini-2.0-flash",
                 google_api_key=GOOGLE_API_KEY,
+                temperature=0.4,
+            )
+        elif GROQ_API_KEY:
+            llm = ChatGroq(
+                model=GROQ_MODEL,
+                api_key=GROQ_API_KEY,
                 temperature=0.4,
             )
         else:
