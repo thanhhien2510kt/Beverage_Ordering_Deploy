@@ -268,7 +268,7 @@ $basePath = '../../';
                     dataType: 'json',
                     success: function (response) {
                         if (response.success) {
-                            showSnackBar('success', 'Mô phỏng thanh toán thành công!');
+                            showSnackBar('success', 'Thanh toán thành công!');
                             setTimeout(function () {
                                 window.location.href = 'order_result.php?order_id=' + orderId;
                             }, 1500);
