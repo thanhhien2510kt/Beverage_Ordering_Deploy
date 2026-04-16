@@ -46,8 +46,8 @@ try {
     // Bỏ qua lỗi DB để không làm gián đoạn chatbot, có thể ghi log nếu cần
 }
 
-// FastAPI endpoint
-$fastapiUrl = 'http://localhost:8000/chat';
+// FastAPI endpoint trên Render
+$fastapiUrl = 'https://beverage-ordering-deploy-chatbot.onrender.com/chat';
 
 // Secret key để xác thực với FastAPI (phải khớp với .env CHATBOT_SECRET_KEY)
 $secretKey = 'MeowTea_Secret_2026_@abcxyz'; // TODO: Đọc từ config nếu muốn
