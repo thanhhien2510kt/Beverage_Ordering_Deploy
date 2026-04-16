@@ -4,7 +4,7 @@ header('Content-Type: application/json');
 require_once '../../functions.php';
 
 if (session_status() === PHP_SESSION_NONE) {
-    session_start();
+if (session_status() === PHP_SESSION_NONE) { session_start(); }
 }
 
 $response = ['success' => false, 'message' => '', 'promotion_id' => null];

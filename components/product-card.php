@@ -62,7 +62,7 @@ $fallbackImage = $basePath . 'assets/img/products/product_one.png';
 
 $canAddToCart = true;
 if (session_status() === PHP_SESSION_NONE) {
-    session_start();
+if (session_status() === PHP_SESSION_NONE) { session_start(); }
 }
 if (isset($_SESSION['user_role_name'])) {
     $userRoleLower = strtolower($_SESSION['user_role_name']);

@@ -1,6 +1,6 @@
 <?php
 if (session_status() === PHP_SESSION_NONE) {
-    session_start();
+if (session_status() === PHP_SESSION_NONE) { session_start(); }
 }
 
 require_once __DIR__ . '/database/config.php';
@@ -432,7 +432,7 @@ function verifyPassword($password, $hash) {
 
 function isLoggedIn() {
     if (session_status() === PHP_SESSION_NONE) {
-        session_start();
+if (session_status() === PHP_SESSION_NONE) { session_start(); }
     }
     return isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true;
 }
@@ -462,7 +462,7 @@ function getFullName($ho, $ten) {
 
 function logout() {
     if (session_status() === PHP_SESSION_NONE) {
-        session_start();
+if (session_status() === PHP_SESSION_NONE) { session_start(); }
     }
     $_SESSION = [];
     session_destroy();
