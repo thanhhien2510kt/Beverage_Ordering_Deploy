@@ -255,9 +255,9 @@ if ($showBestSeller) {
     <?php include '../../components/footer.php'; ?>
     <?php include '../../components/snack-bar.php'; ?>
 
-    <script src="../../assets/js/common.js?v=1.1"></script>
-    <script src="../../assets/js/main.js?v=1.1"></script>
-    <script src="../../assets/js/snack-bar.js?v=1.1"></script>
-    <script src="../../assets/js/menu.js?v=1.1"></script>
+    <script src="../../assets/js/common.js?v=1.2"></script>
+    <script src="../../assets/js/main.js?v=1.2"></script>
+    <script src="../../assets/js/snack-bar.js?v=1.2"></script>
+    <script src="../../assets/js/menu.js?v=1.2"></script>
 </body>
 </html>

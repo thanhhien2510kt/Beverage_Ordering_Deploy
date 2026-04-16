@@ -330,6 +330,7 @@ $(document).ready(function () {
             if (response.success) {
               updateCartCount();
               showSnackBar('success', response.message || 'Đã thêm vào giỏ hàng thành công!');
+              closeProductModal();
             } else {
               showSnackBar('failed', response.message || 'Có lỗi xảy ra. Vui lòng thử lại.');
             }
