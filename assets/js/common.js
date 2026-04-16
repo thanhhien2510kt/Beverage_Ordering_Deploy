@@ -2,16 +2,15 @@ function getApiPath(endpoint, basePath = "api/") {
   const currentPath = window.location.pathname;
   let apiPath = basePath + endpoint;
 
-  if (currentPath.includes("/pages/")) {
-    const pathParts = currentPath.split("/").filter((p) => p);
-    const pagesIndex = pathParts.indexOf("pages");
-    if (pagesIndex >= 0) {
-      const levels = pathParts.length - pagesIndex - 1;
-      apiPath = "../".repeat(levels) + apiPath;
-    }
+  const pagesIndex = currentPath.indexOf("/pages/");
+  if (pagesIndex !== -1) {
+    const appRoot = currentPath.substring(0, pagesIndex + 1);
+    return appRoot + apiPath;
   }
 
-  return apiPath;
+  const lastSlash = currentPath.lastIndexOf('/');
+  const appRoot = currentPath.substring(0, lastSlash + 1);
+  return appRoot + apiPath;
 }
 
 function getApiBasePath() {
