@@ -15,11 +15,11 @@ try {
     $user = getCurrentUser();
     $userId = $user['id'];
 
-    $page = max(1, (int)($_GET['page'] ?? 1));
-    $perPage = min(20, max(1, (int)($_GET['per_page'] ?? 10)));
+    $page = max(1, (int) ($_GET['page'] ?? 1));
+    $perPage = min(20, max(1, (int) ($_GET['per_page'] ?? 10)));
     $status = trim($_GET['status'] ?? '');
     $search = trim($_GET['search'] ?? '');
-    $days = (int)($_GET['days'] ?? 30);
+    $days = (int) ($_GET['days'] ?? 30);
     if (!in_array($days, [7, 30, 90], true)) {
         $days = 30;
     }
@@ -72,9 +72,9 @@ try {
     if ($search !== '') {
         $searchClean = preg_replace('/^#?MTF?/i', '', $search);
         $searchClean = ltrim($searchClean, '0');
-        if (is_numeric($searchClean) && (int)$searchClean > 0) {
+        if (is_numeric($searchClean) && (int) $searchClean > 0) {
             $where[] = "o.MaOrder = ?";
-            $params[] = (int)$searchClean;
+            $params[] = (int) $searchClean;
         } else {
             $where[] = "o.MaOrder LIKE ?";
             $params[] = '%' . $search . '%';
@@ -86,8 +86,8 @@ try {
     $sqlCount = "SELECT COUNT(*) AS cnt FROM Orders o WHERE $whereClause";
     $stmt = $pdo->prepare($sqlCount);
     $stmt->execute($params);
-    $total = (int)$stmt->fetch(PDO::FETCH_ASSOC)['cnt'];
-    $totalPages = $total > 0 ? (int)ceil($total / $perPage) : 1;
+    $total = (int) $stmt->fetch(PDO::FETCH_ASSOC)['cnt'];
+    $totalPages = $total > 0 ? (int) ceil($total / $perPage) : 1;
     $page = min($page, max(1, $totalPages));
     $offset = ($page - 1) * $perPage;
 
@@ -96,9 +96,7 @@ try {
             INNER JOIN Store s ON o.MaStore = s.MaStore
             WHERE $whereClause
             ORDER BY o.NgayTao DESC
-            LIMIT ? OFFSET ?";
-    $params[] = $perPage;
-    $params[] = $offset;
+            LIMIT " . (int) $perPage . " OFFSET " . (int) $offset;
     $stmt = $pdo->prepare($sql);
     $stmt->execute($params);
     $orders = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -122,12 +120,12 @@ try {
 
         $st = $pdo->prepare("SELECT COALESCE(SUM(SoLuong), 0) AS n FROM Order_Item WHERE MaOrder = ?");
         $st->execute([$orderId]);
-        $order['ItemCount'] = (int)$st->fetch(PDO::FETCH_ASSOC)['n'];
+        $order['ItemCount'] = (int) $st->fetch(PDO::FETCH_ASSOC)['n'];
 
         $order['NgayTaoFormatted'] = date('d/m/Y', strtotime($order['ngaytao']));
         $order['NgayTaoTime'] = date('H:i:s', strtotime($order['ngaytao']));
     }
-    unset($order); 
+    unset($order);
 
     $response = [
         'success' => true,

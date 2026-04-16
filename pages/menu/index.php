@@ -108,7 +108,7 @@ if ($showBestSeller) {
 
             <div class="menu-layout">
                 <!-- Sidebar - Categories -->
-                <aside >
+                <aside class="menu-sidebar">
                     <ul class="category-list">
                         <li class="category-item <?php echo $showBestSeller ? 'active' : ''; ?>">
                             <a href="?bestseller=1&search=<?php echo urlencode($keyword); ?>" class="category-link">
@@ -320,17 +320,14 @@ if ($showBestSeller) {
                             
                             <!-- Action Buttons -->
                             <?php if ($canAddToCart): ?>
-                            <div class="product-actions" style="position: fixed; bottom: 0; background-color: var(--white); padding: 20px; border-top: 1px solid var(--border-color);">
-                                <button type="button" id="modal-add-to-cart-btn" class="btn-add-cart">
-                                    Thêm vào giỏ
-                                </button>
-                                
-                                    <a href="../cart/index.php">
-                                        <button type="button" id="modal-add-to-cart-btn" class="btn-view-cart" style="width: 250px;">
+                                <div class="product-actions" style="position: sticky; bottom: 0; background-color: var(--white); padding: 16px 20px; border-top: 1px solid var(--border-color); box-sizing: border-box; display: flex; gap: 10px; margin-top: auto;">
+                                    <button type="button" id="modal-add-to-cart-btn" class="btn-add-cart">
+                                        Thêm vào giỏ
+                                    </button>
+                                    <a href="../cart/index.php" class="btn-view-cart" style="text-decoration: none; width: auto; flex: 1; display: flex; align-items: center; justify-content: center;">
                                         Xem giỏ hàng
                                     </a>
-                                </button>
-                            </div>
+                                </div>
                             <?php else: ?>
                             <div class="product-actions" style="position: fixed; bottom: 0; background-color: var(--white); padding: 20px; border-top: 1px solid var(--border-color); text-align: center;">
                                 <p style="color: var(--text-light); font-size: 14px;">Tài khoản Admin/Staff không thể thêm sản phẩm vào giỏ hàng</p>

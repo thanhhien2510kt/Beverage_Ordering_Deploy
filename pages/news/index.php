@@ -29,6 +29,7 @@ $news = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <title>Tin Tức - MeowTea Fresh</title>
     <link rel="stylesheet" href="../../assets/css/main.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </head>
 <body>
     <?php include '../../components/header.php'; ?>
@@ -66,6 +67,8 @@ $news = $stmt->fetchAll(PDO::FETCH_ASSOC);
             <?php endif; ?>
         </div>
     </section>
+
+    <?php include '../../components/news-quick-view.php'; ?>
 
     <?php 
         $bgType = 'light-green';

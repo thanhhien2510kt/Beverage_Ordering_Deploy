@@ -26,6 +26,8 @@ $(document).ready(function () {
     $("#delivery-address-display").text(val || "Chưa có địa chỉ");
     $("#change-address-btn").text(val ? "Đổi địa chỉ" : "Thêm địa chỉ");
     $("#address-edit-block").slideUp(300);
+    autoSelectStoreInfo();
+    calculateShippingFee();
   });
 
 
@@ -89,6 +91,7 @@ $(document).ready(function () {
     } else {
       $("#store-info").slideUp(300);
     }
+    calculateShippingFee();
   });
 
 
@@ -98,7 +101,7 @@ $(document).ready(function () {
   function toggleClearButton() {
     const value = $("#promotion-code").val().trim();
     const $clearBtn = $("#promotion-clear-btn");
-    
+
 
     if (value) {
       $clearBtn.show();
@@ -232,6 +235,36 @@ $(document).ready(function () {
   }
 
 
+  function calculateShippingFee() {
+    const deliveryAddr = $("#delivery-address").val().trim().toLowerCase();
+    const $selectedStore = $("#store-select").find(":selected");
+    const storeAddr = ($selectedStore.data("address") || "").toLowerCase();
+
+    if (!deliveryAddr || !storeAddr) {
+      return;
+    }
+
+    let fee = 30000; // Default: khác quận/huyện
+
+    // Trích xuất Quận/Huyện theo format "Quận X" hoặc "Huyện X"
+    const districtRegex = /(quận|huyện|thị xã|tp\.)\s+([a-zA-Z0-9\sÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂưăạảấầẩẫậắằẳẵặẹẻẽềềểếệỉịọỏốồổỗộớờởỡợụủứừửữựỳỵỷỹ]+?)(?=\s*,|\s*$)/i;
+
+    const deliveryMatch = deliveryAddr.match(districtRegex);
+    const storeMatch = storeAddr.match(districtRegex);
+
+    if (deliveryMatch && storeMatch) {
+      const deliveryDistrict = deliveryMatch[2].trim();
+      const storeDistrict = storeMatch[2].trim();
+
+      if (deliveryDistrict === storeDistrict) {
+        fee = 15000; // Cùng quận
+      }
+    }
+
+    $("#shipping-fee").text(formatCurrency(fee));
+    updateTotals();
+  }
+
   function updateTotals() {
     const subtotal =
       parseFloat($("#subtotal").text().replace(/[^\d]/g, "")) || 0;
@@ -244,6 +277,35 @@ $(document).ready(function () {
     $("#total-amount").text(formatCurrency(total));
   }
 
+
+  $(".terms-link").on("click", function (e) {
+    e.preventDefault();
+    const termsHtml = `
+      <div class="terms-content" style="text-align: left; line-height: 1.6; font-size: 14px;">
+          <h4 style="margin-top: 0; margin-bottom: 8px; color: var(--primary-green);">1. Điều khoản chung</h4>
+          <p style="margin-bottom: 15px;">Bằng việc đặt hàng tại MeowTea Fresh, quý khách đồng ý với các điều khoản và điều kiện mua hàng của chúng tôi. Các điều khoản này có thể được cập nhật mà không cần thông báo trước.</p>
+          
+          <h4 style="margin-top: 0; margin-bottom: 8px; color: var(--primary-green);">2. Chính sách giao hàng</h4>
+          <p style="margin-bottom: 15px;">Chúng tôi cam kết giao hàng trong thời gian sớm nhất có thể. Thời gian giao hàng dự kiến từ 15-45 phút tùy khu vực, tình hình giao thông và điều kiện thời tiết.</p>
+          
+          <h4 style="margin-top: 0; margin-bottom: 8px; color: var(--primary-green);">3. Chính sách đổi trả và hoàn tiền</h4>
+          <p style="margin-bottom: 15px;">Khách hàng có thể yêu cầu đổi trả hoặc hoàn tiền trong các trường hợp: sản phẩm không đúng như món đã đặt, sản phẩm bị hỏng hóc hoặc không đảm bảo chất lượng. Vui lòng liên hệ hotline trong vòng 30 phút kể từ khi nhận hàng.</p>
+          
+          <h4 style="margin-top: 0; margin-bottom: 8px; color: var(--primary-green);">4. Phương thức thanh toán</h4>
+          <p style="margin-bottom: 15px;">MeowTea Fresh hỗ trợ nhiều hình thức thanh toán bao gồm tiền mặt (COD), ví điện tử (MoMo, ZaloPay, VNPAY), thẻ tín dụng và chuyển khoản ngân hàng. Mọi giao dịch đều được đảm bảo an toàn thông tin.</p>
+          
+          <h4 style="margin-top: 0; margin-bottom: 8px; color: var(--primary-green);">5. Bảo mật thông tin khách hàng</h4>
+          <p style="margin-bottom: 15px;">Thông tin cá nhân của quý khách (họ tên, số điện thoại, địa chỉ, email) chỉ được sử dụng cho mục đích xử lý đơn hàng, giao hàng và chăm sóc khách hàng, cam kết không mua bán hoặc chia sẻ cho bên thứ ba vì mục đích thương mại.</p>
+      </div>
+    `;
+
+    showModalBox({
+      title: 'Điều khoản mua hàng',
+      message: termsHtml,
+      isHtml: true,
+      type: 'acknowledge'
+    });
+  });
 
   $("#pay-now-btn").on("click", function () {
 
@@ -268,6 +330,17 @@ $(document).ready(function () {
     const storeId = $("#store-select").val();
     if (!storeId) {
       showSnackBar("warm", "Vui lòng chọn cửa hàng");
+      return;
+    }
+
+    let checkAddr = deliveryAddr.toLowerCase()
+      .replace("tp hồ chí minh", "hồ chí minh")
+      .replace("tp. hồ chí minh", "hồ chí minh")
+      .replace("tp.hcm", "hồ chí minh")
+      .replace("tphcm", "hồ chí minh");
+
+    if (!checkAddr.includes(province.toLowerCase())) {
+      showSnackBar("warm", "Địa chỉ giao hàng và cửa hàng không cùng Tỉnh/Thành phố");
       return;
     }
 
@@ -319,9 +392,11 @@ $(document).ready(function () {
       dataType: "json",
       success: function (response) {
         if (response.success) {
-
-          window.location.href =
-            "order_result.php?order_id=" + response.order_id;
+          if (response.payment_method > 1) {
+            window.location.href = "payment.php?order_id=" + response.order_id;
+          } else {
+            window.location.href = "order_result.php?order_id=" + response.order_id;
+          }
         } else {
           showSnackBar("failed", "Có lỗi xảy ra: " + (response.message || "Vui lòng thử lại"));
           $("#pay-now-btn").prop("disabled", false).text("Thanh toán ngay");
@@ -336,6 +411,28 @@ $(document).ready(function () {
   });
 
 
+  function autoSelectStoreInfo() {
+    const deliveryAddress = $("#delivery-address").val().trim().toLowerCase();
+    if (!deliveryAddress) return;
+
+    let matchedProvince = "";
+    let checkAddr = deliveryAddress.replace("tp hồ chí minh", "hồ chí minh").replace("tp. hồ chí minh", "hồ chí minh").replace("tp.hcm", "hồ chí minh").replace("tphcm", "hồ chí minh");
+
+    $("#province-select option").each(function () {
+      const pval = $(this).val();
+      if (!pval) return;
+      if (checkAddr.includes(pval.toLowerCase())) {
+        matchedProvince = pval;
+      }
+    });
+
+    if (matchedProvince) {
+      $("#province-select").val(matchedProvince).trigger("change");
+    }
+  }
+
   updateTotals();
   toggleClearButton();
+  autoSelectStoreInfo();
+  calculateShippingFee();
 });

@@ -33,6 +33,8 @@
     background-color: var(--white);
     box-shadow: -4px 0 20px rgba(0, 0, 0, 0.2);
     overflow-y: auto;
+    display: flex;
+    flex-direction: column;
     animation: slideInRight 0.3s ease-out;
 }
 
@@ -77,13 +79,60 @@
 .modal-content {
     padding: 20px;
     position: relative;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
 }
 
 .modal-loading {
     text-align: center;
     padding: 60px 20px;
     color: var(--text-light);
-    font-size: 18px;
+    font-size: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+}
+
+.modal-loading::before {
+    content: '';
+    display: block;
+    width: 44px;
+    height: 44px;
+    border: 4px solid rgba(26, 77, 46, 0.15);
+    border-top-color: var(--primary-green);
+    border-radius: 50%;
+    animation: modalSpinner 0.8s linear infinite;
+}
+
+@keyframes modalSpinner {
+    to { transform: rotate(360deg); }
+}
+
+/* Global btn-view-cart (used in news modal footer) */
+.btn-view-cart {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 46px;
+    padding: 0 40px;
+    border-radius: 30px;
+    background-color: var(--primary-green);
+    border: 2px solid var(--primary-green);
+    color: var(--white);
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+}
+
+.btn-view-cart:hover {
+    background-color: #0f3a1f;
+    transform: translateY(-2px);
+    color: var(--white);
+    text-decoration: none;
 }
 
 /* Product Header Layout */

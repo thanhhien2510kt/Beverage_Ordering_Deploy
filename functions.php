@@ -151,6 +151,13 @@ function getNews($limit = null) {
     return $stmt->fetchAll();
 }
 
+function getNewsById($id) {
+    $pdo = getDBConnection();
+    $stmt = $pdo->prepare("SELECT * FROM News WHERE MaNews = ? AND TrangThai = 1");
+    $stmt->execute([$id]);
+    return $stmt->fetch();
+}
+
 function readMarkdownFile($filePath) {
     $rootPath = realpath(__DIR__);
     $fullPath = $rootPath . DIRECTORY_SEPARATOR . str_replace('/', DIRECTORY_SEPARATOR, $filePath);
@@ -548,19 +555,22 @@ function getToppings() {
 
     $formattedToppings = [];
     foreach ($toppings as $topping) {
+        // Sử dụng maoptionvalue hoặc MaOptionValue tùy thuộc vào cấu hình PDO của server
+        $ovId = $topping['maoptionvalue'] ?? $topping['MaOptionValue'] ?? 0;
+        $name = $topping['tengiatri'] ?? $topping['TenGiaTri'] ?? '';
+        $extraPrice = $topping['giathem'] ?? $topping['GiaThem'] ?? 0;
+        $img = $topping['hinhanh'] ?? $topping['HinhAnh'] ?? $defaultToppingImage;
 
-        $imagePath = !empty($topping['hinhanh']) ? $topping['hinhanh'] : $defaultToppingImage;
-        
         $formattedToppings[] = [
-            'MaSP' => 'topping_' . $topping['maoptionvalue'], // Prefix để phân biệt với sản phẩm thật
-            'TenSP' => $topping['tengiatri'],
-            'GiaCoBan' => $topping['giathem'],
-            'HinhAnh' => $imagePath,
-            'Rating' => 4.5, // Default rating
-            'SoLuotRating' => 0,
-            'MaCategory' => 0, // Special category for topping
-            'TenCategory' => 'Topping',
-            'IsTopping' => true // Flag to identify as topping
+            'masp' => 'topping_' . $ovId, // Prefix để phân biệt với sản phẩm thật
+            'tensp' => $name,
+            'giacoban' => $extraPrice,
+            'hinhanh' => $img,
+            'rating' => 4.5, // Default rating
+            'soluotrating' => 0,
+            'macategory' => 0, // Special category for topping
+            'tencategory' => 'Topping',
+            'istopping' => true // Flag to identify as topping
         ];
     }
     

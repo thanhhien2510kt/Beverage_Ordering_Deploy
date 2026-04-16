@@ -1,0 +1,75 @@
+========================================================================
+                     MEOWTEA FRESH - TECH STACK OVERVIEW
+========================================================================
+
+1. TỔNG QUAN DỰ ÁN
+------------------------------------------------------------------------
+- Tên dự án: MeowTea Fresh
+- Mục tiêu: Hệ thống đặt đồ uống trực tuyến (Trà sữa, Cà phê, Yogurt...)
+- Mô hình: Website thương mại điện tử (B2C)
+
+2. CÔNG NGHỆ BACKEND
+------------------------------------------------------------------------
+- Ngôn ngữ chính: PHP 7.4+ (Vanilla PHP)
+- Kết nối Cơ sở dữ liệu: PDO (PHP Data Objects)
+- Kiến trúc: 
+    + Codebase thuần, không sử dụng framework (Laravel/Symfony).
+    + Sử dụng REST API nội bộ để xử lý dữ liệu (JSON format).
+    + Quản lý phiên làm việc: Web Sessions.
+- Bảo mật: 
+    + Hash mật khẩu: BCRYPT.
+    + Xử lý chuỗi an toàn: htmlspecialchars.
+
+3. CƠ SỞ DỮ LIỆU (DATABASE)
+------------------------------------------------------------------------
+- Hệ quản trị chính: PostgreSQL (Triển khai trên Supabase).
+- Hỗ trợ song song: MySQL / MariaDB (Cho môi trường phát triển local).
+- Tính năng: 
+    + Sử dụng ILIKE cho tìm kiếm không phân biệt hoa thường (Postgres).
+    + Cấu trúc dữ liệu chuẩn hóa (Normalized) gồm 15+ bảng chính.
+    + Scripts seeding dữ liệu tự động cho Demo.
+
+4. CÔNG NGHỆ FRONTEND
+------------------------------------------------------------------------
+- Core: HTML5, CSS3, JavaScript (ES6+).
+- Thư viện hỗ trợ: 
+    + jQuery: Xử lý DOM, AJAX, Event handling.
+    + Font Awesome / Google Fonts: Icons và Typography.
+- CSS Strategy: 
+    + Vanilla CSS với cấu trúc Modular (chia theo component/page).
+    + Sử dụng CSS Variables (cho Theme/Colors).
+    + CSS Transitions & Animations cho UX/UI mượt mà.
+- Content Management: Tích hợp Markdown (.md) cho các bài viết tin tức.
+- Chatbot UI: Giao diện chat nổi (floating), hỗ trợ Markdown, tích hợp AJAX để giao tiếp với AI backend qua PHP Proxy.
+
+5. CẤU TRÚC HỆ THỐNG (INFRASTRUCTURE)
+------------------------------------------------------------------------
+- Web Server: Apache (XAMPP).
+- Backend APIs: PHP 7.4+ & FastAPI (Python).
+- Database Server: Supabase (PostgreSQL Cloud + pgvector extension).
+- Media Storage: Local system (assets/img).
+- Integration: 
+    + Tích hợp giả lập thanh toán (MoMo, VNPay, Chuyển khoản).
+    + Tích hợp AI Agent cho trải nghiệm mua sắm thông minh.
+
+6. AI CHATBOT SERVICE (PHẦN BỔ SUNG)
+------------------------------------------------------------------------
+- Ngôn ngữ: Python 3.11+
+- Framework: FastAPI (Cung cấp REST API cho chatbot).
+- LLM (Large Language Model): Google Gemini 2.0 Flash.
+- Orchestration: LangChain (Xây dựng AI Agent có khả năng gọi tool).
+- Vector Search: Supabase pgvector (Cho phép tìm kiếm sản phẩm theo ngữ nghĩa).
+- Chức năng Agent:
+    + Tìm kiếm sản phẩm thông minh (Semantic Search).
+    + Thêm sản phẩm trực tiếp vào giỏ hàng.
+    + Tra cứu trạng thái đơn hàng thời gian thực.
+    + Tiếp nhận và lưu trữ khiếu nại của khách hàng.
+
+7. CÔNG CỤ PHÁT TRIỂN (DEVELOPMENT TOOLS)
+------------------------------------------------------------------------
+- IDE: VS Code / Cursor.
+- Version Control: Git (GitHub).
+- AI Assistant: Antigravity Code Assistant.
+
+========================================================================
+Cập nhật lần cuối: 16/04/2026
