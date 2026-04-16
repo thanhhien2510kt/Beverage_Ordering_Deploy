@@ -18,5 +18,8 @@ COPY . /var/www/html/
 RUN chown -R www-data:www-data /var/www/html/ \
     && chmod -R 755 /var/www/html/
 
+# Bật output_buffering để tránh lỗi session_start headers already sent (thường gặp khi port từ XAMPP)
+RUN echo "output_buffering = 4096" > /usr/local/etc/php/conf.d/output_buffering.ini
+
 # Mở cổng 80 (để Render trỏ traffic vào đây theo mặc định của Apache)
 EXPOSE 80
