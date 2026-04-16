@@ -65,8 +65,8 @@ curl_setopt_array($ch, [
         'X-Chatbot-Secret: ' . $secretKey,
     ],
     CURLOPT_RETURNTRANSFER => true,
-    CURLOPT_TIMEOUT        => 30,
-    CURLOPT_CONNECTTIMEOUT => 5,
+    CURLOPT_TIMEOUT        => 60,
+    CURLOPT_CONNECTTIMEOUT => 15,
 ]);
 
 $result   = curl_exec($ch);
