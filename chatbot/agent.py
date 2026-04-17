@@ -99,6 +99,7 @@ class MeowTeaAgent:
                 openai_api_key=OPENROUTER_API_KEY,
                 openai_api_base="https://openrouter.ai/api/v1",
                 temperature=0.4,
+                max_tokens=2000, # Giới hạn để không bị báo lỗi 402 khi 0đ
             )
             
             # Fallback 1: Llama 3.3 70B (Free)
@@ -107,6 +108,7 @@ class MeowTeaAgent:
                 openai_api_key=OPENROUTER_API_KEY,
                 openai_api_base="https://openrouter.ai/api/v1",
                 temperature=0.4,
+                max_tokens=2000,
             )
             
             # Fallback 2: Gemma 3 27B (Free)
@@ -115,6 +117,7 @@ class MeowTeaAgent:
                 openai_api_key=OPENROUTER_API_KEY,
                 openai_api_base="https://openrouter.ai/api/v1",
                 temperature=0.4,
+                max_tokens=2000,
             )
             
             llm = main_llm.with_fallbacks([fb1, fb2])
