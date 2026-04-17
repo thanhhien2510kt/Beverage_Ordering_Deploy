@@ -1,5 +1,5 @@
 """
-MeowTea Fresh AI Chatbot - Ultra Stability Version (Deploy: 2026-04-17 11:05)
+MeowTea Fresh AI Chatbot - Smart & Stable Version
 """
 from typing import Optional
 from langchain_openai import ChatOpenAI
@@ -13,14 +13,18 @@ import os
 from config import OPENROUTER_API_KEY, GROQ_API_KEY, GROQ_MODEL
 
 SYSTEM_PROMPT = """Bạn là MeowBot 🐱 — trợ lý AI của tiệm trà sữa MeowTea Fresh.
-Xưng "mình", gọi khách là "bạn" 🍵🧋✨.
-- Nếu khách yêu cầu Xem Menu chung: Hãy liệt kê 3 danh mục Cà phê, Trà sữa, Yogurt.
-- Nếu khách hỏi món cụ thể: Dùng search_products_tool.
+NGUYÊN TẮC:
+1. Xưng "mình", gọi khách là "bạn". Ngôn ngữ dễ thương, dùng emoji 🍵✨.
+2. Menu: Khi khách hỏi chung chung, gợi ý 3 loại: Cà phê, Trà sữa, Yogurt. Chỉ gọi search_products_tool khi khách chọn một loại cụ thể.
+3. Đặt hàng: KHÔNG ĐƯỢC tự ý thêm vào giỏ. Phải dùng get_product_details_tool để hỏi Size/Đá/Đường/Topping trước. 
+4. Login: Luôn kiểm tra user_context. Nếu "Chưa đăng nhập" mà khách muốn đặt hàng, hãy yêu cầu login trước.
+
+{user_context}
 """
 
 def _build_user_context(user_id: Optional[int], user_role: Optional[str]) -> str:
-    if not user_id: return "Chưa đăng nhập."
-    return f"Đã đăng nhập (ID: {user_id})."
+    if not user_id: return "Trạng thái: Khách hàng chưa đăng nhập."
+    return f"Trạng thái: Đã đăng nhập (ID: {user_id})."
 
 class MeowTeaAgent:
     def __init__(self, session_id: str, user_id: Optional[int], user_role: Optional[str]):
@@ -29,40 +33,28 @@ class MeowTeaAgent:
         self.user_role = user_role
         self._history = ChatMessageHistory()
 
-        # 1. Danh sách OpenRouter (Ưu tiên các dòng ổn định)
-        openrouter_models = [
-            "meta-llama/llama-3.1-70b-instruct:free",
-            "mistralai/mistral-small-24b-instruct-2501:free",
-            "qwen/qwen-2.5-72b-instruct:free"
+        # Biệt đội ổn định: Gemma 2 9B và Mistral 7B (Luôn luôn Online)
+        stable_models = [
+            "google/gemma-2-9b-it:free",
+            "mistralai/mistral-7b-instruct:free",
+            "meta-llama/llama-3.2-3b-instruct:free"
         ]
         
-        main_llm = ChatOpenAI(
-            model_name=openrouter_models[0],
-            openai_api_key=OPENROUTER_API_KEY,
-            openai_api_base="https://openrouter.ai/api/v1",
-            temperature=0.6,
-            max_tokens=1000,
-        )
-        
-        openrouter_fallbacks = [
-            ChatOpenAI(
+        def create_llm(m):
+            return ChatOpenAI(
                 model_name=m,
                 openai_api_key=OPENROUTER_API_KEY,
                 openai_api_base="https://openrouter.ai/api/v1",
-                temperature=0.6,
+                temperature=0.4,
                 max_tokens=1000
-            ) for m in openrouter_models[1:]
-        ]
+            )
 
-        # 2. Dự phòng cuối cùng: Groq API trực tiếp (Nếu OpenRouter sập)
-        groq_fallback = ChatGroq(
-            model=GROQ_MODEL,
-            api_key=GROQ_API_KEY,
-            temperature=0.6,
-            max_tokens=1000
-        )
-
-        self.llm = main_llm.with_fallbacks(openrouter_fallbacks + [groq_fallback])
+        main_llm = create_llm(stable_models[0])
+        fallbacks = [create_llm(m) for m in stable_models[1:]]
+        
+        # Thêm Groq làm cứu cánh cuối cùng
+        groq_llm = ChatGroq(model=GROQ_MODEL, api_key=GROQ_API_KEY, temperature=0.4)
+        self.llm = main_llm.with_fallbacks(fallbacks + [groq_llm])
 
         from tools.product_tool import search_products_tool
         from tools.get_product_details_tool import get_product_details_tool
@@ -91,7 +83,7 @@ class MeowTeaAgent:
 
         try:
             result = await self.executor.ainvoke({"input": message, "chat_history": self._history.messages[-6:]})
-            reply = str(result.get("output", "Mình đang chuẩn bị trà, bạn đợi xíu nhé!"))
+            reply = str(result.get("output", "Đợi mình một xíu nhé... 🐱"))
             
             actions = []
             intermediate_steps = result.get("intermediate_steps", [])
@@ -106,7 +98,7 @@ class MeowTeaAgent:
             self._history.add_ai_message(reply)
             return reply, actions
         except Exception as e:
-            return f"MeowBot đang bận pha trà, bạn gõ lại câu vừa rồi nhé! 🍵 ({str(e)})", []
+            return f"Hê hệ thống bận một xíu, bạn gõ lại nhé! 🙏 ({str(e)})", []
 
     def _extract_actions(self, text: str) -> list[dict]:
         import re
