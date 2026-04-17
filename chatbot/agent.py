@@ -203,14 +203,8 @@ class MeowTeaAgent:
             return reply, unique_actions
         except Exception as e:
             err_str = str(e)
-            # Groq failed_generation: model could not produce a valid tool call
-            if "failed_generation" in err_str or "Failed to call a function" in err_str:
-                return (
-                    "Xin lỗi bạn, mình hiểu ý bạn rồi nhưng hệ thống đang bận xíu 🐱 "
-                    "Bạn thử hỏi lại theo cách khác nhé! Ví dụ: \"Cho mình xem các loại cà phê\" "
-                    "hoặc \"Tìm trà sữa cho mình\" ✨"
-                ), []
-            return f"Xin lỗi bạn, mình đang gặp sự cố kỹ thuật 🙏 ({err_str})", []
+            # DEBUG: Hiển thị lỗi thật để đoán bệnh
+            return f"❌ Lỗi thật sự: {err_str}", []
 
     def _extract_actions_from_text(self, text: str) -> list[dict]:
         import re
