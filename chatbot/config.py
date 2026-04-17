@@ -20,7 +20,7 @@ CHATBOT_SECRET_KEY: str = os.getenv("CHATBOT_SECRET_KEY", "changeme")
 # --- AI Chat Model ---
 # Ưu tiên dùng OPENROUTER_API_KEY -> GEMINI_API_KEY -> GROQ_API_KEY
 OPENROUTER_API_KEY: str = os.getenv("OPENROUTER_API_KEY", "")
-OPENROUTER_MODEL: str = os.getenv("OPENROUTER_MODEL", "google/gemini-2.5-flash")
+OPENROUTER_MODEL: str = os.getenv("OPENROUTER_MODEL", "google/gemini-2.0-pro-exp-02-05:free")
 
 GOOGLE_API_KEY: str = os.getenv("GEMINI_API_KEY", os.getenv("GOOGLE_API_KEY", ""))
 
