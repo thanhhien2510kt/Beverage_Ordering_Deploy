@@ -10,7 +10,7 @@ from langchain_core.runnables.history import RunnableWithMessageHistory
 from langchain_core.messages import HumanMessage, AIMessage
 import json
 
-from config import GROQ_API_KEY, GROQ_MODEL, GOOGLE_API_KEY
+from config import GROQ_API_KEY, GROQ_MODEL, GOOGLE_API_KEY, OPENROUTER_API_KEY, OPENROUTER_MODEL
 from tools.product_tool import search_products_tool
 from tools.get_product_details_tool import get_product_details_tool
 from tools.cart_tool import add_to_cart_tool
@@ -89,8 +89,16 @@ class MeowTeaAgent:
             search_store_tool,
         ]
 
-        # LLM — Gemini or Groq
-        if GOOGLE_API_KEY:
+        # LLM —  OpenRouter, Gemini, or Groq
+        if OPENROUTER_API_KEY:
+            from langchain_openai import ChatOpenAI
+            llm = ChatOpenAI(
+                model_name=OPENROUTER_MODEL,
+                openai_api_key=OPENROUTER_API_KEY,
+                openai_api_base="https://openrouter.ai/api/v1",
+                temperature=0.4,
+            )
+        elif GOOGLE_API_KEY:
             from langchain_google_genai import ChatGoogleGenerativeAI
             llm = ChatGoogleGenerativeAI(
                 model="gemini-2.0-flash",
