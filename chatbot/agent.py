@@ -1,5 +1,5 @@
 """
-MeowTea Fresh AI Chatbot - DeepSeek R1 Free 
+MeowTea Fresh AI Chatbot - Multi-model Fallback Loop
 """
 from typing import Optional
 from langchain_openai import ChatOpenAI
@@ -9,12 +9,7 @@ from langchain_community.chat_message_histories import ChatMessageHistory
 import json
 import os
 
-from config import OPENROUTER_API_KEY, OPENROUTER_MODEL
-from tools.product_tool import search_products_tool
-from tools.get_product_details_tool import get_product_details_tool
-from tools.cart_tool import add_to_cart_tool
-from tools.order_tool import get_order_status_tool, get_recent_orders_tool
-from tools.search_store_tool import search_store_tool
+from config import OPENROUTER_API_KEY
 
 SYSTEM_PROMPT = """Bạn là MeowBot 🐱 — trợ lý AI của tiệm trà sữa MeowTea Fresh.
 Xưng "mình", gọi khách là "bạn". 
@@ -35,27 +30,48 @@ class MeowTeaAgent:
         self.user_role = user_role
         self._history = ChatMessageHistory()
 
-        # DeepSeek R1 Free via OpenRouter
-        llm = ChatOpenAI(
-            model_name=OPENROUTER_MODEL, # deepseek/deepseek-r1:free
-            openai_api_key=OPENROUTER_API_KEY,
-            openai_api_base="https://openrouter.ai/api/v1",
-            temperature=0.6,
-            max_tokens=2000,
-        )
+        # Biệt đội model miễn phí dự phòng
+        free_models = [
+            "google/gemma-3-27b-it:free",
+            "mistralai/mistral-small-24b-instruct-2501:free",
+            "qwen/qwen-2.5-72b-instruct:free",
+            "nousresearch/hermes-3-llama-3.1-405b:free",
+            "meta-llama/llama-3.3-70b-instruct:free"
+        ]
 
-        tools = [search_products_tool, get_product_details_tool, add_to_cart_tool, 
-                 get_order_status_tool, get_recent_orders_tool, search_store_tool]
+        def create_llm(model_name):
+            return ChatOpenAI(
+                model_name=model_name,
+                openai_api_key=OPENROUTER_API_KEY,
+                openai_api_base="https://openrouter.ai/api/v1",
+                temperature=0.6,
+                max_tokens=1500,
+            )
 
-        prompt = ChatPromptTemplate.from_messages([
+        main_llm = create_llm(free_models[0])
+        fallbacks = [create_llm(m) for m in free_models[1:]]
+        
+        # LangChain with_fallbacks handle 429 and 402 automatically
+        self.llm = main_llm.with_fallbacks(fallbacks)
+
+        from tools.product_tool import search_products_tool
+        from tools.get_product_details_tool import get_product_details_tool
+        from tools.cart_tool import add_to_cart_tool
+        from tools.order_tool import get_order_status_tool, get_recent_orders_tool
+        from tools.search_store_tool import search_store_tool
+
+        self.tools = [search_products_tool, get_product_details_tool, add_to_cart_tool, 
+                     get_order_status_tool, get_recent_orders_tool, search_store_tool]
+
+        self.prompt = ChatPromptTemplate.from_messages([
             ("system", SYSTEM_PROMPT.format(user_context=_build_user_context(user_id, user_role))),
             MessagesPlaceholder(variable_name="chat_history"),
             ("human", "{input}"),
             MessagesPlaceholder(variable_name="agent_scratchpad"),
         ])
 
-        agent = create_tool_calling_agent(llm, tools, prompt)
-        self.executor = AgentExecutor(agent=agent, tools=tools, verbose=True, handle_parsing_errors=True)
+        agent = create_tool_calling_agent(self.llm, self.tools, self.prompt)
+        self.executor = AgentExecutor(agent=agent, tools=self.tools, verbose=True, handle_parsing_errors=True)
 
     async def chat(self, message: str, history: list[tuple[str, str]]) -> tuple[str, list[dict]]:
         if history and not self._history.messages:
@@ -67,7 +83,6 @@ class MeowTeaAgent:
             result = await self.executor.ainvoke({"input": message, "chat_history": self._history.messages[-6:]})
             reply = str(result.get("output", "Lỗi rồi, thử lại nhé!"))
             
-            # Trích xuất actions
             actions = []
             intermediate_steps = result.get("intermediate_steps", [])
             for action_obj, observation in intermediate_steps:
@@ -81,7 +96,7 @@ class MeowTeaAgent:
             self._history.add_ai_message(reply)
             return reply, actions
         except Exception as e:
-            return f"Sự cố hệ thống: {str(e)}", []
+            return f"Hệ thống đang rất bận, bạn thử gõ lại câu vừa rồi nhé! 🙏 ({str(e)})", []
 
     def _extract_actions(self, text: str) -> list[dict]:
         import re
@@ -89,7 +104,6 @@ class MeowTeaAgent:
         match = re.search(r'__ACTION_PAYLOAD__:\s*(\{.*)', text, flags=re.DOTALL)
         if match:
             try:
-                # Tìm dấu đóng ngoặc }
                 s = match.group(1)
                 d = 0
                 for i, c in enumerate(s):
