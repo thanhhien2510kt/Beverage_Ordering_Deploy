@@ -105,21 +105,21 @@ class MeowTeaAgent:
                 openai_api_key=OPENROUTER_API_KEY,
                 openai_api_base="https://openrouter.ai/api/v1",
                 temperature=0.4,
-                max_tokens=2000, # Giới hạn để không bị báo lỗi 402 khi 0đ
+                max_tokens=1000, # Giảm sâu xuống 1000 để lách luật OpenRouter 0đ
             )
             
-            # Fallback 1: Llama 3.3 70B (Free)
+            # Fallback 1: DeepSeek R1 (Free)
             fb1 = ChatOpenAI(
-                model_name="meta-llama/llama-3.3-70b-instruct:free",
+                model_name="deepseek/deepseek-r1:free",
                 openai_api_key=OPENROUTER_API_KEY,
                 openai_api_base="https://openrouter.ai/api/v1",
                 temperature=0.4,
                 max_tokens=2000,
             )
             
-            # Fallback 2: Gemma 3 27B (Free)
+            # Fallback 2: Llama 3.3 70B (Free)
             fb2 = ChatOpenAI(
-                model_name="google/gemma-3-27b-it:free",
+                model_name="meta-llama/llama-3.3-70b-instruct:free",
                 openai_api_key=OPENROUTER_API_KEY,
                 openai_api_base="https://openrouter.ai/api/v1",
                 temperature=0.4,
