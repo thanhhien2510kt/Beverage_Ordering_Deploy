@@ -89,15 +89,35 @@ class MeowTeaAgent:
             search_store_tool,
         ]
 
-        # LLM —  OpenRouter, Gemini, or Groq
+        # LLM —  OpenRouter (with Fallbacks), Gemini, or Groq
         if OPENROUTER_API_KEY:
             from langchain_openai import ChatOpenAI
-            llm = ChatOpenAI(
+            
+            # Main model (GPT-4o or as configured)
+            main_llm = ChatOpenAI(
                 model_name=OPENROUTER_MODEL,
                 openai_api_key=OPENROUTER_API_KEY,
                 openai_api_base="https://openrouter.ai/api/v1",
                 temperature=0.4,
             )
+            
+            # Fallback 1: Llama 3.3 70B (Free)
+            fb1 = ChatOpenAI(
+                model_name="meta-llama/llama-3.3-70b-instruct:free",
+                openai_api_key=OPENROUTER_API_KEY,
+                openai_api_base="https://openrouter.ai/api/v1",
+                temperature=0.4,
+            )
+            
+            # Fallback 2: Gemma 3 27B (Free)
+            fb2 = ChatOpenAI(
+                model_name="google/gemma-3-27b-it:free",
+                openai_api_key=OPENROUTER_API_KEY,
+                openai_api_base="https://openrouter.ai/api/v1",
+                temperature=0.4,
+            )
+            
+            llm = main_llm.with_fallbacks([fb1, fb2])
         elif GOOGLE_API_KEY:
             from langchain_google_genai import ChatGoogleGenerativeAI
             llm = ChatGoogleGenerativeAI(
