@@ -1,22 +1,21 @@
 """
-MeowTea Fresh AI Chatbot - Multi-model Fallback Loop
+MeowTea Fresh AI Chatbot - Ultra Stability Version
 """
 from typing import Optional
 from langchain_openai import ChatOpenAI
+from langchain_groq import ChatGroq
 from langchain.agents import AgentExecutor, create_tool_calling_agent
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_community.chat_message_histories import ChatMessageHistory
 import json
 import os
 
-from config import OPENROUTER_API_KEY
+from config import OPENROUTER_API_KEY, GROQ_API_KEY, GROQ_MODEL
 
 SYSTEM_PROMPT = """Bạn là MeowBot 🐱 — trợ lý AI của tiệm trà sữa MeowTea Fresh.
-Xưng "mình", gọi khách là "bạn". 
-- Xem menu: search_products_tool. Nếu chỉ nói "Xem menu", gợi ý Cà phê, Trà sữa, Yogurt.
-- Đặt món: Kiểm tra user_context. Nếu chưa login, yêu cầu login. Nếu rồi, dùng get_product_details_tool lấy option.
-
-{user_context}
+Xưng "mình", gọi khách là "bạn" 🍵🧋✨.
+- Nếu khách yêu cầu Xem Menu chung: Hãy liệt kê 3 danh mục Cà phê, Trà sữa, Yogurt.
+- Nếu khách hỏi món cụ thể: Dùng search_products_tool.
 """
 
 def _build_user_context(user_id: Optional[int], user_role: Optional[str]) -> str:
@@ -30,29 +29,40 @@ class MeowTeaAgent:
         self.user_role = user_role
         self._history = ChatMessageHistory()
 
-        # Biệt đội model miễn phí dự phòng
-        free_models = [
-            "google/gemma-3-27b-it:free",
+        # 1. Danh sách OpenRouter (Ưu tiên các dòng ổn định)
+        openrouter_models = [
+            "meta-llama/llama-3.1-70b-instruct:free",
             "mistralai/mistral-small-24b-instruct-2501:free",
-            "qwen/qwen-2.5-72b-instruct:free",
-            "nousresearch/hermes-3-llama-3.1-405b:free",
-            "meta-llama/llama-3.3-70b-instruct:free"
+            "qwen/qwen-2.5-72b-instruct:free"
         ]
-
-        def create_llm(model_name):
-            return ChatOpenAI(
-                model_name=model_name,
+        
+        main_llm = ChatOpenAI(
+            model_name=openrouter_models[0],
+            openai_api_key=OPENROUTER_API_KEY,
+            openai_api_base="https://openrouter.ai/api/v1",
+            temperature=0.6,
+            max_tokens=1000,
+        )
+        
+        openrouter_fallbacks = [
+            ChatOpenAI(
+                model_name=m,
                 openai_api_key=OPENROUTER_API_KEY,
                 openai_api_base="https://openrouter.ai/api/v1",
                 temperature=0.6,
-                max_tokens=1500,
-            )
+                max_tokens=1000
+            ) for m in openrouter_models[1:]
+        ]
 
-        main_llm = create_llm(free_models[0])
-        fallbacks = [create_llm(m) for m in free_models[1:]]
-        
-        # LangChain with_fallbacks handle 429 and 402 automatically
-        self.llm = main_llm.with_fallbacks(fallbacks)
+        # 2. Dự phòng cuối cùng: Groq API trực tiếp (Nếu OpenRouter sập)
+        groq_fallback = ChatGroq(
+            model=GROQ_MODEL,
+            api_key=GROQ_API_KEY,
+            temperature=0.6,
+            max_tokens=1000
+        )
+
+        self.llm = main_llm.with_fallbacks(openrouter_fallbacks + [groq_fallback])
 
         from tools.product_tool import search_products_tool
         from tools.get_product_details_tool import get_product_details_tool
@@ -81,7 +91,7 @@ class MeowTeaAgent:
 
         try:
             result = await self.executor.ainvoke({"input": message, "chat_history": self._history.messages[-6:]})
-            reply = str(result.get("output", "Lỗi rồi, thử lại nhé!"))
+            reply = str(result.get("output", "Mình đang chuẩn bị trà, bạn đợi xíu nhé!"))
             
             actions = []
             intermediate_steps = result.get("intermediate_steps", [])
@@ -96,7 +106,7 @@ class MeowTeaAgent:
             self._history.add_ai_message(reply)
             return reply, actions
         except Exception as e:
-            return f"Hệ thống đang rất bận, bạn thử gõ lại câu vừa rồi nhé! 🙏 ({str(e)})", []
+            return f"MeowBot đang bận pha trà, bạn gõ lại câu vừa rồi nhé! 🍵 ({str(e)})", []
 
     def _extract_actions(self, text: str) -> list[dict]:
         import re
@@ -104,8 +114,7 @@ class MeowTeaAgent:
         match = re.search(r'__ACTION_PAYLOAD__:\s*(\{.*)', text, flags=re.DOTALL)
         if match:
             try:
-                s = match.group(1)
-                d = 0
+                s = match.group(1); d = 0
                 for i, c in enumerate(s):
                     if c == '{': d += 1
                     elif c == '}':
