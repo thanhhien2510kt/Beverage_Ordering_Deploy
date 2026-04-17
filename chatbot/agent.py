@@ -1,9 +1,9 @@
 """
-MeowTea Fresh AI Chatbot - Smart & Stable Version
+MeowTea Fresh AI Chatbot - Groq Primary Stability Version
 """
 from typing import Optional
-from langchain_openai import ChatOpenAI
 from langchain_groq import ChatGroq
+from langchain_openai import ChatOpenAI
 from langchain.agents import AgentExecutor, create_tool_calling_agent
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_community.chat_message_histories import ChatMessageHistory
@@ -12,19 +12,21 @@ import os
 
 from config import OPENROUTER_API_KEY, GROQ_API_KEY, GROQ_MODEL
 
-SYSTEM_PROMPT = """Bạn là MeowBot 🐱 — trợ lý AI của tiệm trà sữa MeowTea Fresh.
-NGUYÊN TẮC:
-1. Xưng "mình", gọi khách là "bạn". Ngôn ngữ dễ thương, dùng emoji 🍵✨.
-2. Menu: Khi khách hỏi chung chung, gợi ý 3 loại: Cà phê, Trà sữa, Yogurt. Chỉ gọi search_products_tool khi khách chọn một loại cụ thể.
-3. Đặt hàng: KHÔNG ĐƯỢC tự ý thêm vào giỏ. Phải dùng get_product_details_tool để hỏi Size/Đá/Đường/Topping trước. 
-4. Login: Luôn kiểm tra user_context. Nếu "Chưa đăng nhập" mà khách muốn đặt hàng, hãy yêu cầu login trước.
+SYSTEM_PROMPT = """Bạn là MeowBot 🐱 [M-Stable] — trợ lý AI của tiệm trà sữa MeowTea Fresh.
+Xưng "mình", gọi khách là "bạn". 
+
+QUY TẮC:
+1. Luôn chào khách kèm icon 🍵✨.
+2. Khi khách hỏi "có món này không" hoặc "menu cà phê": Dùng search_products_tool để tìm rồi giới thiệu món. TUYỆT ĐỐI không tự ý thêm vào giỏ.
+3. Chỉ khi nào khách nói "Mua cái này", "Đặt món này" -> dùng get_product_details_tool để hỏi options, sau đó mới add_to_cart_tool.
+4. Kiểm tra user_context: Nếu chưa login mà đòi đặt món -> yêu cầu login.
 
 {user_context}
 """
 
 def _build_user_context(user_id: Optional[int], user_role: Optional[str]) -> str:
-    if not user_id: return "Trạng thái: Khách hàng chưa đăng nhập."
-    return f"Trạng thái: Đã đăng nhập (ID: {user_id})."
+    if not user_id: return "Khách vãng lai (Chưa đăng nhập)."
+    return f"Đã đăng nhập (ID: {user_id})."
 
 class MeowTeaAgent:
     def __init__(self, session_id: str, user_id: Optional[int], user_role: Optional[str]):
@@ -33,28 +35,22 @@ class MeowTeaAgent:
         self.user_role = user_role
         self._history = ChatMessageHistory()
 
-        # Biệt đội ổn định: Gemma 2 9B và Mistral 7B (Luôn luôn Online)
-        stable_models = [
-            "google/gemma-2-9b-it:free",
-            "mistralai/mistral-7b-instruct:free",
-            "meta-llama/llama-3.2-3b-instruct:free"
-        ]
+        # Ưu tiên GROQ - Nhanh và Ổn định nhất
+        primary_llm = ChatGroq(
+            model="llama-3.1-70b-versatile",
+            api_key=GROQ_API_KEY,
+            temperature=0.4
+        )
         
-        def create_llm(m):
-            return ChatOpenAI(
-                model_name=m,
-                openai_api_key=OPENROUTER_API_KEY,
-                openai_api_base="https://openrouter.ai/api/v1",
-                temperature=0.4,
-                max_tokens=1000
-            )
-
-        main_llm = create_llm(stable_models[0])
-        fallbacks = [create_llm(m) for m in stable_models[1:]]
+        # Dự phòng sang OpenRouter
+        fallback_llm = ChatOpenAI(
+            model_name="mistralai/mistral-7b-instruct:free",
+            openai_api_key=OPENROUTER_API_KEY,
+            openai_api_base="https://openrouter.ai/api/v1",
+            temperature=0.4
+        )
         
-        # Thêm Groq làm cứu cánh cuối cùng
-        groq_llm = ChatGroq(model=GROQ_MODEL, api_key=GROQ_API_KEY, temperature=0.4)
-        self.llm = main_llm.with_fallbacks(fallbacks + [groq_llm])
+        self.llm = primary_llm.with_fallbacks([fallback_llm])
 
         from tools.product_tool import search_products_tool
         from tools.get_product_details_tool import get_product_details_tool
@@ -83,13 +79,12 @@ class MeowTeaAgent:
 
         try:
             result = await self.executor.ainvoke({"input": message, "chat_history": self._history.messages[-6:]})
-            reply = str(result.get("output", "Đợi mình một xíu nhé... 🐱"))
+            reply = str(result.get("output", "Mình nghe đây nè! 🐱"))
             
             actions = []
             intermediate_steps = result.get("intermediate_steps", [])
             for action_obj, observation in intermediate_steps:
-                obs_actions = self._extract_actions(str(observation))
-                actions.extend(obs_actions)
+                actions.extend(self._extract_actions(str(observation)))
                 
             reply, reply_actions = self._extract_actions_from_reply(reply)
             actions.extend(reply_actions)
@@ -98,7 +93,7 @@ class MeowTeaAgent:
             self._history.add_ai_message(reply)
             return reply, actions
         except Exception as e:
-            return f"Hê hệ thống bận một xíu, bạn gõ lại nhé! 🙏 ({str(e)})", []
+            return f"Hệ thống đang bảo trì một xíu, bạn thử lại sau nhé! 🙏 ({str(e)})", []
 
     def _extract_actions(self, text: str) -> list[dict]:
         import re
