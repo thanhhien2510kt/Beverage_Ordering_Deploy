@@ -16,12 +16,11 @@ jobs:
           fetch-depth: 0
 
       - name: Push to Deploy Repo
-        uses: ad-m/github-push-action@master
-        with:
-          github_token: ${{ secrets.DEPLOY_PAT }}
-          repository: thanhhien2510kt/Beverage_Ordering_Deploy
-          branch: main
-          force: true
+        run: |
+          git config --global user.name "thanhhien2510kt"
+          git config --global user.email "thanhhien2510kt@users.noreply.github.com"
+          git remote add deploy_repo https://${{ secrets.MY_GITHUB_PAT }}@github.com/thanhhien2510kt/Beverage_Ordering_Deploy.git
+          git push deploy_repo main --force
 
 
  # TRIGGER AUTOMATION TESTS
