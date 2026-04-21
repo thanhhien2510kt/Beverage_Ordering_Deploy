@@ -20,7 +20,7 @@ from tools.order_tool import get_order_status_tool, get_recent_orders_tool
 from tools.search_store_tool import search_store_tool
 
 # Import config
-from config import OPENROUTER_API_KEY, GROQ_API_KEY, GROQ_MODEL
+from config import OPENROUTER_API_KEY, OPENROUTER_MODEL, GROQ_API_KEY, GROQ_MODEL
 
 print(">>> Libraries loaded. Setting up Agent...")
 
@@ -44,15 +44,23 @@ class MeowTeaAgent:
         self.user_role = user_role
         self._history = ChatMessageHistory()
 
-        # Chat models
-        p_llm = ChatGroq(model="llama-3.1-70b-versatile", api_key=GROQ_API_KEY, temperature=0.4)
-        f_llm = ChatOpenAI(
-            model_name="mistralai/mistral-7b-instruct:free",
-            openai_api_key=OPENROUTER_API_KEY,
-            openai_api_base="https://openrouter.ai/api/v1",
-            temperature=0.4
-        )
-        self.llm = p_llm.with_fallbacks([f_llm])
+        # Chat models — primary: Groq, fallback chain: OpenRouter (nhiều model dự phòng)
+        p_llm = ChatGroq(model=GROQ_MODEL, api_key=GROQ_API_KEY, temperature=0.4)
+
+        def _make_openrouter_llm(model_id: str):
+            return ChatOpenAI(
+                model_name=model_id,
+                openai_api_key=OPENROUTER_API_KEY,
+                openai_api_base="https://openrouter.ai/api/v1",
+                temperature=0.4,
+            )
+
+        # Fallback chain: openrouter llama → gemma-3-27b → qwen3 → gemma-3-12b
+        f_llm1 = _make_openrouter_llm(OPENROUTER_MODEL)  # meta-llama/llama-3.3-70b-instruct:free
+        f_llm2 = _make_openrouter_llm("google/gemma-3-27b-it:free")
+        f_llm3 = _make_openrouter_llm("qwen/qwen3-next-80b-a3b-instruct:free")
+        f_llm4 = _make_openrouter_llm("google/gemma-3-12b-it:free")
+        self.llm = p_llm.with_fallbacks([f_llm1, f_llm2, f_llm3, f_llm4])
 
         self.tools = [search_products_tool, get_product_details_tool, add_to_cart_tool, 
                      get_order_status_tool, get_recent_orders_tool, search_store_tool]
