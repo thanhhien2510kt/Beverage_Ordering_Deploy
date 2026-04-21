@@ -30,10 +30,12 @@ GROQ_MODEL: str = os.getenv("GROQ_MODEL", "llama-3.3-70b-versatile")
 # Validation
 def validate_config():
     missing = []
-    if not GOOGLE_API_KEY and not GROQ_API_KEY and not OPENROUTER_API_KEY:
-        missing.append("AI_API_KEY (Gemini, Groq hoặc OpenRouter)")
+    if not GOOGLE_API_KEY:
+        missing.append("GOOGLE_API_KEY hoặc GEMINI_API_KEY (Gemini là primary model)")
+    if not GROQ_API_KEY:
+        print("[WARNING] Thiếu GROQ_API_KEY — sẽ không có fallback khi Gemini quá tải.")
     if missing:
         raise EnvironmentError(
             f"Thiếu biến môi trường bắt buộc: {', '.join(missing)}. "
-            "Vui lòng thiết lập key AI để chatbot có thể hoạt động."
+            "Vui lòng thiết lập GOOGLE_API_KEY trong Render environment."
         )

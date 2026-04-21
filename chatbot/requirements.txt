@@ -3,10 +3,8 @@ uvicorn
 python-dotenv
 langchain
 langchain-community
-langchain-openai
 langchain-groq
-langchain-google-genai
+langchain-google-genai>=2.1.0
+google-genai
 requests
-openai
-google-generativeai
 pydantic

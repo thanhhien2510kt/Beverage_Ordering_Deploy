@@ -1,13 +1,13 @@
 """
-MeowTea Fresh AI Chatbot - FINAL STABILITY VERSION
+MeowTea Fresh AI Chatbot - Gemini + Groq Stable Version
 """
 print(">>> MeowBot is starting... Initializing libraries...")
 
 import os
 import json
 from typing import Optional
+from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_groq import ChatGroq
-from langchain_openai import ChatOpenAI
 from langchain.agents import AgentExecutor, create_tool_calling_agent
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_community.chat_message_histories import ChatMessageHistory
@@ -20,7 +20,7 @@ from tools.order_tool import get_order_status_tool, get_recent_orders_tool
 from tools.search_store_tool import search_store_tool
 
 # Import config
-from config import OPENROUTER_API_KEY, OPENROUTER_MODEL, GROQ_API_KEY, GROQ_MODEL
+from config import GOOGLE_API_KEY, GROQ_API_KEY, GROQ_MODEL
 
 print(">>> Libraries loaded. Setting up Agent...")
 
@@ -44,23 +44,16 @@ class MeowTeaAgent:
         self.user_role = user_role
         self._history = ChatMessageHistory()
 
-        # Chat models — primary: Groq, fallback chain: OpenRouter (nhiều model dự phòng)
-        p_llm = ChatGroq(model=GROQ_MODEL, api_key=GROQ_API_KEY, temperature=0.4)
-
-        def _make_openrouter_llm(model_id: str):
-            return ChatOpenAI(
-                model_name=model_id,
-                openai_api_key=OPENROUTER_API_KEY,
-                openai_api_base="https://openrouter.ai/api/v1",
-                temperature=0.4,
-            )
-
-        # Fallback chain: openrouter llama → gemma-3-27b → qwen3 → gemma-3-12b
-        f_llm1 = _make_openrouter_llm(OPENROUTER_MODEL)  # meta-llama/llama-3.3-70b-instruct:free
-        f_llm2 = _make_openrouter_llm("google/gemma-3-27b-it:free")
-        f_llm3 = _make_openrouter_llm("qwen/qwen3-next-80b-a3b-instruct:free")
-        f_llm4 = _make_openrouter_llm("google/gemma-3-12b-it:free")
-        self.llm = p_llm.with_fallbacks([f_llm1, f_llm2, f_llm3, f_llm4])
+        # Primary: Google Gemini 2.0 Flash (15 RPM, 1500 req/ngày — rất ổn định)
+        # Fallback: Groq llama-3.3-70b (30 RPM, 1000 req/ngày)
+        p_llm = ChatGoogleGenerativeAI(
+            model="gemini-2.0-flash",
+            google_api_key=GOOGLE_API_KEY,
+            temperature=0.4,
+            convert_system_message_to_human=False,
+        )
+        f_llm = ChatGroq(model=GROQ_MODEL, api_key=GROQ_API_KEY, temperature=0.4)
+        self.llm = p_llm.with_fallbacks([f_llm])
 
         self.tools = [search_products_tool, get_product_details_tool, add_to_cart_tool, 
                      get_order_status_tool, get_recent_orders_tool, search_store_tool]
