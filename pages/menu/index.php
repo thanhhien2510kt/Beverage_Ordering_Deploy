@@ -94,12 +94,6 @@ if ($showBestSeller) {
                                 placeholder="Hôm nay bạn muốn uống gì?" 
                                 value="<?php echo e($keyword); ?>"
                             >
-                            <svg class="search-mic-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
-                                <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
-                                <line x1="12" y1="19" x2="12" y2="23"/>
-                                <line x1="8" y1="23" x2="16" y2="23"/>
-                            </svg>
                         </div>
                         
                     </form>
@@ -108,7 +102,7 @@ if ($showBestSeller) {
 
             <div class="menu-layout">
                 <!-- Sidebar - Categories -->
-                <aside >
+                <aside class="menu-sidebar">
                     <ul class="category-list">
                         <li class="category-item <?php echo $showBestSeller ? 'active' : ''; ?>">
                             <a href="?bestseller=1&search=<?php echo urlencode($keyword); ?>" class="category-link">
@@ -320,17 +314,14 @@ if ($showBestSeller) {
                             
                             <!-- Action Buttons -->
                             <?php if ($canAddToCart): ?>
-                            <div class="product-actions" style="position: fixed; bottom: 0; background-color: var(--white); padding: 20px; border-top: 1px solid var(--border-color);">
-                                <button type="button" id="modal-add-to-cart-btn" class="btn-add-cart">
-                                    Thêm vào giỏ
-                                </button>
-                                
-                                    <a href="../cart/index.php">
-                                        <button type="button" id="modal-add-to-cart-btn" class="btn-view-cart" style="width: 250px;">
+                                <div class="product-actions" style="position: sticky; bottom: 0; background-color: var(--white); padding: 16px 20px; border-top: 1px solid var(--border-color); box-sizing: border-box; display: flex; gap: 10px; margin-top: auto;">
+                                    <button type="button" id="modal-add-to-cart-btn" class="btn-add-cart">
+                                        Thêm vào giỏ
+                                    </button>
+                                    <a href="../cart/index.php" class="btn-view-cart" style="text-decoration: none; width: auto; flex: 1; display: flex; align-items: center; justify-content: center;">
                                         Xem giỏ hàng
                                     </a>
-                                </button>
-                            </div>
+                                </div>
                             <?php else: ?>
                             <div class="product-actions" style="position: fixed; bottom: 0; background-color: var(--white); padding: 20px; border-top: 1px solid var(--border-color); text-align: center;">
                                 <p style="color: var(--text-light); font-size: 14px;">Tài khoản Admin/Staff không thể thêm sản phẩm vào giỏ hàng</p>
