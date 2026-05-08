@@ -36,8 +36,10 @@ $basePath = '../../';
 <body>
     <?php include '../../components/header.php'; ?>
 
-    <section class="management-section" style="background-color: var(--light-green); min-height: calc(100vh - 200px); padding: 30px;">
-        <div class="container">
+    <div class="management-layout" style="display: flex; min-height: calc(100vh - 100px); background-color: var(--light-green); align-items: stretch;">
+        <?php include '../../components/admin-sidebar.php'; ?>
+        <section class="management-section" style="flex: 1; padding: 30px; box-sizing: border-box; overflow-y: auto;">
+            <div class="container" style="max-width: 1200px; margin: 0 auto; width: 100%;">
             <div class="management-header">
                 <div class="management-header-left">
                     <h1 class="management-title">Quản lý đơn hàng</h1>
@@ -118,7 +120,8 @@ $basePath = '../../';
                 <div id="manageOrdersPagination" class="orders-pagination" style="display: none;"></div>
             </div>
         </div>
-    </section>
+        </section>
+    </div>
 
     <!-- Order Detail Modal -->
     <div id="manageOrderDetailModal" class="order-detail-modal" role="dialog" aria-labelledby="manageOrderDetailTitle" aria-modal="true" style="display: none;">

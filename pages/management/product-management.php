@@ -35,9 +35,10 @@ $basePath = '../../';
 <body>
     <?php include '../../components/header.php'; ?>
 
-    <section class="management-section">
-        <div class="container">
-            <!-- Tab Navigation -->
+    <div class="management-layout" style="display: flex; min-height: calc(100vh - 100px); background-color: var(--light-green); align-items: stretch;">
+        <?php include '../../components/admin-sidebar.php'; ?>
+        <section class="management-section" style="flex: 1; padding: 30px; box-sizing: border-box; overflow-y: auto;">
+            <div class="container" style="max-width: 1200px; margin: 0 auto; width: 100%;">
             <div class="management-tabs">
                 <button type="button" class="tab-btn active" data-tab="products">Sản phẩm</button>
                 <button type="button" class="tab-btn" data-tab="toppings">Topping</button>
@@ -99,7 +100,8 @@ $basePath = '../../';
                 </div>
             </div>
         </div>
-    </section>
+        </section>
+    </div>
 
     <!-- Add Product Modal (Admin only) -->
     <?php if ($isAdmin): ?>

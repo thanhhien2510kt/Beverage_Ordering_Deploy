@@ -209,33 +209,14 @@ $avatarImagePath = $isLoggedIn ? getAvatarImagePath($userGioiTinh, $basePath) : 
                                     <span>Đơn hàng của tôi</span>
                                 </a>
                                 <?php endif; ?>
-                                <?php if ($isAdmin): ?>
-                                <a href="<?php echo $basePath; ?>pages/management/product-management.php" class="dropdown-item">
+                                <?php if ($showManagement): ?>
+                                <a href="<?php echo $basePath; ?>pages/management/index.php" class="dropdown-item">
                                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                         <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
                                         <line x1="9" y1="3" x2="9" y2="21"/>
                                         <line x1="3" y1="9" x2="21" y2="9"/>
                                     </svg>
-                                    <span>Quản lý sản phẩm</span>
-                                </a>
-                                <?php endif; ?>
-                                <?php if ($isAdmin): ?>
-                                <a href="<?php echo $basePath; ?>pages/management/promotion-management.php" class="dropdown-item">
-                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                        <path d="M12 2L2 7l10 5 10-5-10-5z"/>
-                                        <path d="M2 17l10 5 10-5M2 12l10 5 10-5"/>
-                                    </svg>
-                                    <span>Quản lý khuyến mãi</span>
-                                </a>
-                                <?php endif; ?>
-                                <?php if ($showManagement): ?>
-                                <a href="<?php echo $basePath; ?>pages/management/order-management.php" class="dropdown-item">
-                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                        <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/>
-                                        <rect x="8" y="2" width="8" height="4" rx="1" ry="1"/>
-                                        <path d="M9 12h6M9 16h6"/>
-                                    </svg>
-                                    <span>Quản lý đơn hàng</span>
+                                    <span>Trang Quản Trị</span>
                                 </a>
                                 <?php endif; ?>
                                 <a href="<?php echo $basePath; ?>api/auth/logout.php" class="dropdown-item">
