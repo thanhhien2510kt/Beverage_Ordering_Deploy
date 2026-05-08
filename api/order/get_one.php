@@ -87,6 +87,7 @@ try {
             $itemTotal += (float)$opt['giathem'] * (int)$item['soluong'];
         }
         $item['ItemTotal'] = $itemTotal;
+        $item['Note'] = $item['ghichu'] ?? '';
         $subtotal += $itemTotal;
     }
     unset($item);
