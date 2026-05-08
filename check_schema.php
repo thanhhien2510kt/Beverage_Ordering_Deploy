@@ -2,7 +2,7 @@
 require_once 'database/config.php';
 $pdo = getDBConnection();
 
-$tables = ['SanPham', 'Category', 'Store', 'News', 'AppUser', 'Role', 'Cart', 'Cart_Item', 'Cart_Item_Option'];
+$tables = ['SanPham', 'Category', 'Store', 'News', 'AppUser', 'Role', 'Cart', 'Cart_Item', 'Cart_Item_Option', 'Order_Item'];
 foreach ($tables as $table) {
     try {
         $stmt = $pdo->query("SELECT * FROM $table LIMIT 1");

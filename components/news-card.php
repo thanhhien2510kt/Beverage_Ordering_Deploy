@@ -49,11 +49,13 @@ $markdownPath = !empty($news['noidung']) ? $news['noidung'] : '';
 $newsExcerpt = !empty($markdownPath) ? getNewsExcerpt($markdownPath, 100) : 'Lorem ipsum dolor sit amet, consectetur adipiscing elit...';
 
 
-$newsLink = $basePath . 'pages/news/index.php#news-' . $newsId;
+$newsLink = $basePath . 'pages/news/detail.php?id=' . $newsId;
 ?>
 <div class="news-card">
     <div class="news-image-wrapper">
-        <img src="<?php echo e($newsImage); ?>" alt="<?php echo $newsTitle; ?>" class="news-image">
+        <a href="<?php echo e($newsLink); ?>">
+            <img src="<?php echo e($newsImage); ?>" alt="<?php echo $newsTitle; ?>" class="news-image">
+        </a>
         <div class="news-date-badge">
             <span class="date-day"><?php echo $newsDate; ?></span>
             <span class="date-month"><?php echo $newsMonth; ?></span>
@@ -64,8 +66,13 @@ $newsLink = $basePath . 'pages/news/index.php#news-' . $newsId;
             <a href="<?php echo e($newsLink); ?>"><?php echo $newsTitle; ?></a>
         </h3>
         <p class="news-excerpt"><?php echo e($newsExcerpt); ?></p>
-        <a href="<?php echo e($newsLink); ?>" class="news-read-more">
-            Đọc tiếp →
-        </a>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: auto;">
+            <a href="<?php echo e($newsLink); ?>" class="news-read-more">
+                Xem chi tiết
+            </a>
+            <a href="javascript:void(0)" class="news-read-more btn-quick-view" data-news-id="<?php echo $newsId; ?>">
+                Đọc nhanh →
+            </a>
+        </div>
     </div>
 </div>

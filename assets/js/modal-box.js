@@ -1,4 +1,4 @@
-(function() {
+(function () {
     'use strict';
 
 
@@ -21,7 +21,7 @@
             '"': '&quot;',
             "'": '&#039;'
         };
-        return String(text).replace(/[&<>"']/g, function(m) {
+        return String(text).replace(/[&<>"']/g, function (m) {
             return map[m];
         });
     }
@@ -29,7 +29,7 @@
     function closeModalBox() {
         $overlay.removeClass('active');
         $('body').css('overflow', '');
-        
+
 
         currentOnConfirm = null;
         currentOnCancel = null;
@@ -70,7 +70,11 @@
 
 
         $title.html(escapeHtml(title));
-        $message.html(escapeHtml(message));
+        if (options.isHtml) {
+            $message.html(message);
+        } else {
+            $message.html(escapeHtml(message));
+        }
 
 
         currentOnConfirm = onConfirm;
@@ -111,17 +115,17 @@
     }
 
 
-    $(document).ready(function() {
+    $(document).ready(function () {
 
 
-        $overlay.on('click', function(e) {
+        $overlay.on('click', function (e) {
             if (e.target === this) {
                 handleCancel();
             }
         });
 
 
-        $(document).on('keydown', function(e) {
+        $(document).on('keydown', function (e) {
             if (e.key === 'Escape' && $overlay.hasClass('active')) {
                 handleCancel();
             }

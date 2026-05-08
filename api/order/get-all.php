@@ -14,16 +14,16 @@ try {
 
     $currentUser = getCurrentUser();
     $userRole = $currentUser['role_name'] ?? '';
-    
+
     if (strtolower($userRole) !== 'admin' && strtolower($userRole) !== 'staff') {
         throw new Exception('Bạn không có quyền thực hiện thao tác này');
     }
 
-    $page = max(1, (int)($_GET['page'] ?? 1));
-    $perPage = min(20, max(1, (int)($_GET['per_page'] ?? 10)));
-    $userId = isset($_GET['user_id']) && $_GET['user_id'] !== '' ? (int)$_GET['user_id'] : null;
+    $page = max(1, (int) ($_GET['page'] ?? 1));
+    $perPage = min(20, max(1, (int) ($_GET['per_page'] ?? 10)));
+    $userId = isset($_GET['user_id']) && $_GET['user_id'] !== '' ? (int) $_GET['user_id'] : null;
     $status = trim($_GET['status'] ?? '');
-    $days = (int)($_GET['days'] ?? 30);
+    $days = (int) ($_GET['days'] ?? 30);
     $search = trim($_GET['search'] ?? '');
     if (!in_array($days, [1, 7, 30], true)) {
         $days = 30;
@@ -89,8 +89,8 @@ try {
     $sqlCount = "SELECT COUNT(*) AS cnt FROM Orders o WHERE $whereClause";
     $stmt = $pdo->prepare($sqlCount);
     $stmt->execute($params);
-    $total = (int)$stmt->fetch(PDO::FETCH_ASSOC)['cnt'];
-    $totalPages = $total > 0 ? (int)ceil($total / $perPage) : 1;
+    $total = (int) $stmt->fetch(PDO::FETCH_ASSOC)['cnt'];
+    $totalPages = $total > 0 ? (int) ceil($total / $perPage) : 1;
     $page = min($page, max(1, $totalPages));
     $offset = ($page - 1) * $perPage;
 
@@ -100,9 +100,7 @@ try {
             INNER JOIN AppUser u ON o.MaUser = u.MaUser
             WHERE $whereClause
             ORDER BY o.NgayTao DESC
-            LIMIT ? OFFSET ?";
-    $params[] = $perPage;
-    $params[] = $offset;
+            LIMIT " . (int) $perPage . " OFFSET " . (int) $offset;
     $stmt = $pdo->prepare($sql);
     $stmt->execute($params);
     $orders = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -110,7 +108,7 @@ try {
     foreach ($orders as &$order) {
         $orderId = $order['maorder'];
         $order['OrderCode'] = '#MTF' . str_pad($orderId, 5, '0', STR_PAD_LEFT);
-        
+
 
         $order['CustomerName'] = trim(($order['ho'] ?? '') . ' ' . ($order['ten'] ?? ''));
         if (empty($order['CustomerName'])) {
@@ -132,12 +130,12 @@ try {
 
         $st = $pdo->prepare("SELECT COALESCE(SUM(SoLuong), 0) AS n FROM Order_Item WHERE MaOrder = ?");
         $st->execute([$orderId]);
-        $order['ItemCount'] = (int)$st->fetch(PDO::FETCH_ASSOC)['n'];
+        $order['ItemCount'] = (int) $st->fetch(PDO::FETCH_ASSOC)['n'];
 
         $order['NgayTaoFormatted'] = date('d/m/Y', strtotime($order['ngaytao']));
         $order['NgayTaoTime'] = date('H:i:s', strtotime($order['ngaytao']));
     }
-    unset($order); 
+    unset($order);
 
     $response = [
         'success' => true,

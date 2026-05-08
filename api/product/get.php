@@ -5,7 +5,7 @@ require_once '../../functions.php';
 
 $response = ['success' => false, 'data' => null, 'message' => ''];
 try {
-    $productId = isset($_GET['id']) ? (int)$_GET['id'] : 0;
+    $productId = isset($_GET['id']) ? (int) $_GET['id'] : 0;
 
     if (!$productId) {
         throw new Exception('Mã sản phẩm không hợp lệ');
@@ -39,7 +39,13 @@ try {
         INNER JOIN Option_Group og ON pog.MaOptionGroup = og.MaOptionGroup
         INNER JOIN Option_Value ov  ON ov.MaOptionGroup = og.MaOptionGroup
         WHERE pog.MaSP = ?
-        ORDER BY og.MaOptionGroup, ov.MaOptionValue
+        ORDER BY og.MaOptionGroup, 
+            CASE 
+                WHEN ov.TenGiaTri LIKE '%Size S%' THEN 1
+                WHEN ov.TenGiaTri LIKE '%Size M%' THEN 2
+                WHEN ov.TenGiaTri LIKE '%Size L%' THEN 3
+                ELSE ov.MaOptionValue 
+            END
     ");
     $stmtOpt->execute([$productId]);
     $optionsData = $stmtOpt->fetchAll(PDO::FETCH_ASSOC);
@@ -51,27 +57,27 @@ try {
         if (!isset($optionGroups[$groupId])) {
             $optionGroups[$groupId] = [
                 'MaOptionGroup' => $option['maoptiongroup'],
-                'TenNhom'       => $option['tennhom'],
-                'IsMultiple'    => (bool)$option['ismultiple'],
-                'options'       => []
+                'TenNhom' => $option['tennhom'],
+                'IsMultiple' => (bool) $option['ismultiple'],
+                'options' => []
             ];
         }
         $optionGroups[$groupId]['options'][] = [
             'MaOptionValue' => $option['maoptionvalue'],
-            'TenGiaTri'     => $option['tengiatri'],
-            'GiaThem'       => (float)$option['giathem']
+            'TenGiaTri' => $option['tengiatri'],
+            'GiaThem' => (float) $option['giathem']
         ];
     }
 
     $response = [
         'success' => true,
-        'data'    => [
-            'product'      => [
-                'MaSP'      => $product['masp'],
-                'TenSP'     => $product['tensp'],
-                'GiaCoBan'  => (float)($product['giacoban'] ?? 0),
-                'GiaNiemYet'=> (float)($product['gianiemyet'] ?? $product['giacoban'] ?? 0),
-                'HinhAnh'   => $product['hinhanh'] ?? 'assets/img/products/product_one.png'
+        'data' => [
+            'product' => [
+                'MaSP' => $product['masp'],
+                'TenSP' => $product['tensp'],
+                'GiaCoBan' => (float) ($product['giacoban'] ?? 0),
+                'GiaNiemYet' => (float) ($product['gianiemyet'] ?? $product['giacoban'] ?? 0),
+                'HinhAnh' => $product['hinhanh'] ?? 'assets/img/products/product_one.png'
             ],
             'optionGroups' => array_values($optionGroups)
         ]
