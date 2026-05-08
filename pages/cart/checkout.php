@@ -261,6 +261,11 @@ $basePath = '../../';
                                                 <?php endforeach; ?>
                                             </div>
                                         <?php endif; ?>
+                                        <?php if (!empty($item['note'])): ?>
+                                            <div class="summary-item-note" style="font-size: 13px; color: #666; margin-top: 4px; font-style: italic;">
+                                                Ghi chú: <?php echo e($item['note']); ?>
+                                            </div>
+                                        <?php endif; ?>
                                         <div class="summary-item-price">
                                             <span class="current-price"><?php echo formatCurrency($pricePerUnit); ?></span>
                                             <?php 
