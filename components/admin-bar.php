@@ -42,7 +42,7 @@ body {
     left: 0;
     right: 0;
     height: 32px;
-    background-color: #1e1e1e;
+    background-color: #11331e;
     color: #fff;
     z-index: 999999;
     font-size: 13px;
@@ -63,7 +63,7 @@ body {
     height: 100%;
 }
 .admin-bar-item {
-    color: #e0e0e0;
+    color: #e8ede8;
     text-decoration: none;
     display: flex;
     align-items: center;
@@ -71,18 +71,18 @@ body {
     padding: 0 12px;
     height: 100%;
     transition: all 0.2s;
-    border-right: 1px solid #333;
+    border-right: 1px solid #1a4d2e;
 }
 .admin-bar-left .admin-bar-item:first-child {
-    border-left: 1px solid #333;
-    background-color: #2a2a2a;
+    border-left: 1px solid #1a4d2e;
+    background-color: #1a4d2e;
 }
 .admin-bar-item:hover {
-    background-color: #333;
-    color: #4CAF50;
+    background-color: #1a4d2e;
+    color: #fff;
 }
 .admin-bar-text {
-    color: #aaa;
+    color: #b3c5b9;
     padding: 0 10px;
 }
 .admin-bar-text strong {
