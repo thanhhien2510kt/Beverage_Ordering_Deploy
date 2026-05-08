@@ -19,10 +19,14 @@ if ($showAdminBar):
         </div>
         <div class="admin-bar-right">
             <div class="user-info-wrapper admin-bar-profile">
-                <div class="user-avatar" title="<?php echo htmlspecialchars($_SESSION['user_name'] ?? $userRoleAdminBar); ?>">
-                    <span class="avatar-initial"><?php echo htmlspecialchars(mb_substr($_SESSION['user_name'] ?? $userRoleAdminBar, 0, 1)); ?></span>
+                <div class="user-avatar" title="<?php echo htmlspecialchars($userName ?? ($_SESSION['user_name'] ?? '')); ?>">
+                    <?php if (!empty($avatarImagePath)): ?>
+                        <img src="<?php echo htmlspecialchars($avatarImagePath); ?>" alt="<?php echo htmlspecialchars($userName ?? ''); ?>" class="avatar-image">
+                    <?php else: ?>
+                        <span class="avatar-initial"><?php echo htmlspecialchars(isset($userHo) && isset($userTen) ? getAvatarInitialFromName($userHo, $userTen) : mb_substr($_SESSION['user_name'] ?? 'A', 0, 1)); ?></span>
+                    <?php endif; ?>
                 </div>
-                <span class="user-name" style="color: #e8ede8;"><?php echo htmlspecialchars($_SESSION['user_name'] ?? $userRoleAdminBar); ?></span>
+                <span class="user-name" style="color: #e8ede8;"><?php echo htmlspecialchars($userName ?? ($_SESSION['user_name'] ?? '')); ?></span>
                 <div class="user-dropdown">
                     <button class="user-dropdown-toggle" style="color: #e8ede8;" aria-label="Menu người dùng">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -124,15 +128,28 @@ body {
 .admin-bar-profile .user-avatar {
     width: 24px;
     height: 24px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #e8ede8, #1a4d2e);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-weight: bold;
+    font-size: 12px;
+    overflow: hidden;
+}
+.admin-bar-profile .avatar-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 .admin-bar-profile .avatar-initial {
-    width: 24px;
-    height: 24px;
     font-size: 12px;
+    line-height: 1;
 }
 .admin-bar-profile .user-dropdown-menu {
-    top: 32px;
-    right: auto;
+    top: 100%;
+    right: 0;
 }
 .admin-bar-profile .dropdown-item {
     color: var(--text-dark);

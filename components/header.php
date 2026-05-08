@@ -176,7 +176,8 @@ $avatarImagePath = $isLoggedIn ? getAvatarImagePath($userGioiTinh, $basePath) : 
                 </div>
                 <div class="separator">|</div>
                 <?php endif; ?>
-                <?php if ($isLoggedIn && (!isset($showAdminBar) || !$showAdminBar)): ?>
+                <?php if ($isLoggedIn): ?>
+                    <?php if (!isset($showAdminBar) || !$showAdminBar): ?>
                     <!-- User Info (when logged in) -->
                     <div class="user-info-wrapper">
                         <div class="user-avatar" title="<?php echo e($userName); ?>">
@@ -223,6 +224,7 @@ $avatarImagePath = $isLoggedIn ? getAvatarImagePath($userGioiTinh, $basePath) : 
                             </div>
                         </div>
                     </div>
+                    <?php endif; ?>
                 <?php else: ?>
                     <!-- Login Link (when not logged in) -->
                     <div class="login-icon">
