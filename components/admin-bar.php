@@ -18,6 +18,29 @@ if ($showAdminBar):
             </a>
         </div>
         <div class="admin-bar-right">
+            <div class="user-info-wrapper admin-bar-profile">
+                <div class="user-avatar" title="<?php echo htmlspecialchars($_SESSION['user_name'] ?? $userRoleAdminBar); ?>">
+                    <span class="avatar-initial"><?php echo htmlspecialchars(mb_substr($_SESSION['user_name'] ?? $userRoleAdminBar, 0, 1)); ?></span>
+                </div>
+                <span class="user-name" style="color: #e8ede8;"><?php echo htmlspecialchars($_SESSION['user_name'] ?? $userRoleAdminBar); ?></span>
+                <div class="user-dropdown">
+                    <button class="user-dropdown-toggle" style="color: #e8ede8;" aria-label="Menu người dùng">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M6 9l6 6 6-6"/>
+                        </svg>
+                    </button>
+                    <div class="user-dropdown-menu">
+                        <a href="<?php echo $bp; ?>pages/profile/index.php" class="dropdown-item">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                            <span>Thông tin tài khoản</span>
+                        </a>
+                        <a href="<?php echo $bp; ?>api/auth/logout.php" class="dropdown-item">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                            <span>Đăng xuất</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
             <a href="<?php echo $bp; ?>index.php" class="admin-bar-item" style="margin-left: 15px;">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M15 12H3"/>
@@ -86,6 +109,33 @@ body {
 }
 .admin-bar-text strong {
     color: #fff;
+}
+.admin-bar-profile {
+    display: flex;
+    align-items: center;
+    border-right: 1px solid #1a4d2e;
+    padding-right: 15px;
+    height: 100%;
+}
+.admin-bar-profile .user-name {
+    margin-left: 8px;
+    margin-right: 4px;
+}
+.admin-bar-profile .user-avatar {
+    width: 24px;
+    height: 24px;
+}
+.admin-bar-profile .avatar-initial {
+    width: 24px;
+    height: 24px;
+    font-size: 12px;
+}
+.admin-bar-profile .user-dropdown-menu {
+    top: 32px;
+    right: auto;
+}
+.admin-bar-profile .dropdown-item {
+    color: var(--text-dark);
 }
 </style>
 <?php endif; ?>
