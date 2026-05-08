@@ -297,6 +297,7 @@ $(document).ready(function() {
                 var itTenSP = it.TenSP !== undefined ? it.TenSP : it.tensp;
                 var itSoLuong = it.SoLuong !== undefined ? it.SoLuong : it.soluong;
                 var itGiaCoBan = it.GiaCoBan !== undefined ? it.GiaCoBan : it.giacoban;
+                var itGhiChu = it.Note !== undefined ? it.Note : it.note;
 
                 var img = (itHinhAnh && itHinhAnh.indexOf('http') !== 0) ? (basePath + (itHinhAnh || 'assets/img/products/product_one.png')) : (itHinhAnh || (basePath + 'assets/img/products/product_one.png'));
                 var opts = [];
@@ -310,6 +311,8 @@ $(document).ready(function() {
                 }
                 var optsStr = opts.length ? '<div class="order-detail-item-options">' + opts.join(', ') + '</div>' : '';
                 
+                var noteStr = itGhiChu ? '<div class="order-detail-item-note" style="font-size: 13px; color: #666; margin-top: 4px; font-style: italic;">Ghi chú: ' + escapeHtml(itGhiChu) + '</div>' : '';
+
                 var giaHienTai = parseFloat(itGiaCoBan);
                 if (it.options && it.options.length) {
                     it.options.forEach(function(opt) {
@@ -323,6 +326,7 @@ $(document).ready(function() {
                     '<div class="order-detail-product-info">' +
                     '<p class="order-detail-product-name">x' + (itSoLuong || 1) + ' ' + escapeHtml(itTenSP || '') + '</p>' +
                     optsStr +
+                    noteStr +
                     '<div class="order-detail-product-price">' +
                     '<span class="order-detail-item-current-price">' + formatCurrency(giaHienTai) + '</span>' +
                     '</div></div></div>';
