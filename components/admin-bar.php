@@ -14,32 +14,8 @@ if ($showAdminBar):
                     <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
                     <polyline points="9 22 9 12 15 12 15 22"></polyline>
                 </svg>
-                <span style="font-weight: 600;">Trang Quản Trị (Admin Panel)</span>
+                <span style="font-weight: 600;">Trang Quản Trị</span>
             </a>
-            <a href="<?php echo $bp; ?>pages/management/order-management.php" class="admin-bar-item">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/>
-                    <rect x="8" y="2" width="8" height="4" rx="1" ry="1"/>
-                </svg>
-                Đơn hàng
-            </a>
-            <?php if ($userRoleAdminBar === 'Admin'): ?>
-            <a href="<?php echo $bp; ?>pages/management/product-management.php" class="admin-bar-item">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
-                    <line x1="9" y1="3" x2="9" y2="21"/>
-                    <line x1="3" y1="9" x2="21" y2="9"/>
-                </svg>
-                Sản phẩm
-            </a>
-            <a href="<?php echo $bp; ?>pages/management/promotion-management.php" class="admin-bar-item">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M12 2L2 7l10 5 10-5-10-5z"/>
-                    <path d="M2 17l10 5 10-5M2 12l10 5 10-5"/>
-                </svg>
-                Khuyến mãi
-            </a>
-            <?php endif; ?>
         </div>
         <div class="admin-bar-right">
             <span class="admin-bar-text">Xin chào, <strong><?php echo htmlspecialchars($_SESSION['user_name'] ?? $userRoleAdminBar); ?></strong> (<?php echo htmlspecialchars($userRoleAdminBar); ?>)</span>

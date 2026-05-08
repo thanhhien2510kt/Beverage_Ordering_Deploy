@@ -103,6 +103,7 @@ $userGioiTinh = $isLoggedIn ? ($_SESSION['user_gioi_tinh'] ?? null) : null;
 $avatarImagePath = $isLoggedIn ? getAvatarImagePath($userGioiTinh, $basePath) : '';
 ?>
 <?php include __DIR__ . '/admin-bar.php'; ?>
+<?php if (!$isManagement): ?>
 <header class="main-header">
     <div class="container">
         <div class="header-content">
@@ -238,5 +239,8 @@ $avatarImagePath = $isLoggedIn ? getAvatarImagePath($userGioiTinh, $basePath) : 
         </div>
     </div>
 </header>
+<?php endif; ?>
 
+<?php if (!$isManagement): ?>
 <?php include __DIR__ . '/chatbot.php'; ?>
+<?php endif; ?>
