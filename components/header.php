@@ -102,6 +102,7 @@ $userName = $isLoggedIn ? ($_SESSION['user_name'] ?? '') : '';
 $userGioiTinh = $isLoggedIn ? ($_SESSION['user_gioi_tinh'] ?? null) : null;
 $avatarImagePath = $isLoggedIn ? getAvatarImagePath($userGioiTinh, $basePath) : '';
 ?>
+<?php include __DIR__ . '/admin-bar.php'; ?>
 <header class="main-header">
     <div class="container">
         <div class="header-content">
@@ -209,16 +210,7 @@ $avatarImagePath = $isLoggedIn ? getAvatarImagePath($userGioiTinh, $basePath) : 
                                     <span>Đơn hàng của tôi</span>
                                 </a>
                                 <?php endif; ?>
-                                <?php if ($showManagement): ?>
-                                <a href="<?php echo $basePath; ?>pages/management/index.php" class="dropdown-item">
-                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
-                                        <line x1="9" y1="3" x2="9" y2="21"/>
-                                        <line x1="3" y1="9" x2="21" y2="9"/>
-                                    </svg>
-                                    <span>Trang Quản Trị</span>
-                                </a>
-                                <?php endif; ?>
+
                                 <a href="<?php echo $basePath; ?>api/auth/logout.php" class="dropdown-item">
                                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                         <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
