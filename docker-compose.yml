@@ -20,9 +20,9 @@ services:
       - ./assets/img:/var/www/html/assets/img   # persist uploaded images
     restart: unless-stopped
 
-  # ── MySQL ──────────────────────────────────────────────────────
+  # ── MariaDB (thay MySQL 8.0 — MySQL 8 yêu cầu x86-64-v2 không tương thích KVM cũ)
   db:
-    image: mysql:8.0
+    image: mariadb:10.6
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-root}
       MYSQL_DATABASE: ${DB_NAME:-meowtea_schema}
@@ -35,7 +35,7 @@ services:
       - ./database/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql
       - ./database/seed-data.sql:/docker-entrypoint-initdb.d/02-seed.sql
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD:-root}"]
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
       interval: 10s
       timeout: 5s
       retries: 5
