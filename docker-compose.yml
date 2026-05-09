@@ -42,7 +42,7 @@ services:
       PHP_BASE_URL: http://app
       CHATBOT_SECRET_KEY: ${CHATBOT_SECRET_KEY:-MeowTea_Secret_2026_@abcxyz}
       GROQ_API_KEY: ${GROQ_API_KEY}
-      GROQ_MODEL: ${GROQ_MODEL:-llama-3.3-70b-versatile}
+      GROQ_MODEL: ${GROQ_MODEL:-llama3-groq-70b-8192-tool-use-preview}
       GOOGLE_API_KEY: ${GOOGLE_API_KEY:-}
       FASTAPI_RELOAD: "false"
     depends_on:

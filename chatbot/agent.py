@@ -128,67 +128,74 @@ class MeowTeaAgent:
                 elif role == "assistant":
                     self._history.add_ai_message(content)
 
-        try:
-            result = await self.executor.ainvoke({
-                "input": message,
-                "chat_history": self._history.messages[-20:]
-            })
-            reply = result.get("output", "Mình gặp lỗi khi xử lý yêu cầu. Vui lòng thử lại nhé!")
+        _max_retries = 2
+        for _attempt in range(_max_retries + 1):
+            try:
+                result = await self.executor.ainvoke({
+                    "input": message,
+                    "chat_history": self._history.messages[-20:]
+                })
+                reply = result.get("output", "Mình gặp lỗi khi xử lý yêu cầu. Vui lòng thử lại nhé!")
 
-            # Ẩn tool call syntax rò rỉ
-            import re
-            reply = re.sub(r'\(function=[a-zA-Z0-9_]+>.*?\}[\)]?', '', reply, flags=re.DOTALL)
-            reply = re.sub(r'</?function>', '', reply)
-            reply = reply.strip()
+                # Ẩn tool call syntax rò rỉ
+                import re
+                reply = re.sub(r'\(function=[a-zA-Z0-9_]+>.*?\}[\)]?', '', reply, flags=re.DOTALL)
+                reply = re.sub(r'</?function>', '', reply)
+                reply = reply.strip()
 
-            # Fallback: dùng tool output nếu reply không chứa data sản phẩm thực
-            # (LLM hay tóm tắt, nhưng product list thật sẽ luôn có "Mã:" hoặc "Phân loại:")
-            _has_product_data = "Mã:" in reply or "Phân loại:" in reply or "Mình tìm được" in reply
-            intermediate_steps = result.get("intermediate_steps", [])
-            if intermediate_steps and not _has_product_data:
+                # Fallback: dùng tool output nếu reply không chứa data sản phẩm thực
+                # (LLM hay tóm tắt, nhưng product list thật sẽ luôn có "Mã:" hoặc "Phân loại:")
+                _has_product_data = "Mã:" in reply or "Phân loại:" in reply or "Mình tìm được" in reply
+                intermediate_steps = result.get("intermediate_steps", [])
+                if intermediate_steps and not _has_product_data:
+                    for action, observation in intermediate_steps:
+                        tool_name = getattr(action, "tool", "") or getattr(action, "name", "")
+                        obs_str = str(observation)
+                        if tool_name == "search_products_tool" and len(obs_str) > 100:
+                            reply = obs_str
+                            break
+
+                if not reply:
+                    reply = "Đợi mình một xíu để tìm thông tin cho bạn nhé... 🐱"
+
+                # Trích xuất payload từ CẢ tool outputs GỐC và LLM reply
+                actions = []
                 for action, observation in intermediate_steps:
-                    tool_name = getattr(action, "tool", "") or getattr(action, "name", "")
-                    obs_str = str(observation)
-                    if tool_name == "search_products_tool" and len(obs_str) > 100:
-                        reply = obs_str
-                        break
+                    obs_actions = self._extract_actions_from_text(str(observation))
+                    actions.extend(obs_actions)
 
-            if not reply:
-                reply = "Đợi mình một xíu để tìm thông tin cho bạn nhé... 🐱"
+                reply, reply_actions = self._extract_actions_and_clean_text(reply)
+                actions.extend(reply_actions)
 
-            # Trích xuất payload từ CẢ tool outputs GỐC và LLM reply
-            actions = []
-            for action, observation in intermediate_steps:
-                obs_actions = self._extract_actions_from_text(str(observation))
-                actions.extend(obs_actions)
-                
-            reply, reply_actions = self._extract_actions_and_clean_text(reply)
-            actions.extend(reply_actions)
-            
-            # Xóa trùng lặp (nếu LLM vô tình lặp lại payload)
-            seen_actions = []
-            unique_actions = []
-            for a in actions:
-                a_str = json.dumps(a)
-                if a_str not in seen_actions:
-                    seen_actions.append(a_str)
-                    unique_actions.append(a)
+                # Xóa trùng lặp (nếu LLM vô tình lặp lại payload)
+                seen_actions = []
+                unique_actions = []
+                for a in actions:
+                    a_str = json.dumps(a)
+                    if a_str not in seen_actions:
+                        seen_actions.append(a_str)
+                        unique_actions.append(a)
 
-            # Persist this turn
-            self._history.add_user_message(message)
-            self._history.add_ai_message(reply)
-            
-            return reply, unique_actions
-        except Exception as e:
-            err_str = str(e)
-            # Groq failed_generation: model could not produce a valid tool call
-            if "failed_generation" in err_str or "Failed to call a function" in err_str:
-                return (
-                    "Xin lỗi bạn, mình hiểu ý bạn rồi nhưng hệ thống đang bận xíu 🐱 "
-                    "Bạn thử hỏi lại theo cách khác nhé! Ví dụ: \"Cho mình xem các loại cà phê\" "
-                    "hoặc \"Tìm trà sữa cho mình\" ✨"
-                ), []
-            return f"Xin lỗi bạn, mình đang gặp sự cố kỹ thuật 🙏 ({err_str})", []
+                # Persist this turn
+                self._history.add_user_message(message)
+                self._history.add_ai_message(reply)
+
+                return reply, unique_actions
+
+            except Exception as e:
+                err_str = str(e)
+                # Groq failed_generation: model could not produce a valid tool call → retry
+                if "failed_generation" in err_str or "Failed to call a function" in err_str:
+                    if _attempt < _max_retries:
+                        import asyncio
+                        await asyncio.sleep(0.5)
+                        continue  # retry
+                    return (
+                        "Xin lỗi bạn, mình hiểu ý bạn rồi nhưng hệ thống đang bận xíu 🐱 "
+                        "Bạn thử hỏi lại theo cách khác nhé! Ví dụ: \"Cho mình xem các loại cà phê\" "
+                        "hoặc \"Tìm trà sữa cho mình\" ✨"
+                    ), []
+                return f"Xin lỗi bạn, mình đang gặp sự cố kỹ thuật 🙏 ({err_str})", []
 
     def _extract_actions_from_text(self, text: str) -> list[dict]:
         import re
