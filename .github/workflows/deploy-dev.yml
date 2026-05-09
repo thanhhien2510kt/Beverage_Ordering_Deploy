@@ -27,11 +27,11 @@ jobs:
             echo ">>> Pull latest code"
             git pull origin dev
 
-            echo ">>> Rebuild app image"
-            docker compose build app
+            echo ">>> Rebuild images"
+            docker compose build app chatbot
 
-            echo ">>> Restart app container"
-            docker compose up -d --no-deps app
+            echo ">>> Restart containers"
+            docker compose up -d --no-deps app chatbot
 
             echo ">>> Status"
             docker compose ps -a
