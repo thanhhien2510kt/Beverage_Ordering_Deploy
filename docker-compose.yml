@@ -6,16 +6,8 @@ services:
     ports:
       - "8080:80"              # 8080 on host — Nginx reverse proxy to this
     environment:
-      DB_TYPE: mysql
-      DB_HOST: db
-      DB_USER: ${DB_USER:-meowtea}
-      DB_PASS: ${DB_PASS:-meowtea}
-      DB_NAME: ${DB_NAME:-meowtea_schema}
-      DB_CHARSET: utf8mb4
+      DB_TYPE: pgsql
       FASTAPI_URL: http://chatbot:8000
-    depends_on:
-      db:
-        condition: service_healthy
     volumes:
       - ./assets/img:/var/www/html/assets/img   # persist uploaded images
     restart: unless-stopped
