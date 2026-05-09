@@ -57,5 +57,49 @@ services:
       - app
     restart: unless-stopped
 
+  # ── Netdata — System + Docker Metrics ────────────────────────
+  netdata:
+    image: netdata/netdata:stable
+    container_name: netdata
+    hostname: meowteafresh-monitor
+    pid: host                         # read host process metrics
+    network_mode: host                # bind port 19999 directly on host
+    cap_add:
+      - SYS_PTRACE
+      - SYS_ADMIN
+    security_opt:
+      - apparmor:unconfined
+    volumes:
+      - netdataconfig:/etc/netdata
+      - netdatalib:/var/lib/netdata
+      - netdatacache:/var/cache/netdata
+      - /etc/passwd:/host/etc/passwd:ro
+      - /etc/group:/host/etc/group:ro
+      - /etc/localtime:/etc/localtime:ro
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /etc/os-release:/host/etc/os-release:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    environment:
+      - NETDATA_CLAIM_TOKEN=         # leave empty — no cloud
+      - DOCKER_HOST=unix:///var/run/docker.sock
+    restart: unless-stopped
+
+  # ── Dozzle — Docker Log Viewer ────────────────────────────────
+  dozzle:
+    image: amir20/dozzle:latest
+    container_name: dozzle
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    ports:
+      - "127.0.0.1:8888:8080"        # localhost only — Nginx proxies in
+    environment:
+      DOZZLE_LEVEL: info
+      DOZZLE_TAILSIZE: 300
+    restart: unless-stopped
+
 volumes:
   db_data:
+  netdataconfig:
+  netdatalib:
+  netdatacache:
