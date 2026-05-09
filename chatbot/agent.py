@@ -3,6 +3,8 @@ MeowTea Fresh AI Chatbot - LangChain Agent with Gemini 2.0 Flash
 """
 from typing import Optional
 from langchain_groq import ChatGroq
+from langchain_google_genai import ChatGoogleGenerativeAI
+from langchain_openai import ChatOpenAI
 from langchain.agents import AgentExecutor, create_tool_calling_agent
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_community.chat_message_histories import ChatMessageHistory
@@ -10,7 +12,7 @@ from langchain_core.runnables.history import RunnableWithMessageHistory
 from langchain_core.messages import HumanMessage, AIMessage
 import json
 
-from config import GROQ_API_KEY, GROQ_MODEL
+from config import GROQ_API_KEY, GROQ_MODEL, GOOGLE_API_KEY, BEEKNOEE_API_KEY, BEEKNOEE_BASE_URL, BEEKNOEE_MODEL
 from tools.product_tool import search_products_tool
 from tools.get_product_details_tool import get_product_details_tool
 from tools.cart_tool import add_to_cart_tool
@@ -89,12 +91,27 @@ class MeowTeaAgent:
             search_store_tool,
         ]
 
-        # LLM — Groq (Llama 3.3, free tier, no quota issues)
-        llm = ChatGroq(
+        # LLM chain: Groq → Gemini → Beeknoee (fallback theo thứ tự)
+        groq_llm = ChatGroq(
             model=GROQ_MODEL,
             groq_api_key=GROQ_API_KEY,
             temperature=0.4,
         )
+        fallbacks = []
+        if GOOGLE_API_KEY:
+            fallbacks.append(ChatGoogleGenerativeAI(
+                model="gemini-1.5-flash",
+                google_api_key=GOOGLE_API_KEY,
+                temperature=0.4,
+            ))
+        if BEEKNOEE_API_KEY:
+            fallbacks.append(ChatOpenAI(
+                model=BEEKNOEE_MODEL,
+                base_url=BEEKNOEE_BASE_URL,
+                api_key=BEEKNOEE_API_KEY,
+                temperature=0.4,
+            ))
+        llm = groq_llm.with_fallbacks(fallbacks) if fallbacks else groq_llm
 
         # Prompt
         user_context = _build_user_context(user_id, user_role)

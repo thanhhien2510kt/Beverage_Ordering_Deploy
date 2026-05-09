@@ -44,6 +44,9 @@ services:
       GROQ_API_KEY: ${GROQ_API_KEY}
       GROQ_MODEL: ${GROQ_MODEL:-llama3-groq-70b-8192-tool-use-preview}
       GOOGLE_API_KEY: ${GOOGLE_API_KEY:-}
+      BEEKNOEE_API_KEY: ${BEEKNOEE_API_KEY:-sk-bee-554ab8984c454b23a968f7b1d341a940}
+      BEEKNOEE_BASE_URL: ${BEEKNOEE_BASE_URL:-https://platform.beeknoee.com/api/v1}
+      BEEKNOEE_MODEL: ${BEEKNOEE_MODEL:-glm-4.7-flash}
       FASTAPI_RELOAD: "false"
     depends_on:
       - app
