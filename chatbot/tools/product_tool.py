@@ -108,8 +108,23 @@ def search_products_tool(query: str, category: str = "", is_specific_search: boo
                 lines.append("\nBạn đang quan tâm đến danh mục nào nhỉ? Bật mí cho mình để mình liệt kê các món ngon nhất nha! 😽")
                 return "\n".join(lines)
 
-        # Lọc bớt từ khóa nhiễu
-        ignore_kws = {"menu", "thuc", "don", "danh", "muc", "cho", "xem", "co", "khong", "nao", "ban", "chay", "nhat", "cac", "mon", "top", "nhung", "ngon", "gia", "bao", "nhieu", "tien", "la", "gi", "cay"}
+        # Lọc bớt từ khóa nhiễu — KHÔNG lọc "ban"/"chay"/"nhat" để giữ được "bán chạy nhất"
+        ignore_kws = {"menu", "thuc", "don", "danh", "muc", "cho", "xem", "co", "khong", "nao", "cac", "nhung", "gia", "bao", "nhieu", "tien", "la", "gi"}
+        # Shortcut: "bán chạy" → trả về top sản phẩm theo daban (đã sort sẵn từ API)
+        ban_chay_kws = {"ban chay", "ban chay nhat", "pho bien", "duoc ua chuong", "nhieu nguoi mua", "best seller", "bestseller"}
+        if any(kw in norm_query for kw in ban_chay_kws):
+            top = mgmt_products[:6]
+            if top:
+                lines = ["🏆 Top món bán chạy nhất tại MeowTea Fresh:\n"]
+                for p in top:
+                    nm   = p.get("tensp") or p.get("TenSP", "")
+                    cat  = p.get("tencategory") or p.get("TenCategory", "")
+                    price= p.get("gianiemyet") or p.get("GiaNiemYet") or p.get("giacoban") or p.get("GiaCoBan", 0)
+                    db   = p.get("daban", 0)
+                    masp = p.get("masp") or p.get("MaSP")
+                    lines.append(f"🔥 **{nm}** ({cat}) — {int(price):,}đ | Đã bán: {db} | Mã: `{masp}`".replace(",", "."))
+                lines.append("\n💬 Bạn muốn đặt món nào? Mình hỗ trợ ngay ạ! 🐾")
+                return "\n".join(lines)
         query_words = set(kw for kw in norm_query.split() if len(kw) >= 2 and kw not in ignore_kws)
         cleaned_query = " ".join(kw for kw in norm_query.split() if len(kw) >= 2 and kw not in ignore_kws)
 
