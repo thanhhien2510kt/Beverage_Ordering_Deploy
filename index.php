@@ -221,6 +221,11 @@ $stores = getStores(1);
 
     <?php include 'components/footer.php'; ?>
 
+    <?php
+    $cartPath = 'pages/cart/index.php';
+    include 'components/product-customize-modal.php';
+    ?>
+
     <script src="assets/js/common.js"></script>
     <script src="assets/js/snack-bar.js"></script>
     <script src="assets/js/main.js"></script>
