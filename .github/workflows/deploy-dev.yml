@@ -1,0 +1,36 @@
+name: Deploy to Dev Server
+
+on:
+  push:
+    branches:
+      - dev
+
+jobs:
+  deploy:
+    name: Build & Deploy
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          port: ${{ secrets.SSH_PORT }}
+          username: ${{ secrets.SSH_USER }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          command_timeout: 10m
+          script: |
+            set -e
+            cd ~/Beverage_Ordering_NoRAG
+
+            echo ">>> Pull latest code"
+            git pull origin dev
+
+            echo ">>> Rebuild app image"
+            docker compose build app
+
+            echo ">>> Restart app container"
+            docker compose up -d --no-deps app
+
+            echo ">>> Status"
+            docker compose ps -a
