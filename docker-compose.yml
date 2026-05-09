@@ -1,0 +1,61 @@
+services:
+
+  # ── PHP + Apache ──────────────────────────────────────────────
+  app:
+    build: .
+    ports:
+      - "80:80"
+    environment:
+      DB_TYPE: mysql
+      DB_HOST: db
+      DB_USER: ${DB_USER:-meowtea}
+      DB_PASS: ${DB_PASS:-meowtea}
+      DB_NAME: ${DB_NAME:-meowtea_schema}
+      DB_CHARSET: utf8mb4
+      FASTAPI_URL: http://chatbot:8000
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - ./assets/img:/var/www/html/assets/img   # persist uploaded images
+    restart: unless-stopped
+
+  # ── MySQL ──────────────────────────────────────────────────────
+  db:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-root}
+      MYSQL_DATABASE: ${DB_NAME:-meowtea_schema}
+      MYSQL_USER: ${DB_USER:-meowtea}
+      MYSQL_PASSWORD: ${DB_PASS:-meowtea}
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./database/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql
+      - ./database/seed-data.sql:/docker-entrypoint-initdb.d/02-seed.sql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD:-root}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  # ── FastAPI Chatbot ────────────────────────────────────────────
+  chatbot:
+    build: ./chatbot
+    ports:
+      - "8000:8000"
+    environment:
+      PHP_BASE_URL: http://app
+      CHATBOT_SECRET_KEY: ${CHATBOT_SECRET_KEY:-MeowTea_Secret_2026_@abcxyz}
+      GROQ_API_KEY: ${GROQ_API_KEY}
+      GROQ_MODEL: ${GROQ_MODEL:-llama-3.3-70b-versatile}
+      GOOGLE_API_KEY: ${GOOGLE_API_KEY:-}
+      FASTAPI_RELOAD: "false"
+    depends_on:
+      - app
+    restart: unless-stopped
+
+volumes:
+  db_data:
