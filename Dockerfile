@@ -14,6 +14,11 @@ RUN apt-get update && apt-get install -y \
 # Enable mod_rewrite
 RUN a2enmod rewrite
 
+# PHP config — enable output_buffering (XAMPP default, Docker tắt)
+RUN echo "output_buffering = 4096" > /usr/local/etc/php/conf.d/custom.ini \
+    && echo "display_errors = Off" >> /usr/local/etc/php/conf.d/custom.ini \
+    && echo "log_errors = On" >> /usr/local/etc/php/conf.d/custom.ini
+
 # Set document root to project root
 ENV APACHE_DOCUMENT_ROOT /var/www/html
 
