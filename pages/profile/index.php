@@ -33,6 +33,8 @@ $basePath = '../../';
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Thông tin tài khoản - MeowTea Fresh</title>
+    <?php include $_SERVER['DOCUMENT_ROOT'] . '/components/head-favicon.php'; ?>
+
     <link rel="stylesheet" href="<?php echo $basePath; ?>assets/css/main.css">
     <link rel="stylesheet" href="<?php echo $basePath; ?>assets/css/profile.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

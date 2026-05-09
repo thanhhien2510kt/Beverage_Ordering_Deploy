@@ -54,6 +54,8 @@ if ($showBestSeller) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Menu - MeowTea Fresh</title>
+    <?php include $_SERVER['DOCUMENT_ROOT'] . '/components/head-favicon.php'; ?>
+
     <link rel="stylesheet" href="../../assets/css/main.css">
     <link rel="stylesheet" href="../../assets/css/menu.css">
     <link rel="stylesheet" href="../../assets/css/menu-modal.css">

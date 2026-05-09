@@ -50,6 +50,8 @@ $basePath = '../../';
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cổng Thanh Toán - MeowTea Fresh</title>
+    <?php include $_SERVER['DOCUMENT_ROOT'] . '/components/head-favicon.php'; ?>
+
     <link rel="stylesheet" href="<?php echo $basePath; ?>assets/css/main.css">
     <style>
         .payment-gateway-wrapper {

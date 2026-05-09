@@ -31,6 +31,8 @@ $newsDate = date('d/m/Y', strtotime($news['ngaytao']));
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo $newsTitle; ?> - MeowTea Fresh</title>
+    <?php include $_SERVER['DOCUMENT_ROOT'] . '/components/head-favicon.php'; ?>
+
     <link rel="stylesheet" href="../../assets/css/main.css">
     <link rel="stylesheet" href="../../assets/css/news-card.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
