@@ -1,12 +1,14 @@
+# syntax=docker/dockerfile:1
 FROM python:3.11-slim
 
 WORKDIR /app
 
-# Install dependencies
+# Install dependencies — BuildKit cache mount giữ pip cache giữa các lần build
 COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+RUN --mount=type=cache,target=/root/.cache/pip \
+    pip install -r requirements.txt
 
-# Copy source
+# Copy source (layer này invalidate khi code thay đổi, không ảnh hưởng pip cache)
 COPY . .
 
 EXPOSE 8000

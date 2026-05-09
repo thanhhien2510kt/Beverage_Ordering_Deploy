@@ -1,15 +1,17 @@
+# syntax=docker/dockerfile:1
 FROM php:8.2-apache
 
-# Install PHP extensions
-RUN apt-get update && apt-get install -y \
+# Install PHP extensions — BuildKit cache mount giữ apt cache giữa các lần build
+RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
+    --mount=type=cache,target=/var/lib/apt,sharing=locked \
+    apt-get update && apt-get install -y \
     libpq-dev \
     libonig-dev \
     && docker-php-ext-install \
         pdo \
         pdo_mysql \
         pdo_pgsql \
-        mbstring \
-    && apt-get clean && rm -rf /var/lib/apt/lists/*
+        mbstring
 
 # Enable mod_rewrite
 RUN a2enmod rewrite

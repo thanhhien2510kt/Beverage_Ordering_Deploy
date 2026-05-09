@@ -28,7 +28,7 @@ jobs:
             git pull origin dev
 
             echo ">>> Rebuild images"
-            docker compose build app chatbot
+            DOCKER_BUILDKIT=1 docker compose build app chatbot
 
             echo ">>> Restart containers"
             docker compose up -d --no-deps app chatbot
