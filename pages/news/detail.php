@@ -35,7 +35,7 @@ $newsDate = date('d/m/Y', strtotime($news['ngaytao']));
 
     <link rel="stylesheet" href="../../assets/css/main.css">
     <link rel="stylesheet" href="../../assets/css/news-card.css">
-    <script src="<?php echo $basePath; ?>assets/js/jquery-3.6.0.min.js"></script>
+    <script src="../../assets/js/jquery-3.6.0.min.js"></script>
     <!-- marked.js for markdown rendering -->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </head>

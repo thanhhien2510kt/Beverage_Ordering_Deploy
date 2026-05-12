@@ -11,7 +11,7 @@ require_once '../../functions.php';
     <?php include $_SERVER['DOCUMENT_ROOT'] . '/components/head-favicon.php'; ?>
 
     <link rel="stylesheet" href="../../assets/css/main.css">
-    <script src="<?php echo $basePath; ?>assets/js/jquery-3.6.0.min.js"></script>
+    <script src="../../assets/js/jquery-3.6.0.min.js"></script>
     <style>
         /* Career Page Specific Styles */
         .career-page {

@@ -30,7 +30,7 @@ $news = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <?php include $_SERVER['DOCUMENT_ROOT'] . '/components/head-favicon.php'; ?>
 
     <link rel="stylesheet" href="../../assets/css/main.css">
-    <script src="<?php echo $basePath; ?>assets/js/jquery-3.6.0.min.js"></script>
+    <script src="../../assets/js/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </head>
 <body>

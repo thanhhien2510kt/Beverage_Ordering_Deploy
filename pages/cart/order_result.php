@@ -50,7 +50,7 @@ if (!$order) {
 
         <link rel="stylesheet" href="<?php echo $basePath; ?>assets/css/main.css">
         <link rel="stylesheet" href="<?php echo $basePath; ?>assets/css/cart.css">
-        <script src="<?php echo $basePath; ?>assets/js/jquery-3.6.0.min.js"></script>
+        <script src="../../assets/js/jquery-3.6.0.min.js"></script>
     </head>
     <body>
         <?php include '../../components/header.php'; ?>
@@ -180,7 +180,7 @@ $iconPath = $basePath . 'assets/img/cart/order_result/';
     <title>Đặt hàng thành công - MeowTea Fresh</title>
     <link rel="stylesheet" href="<?php echo $basePath; ?>assets/css/main.css">
     <link rel="stylesheet" href="<?php echo $basePath; ?>assets/css/cart.css">
-    <script src="<?php echo $basePath; ?>assets/js/jquery-3.6.0.min.js"></script>
+    <script src="../../assets/js/jquery-3.6.0.min.js"></script>
 </head>
 <body>
     <?php include '../../components/header.php'; ?>
