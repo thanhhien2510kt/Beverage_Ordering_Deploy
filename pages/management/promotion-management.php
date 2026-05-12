@@ -32,7 +32,7 @@ $basePath = '../../';
     <link rel="stylesheet" href="../../assets/css/main.css">
     <link rel="stylesheet" href="../../assets/css/management.css">
     <link rel="stylesheet" href="../../assets/css/promotion.css">
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="<?php echo $basePath; ?>assets/js/jquery-3.6.0.min.js"></script>
 </head>
 <body>
     <?php include '../../components/header.php'; ?>

@@ -43,7 +43,7 @@ $totalStores = countStores($searchKeyword, $searchProvince, $searchWard);
 
     <link rel="stylesheet" href="../../assets/css/main.css">
     <link rel="stylesheet" href="../../assets/css/stores.css">
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="<?php echo $basePath; ?>assets/js/jquery-3.6.0.min.js"></script>
 </head>
 <body>
     <?php include '../../components/header.php'; ?>

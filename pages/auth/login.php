@@ -22,7 +22,7 @@ $basePath = '../../';
 
     <link rel="stylesheet" href="<?php echo $basePath; ?>assets/css/main.css">
     <link rel="stylesheet" href="<?php echo $basePath; ?>assets/css/login.css">
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="<?php echo $basePath; ?>assets/js/jquery-3.6.0.min.js"></script>
 </head>
 <body>
     <?php include '../../components/header.php'; ?>

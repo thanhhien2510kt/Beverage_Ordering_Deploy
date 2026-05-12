@@ -34,7 +34,7 @@ $stores = getStores(1);
     <?php include $_SERVER['DOCUMENT_ROOT'] . '/components/head-favicon.php'; ?>
 
     <link rel="stylesheet" href="assets/css/main.css">
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="assets/js/jquery-3.6.0.min.js"></script>
 </head>
 <body>
     <?php include 'components/header.php'; ?>
