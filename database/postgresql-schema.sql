@@ -6,7 +6,25 @@
 DROP TABLE IF EXISTS role CASCADE;
 CREATE TABLE role (
     MaRole SERIAL PRIMARY KEY,
-    TenRole VARCHAR(50) NOT NULL -- user / member / admin
+    TenRole VARCHAR(50) NOT NULL -- Customer / Staff / Admin
+);
+
+-- 1b. Bảng Permission
+DROP TABLE IF EXISTS role_permission CASCADE;
+DROP TABLE IF EXISTS permission CASCADE;
+CREATE TABLE permission (
+    MaPermission SERIAL PRIMARY KEY,
+    TenPermission VARCHAR(100) NOT NULL UNIQUE, -- 'add_to_cart', 'checkout', ...
+    MoTa TEXT
+);
+
+-- 1c. Bảng Role_Permission (gán quyền cho từng role)
+CREATE TABLE role_permission (
+    MaRole INT NOT NULL,
+    MaPermission INT NOT NULL,
+    PRIMARY KEY (MaRole, MaPermission),
+    CONSTRAINT FK_RP_Role FOREIGN KEY (MaRole) REFERENCES role (MaRole) ON DELETE CASCADE,
+    CONSTRAINT FK_RP_Permission FOREIGN KEY (MaPermission) REFERENCES permission (MaPermission) ON DELETE CASCADE
 );
 
 -- 2. Bảng User
@@ -168,6 +186,7 @@ CREATE TABLE orders (
     MaPromotion INT DEFAULT NULL,
     GiamGia DECIMAL(15, 0) DEFAULT 0,
     TongTien DECIMAL(15, 0) NOT NULL,
+    GhiChu TEXT DEFAULT NULL,
     TrangThai VARCHAR(50) DEFAULT 'Pending',
     NgayTao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     ThoiDiemNhanDon TIMESTAMP NULL DEFAULT NULL,
@@ -188,6 +207,7 @@ CREATE TABLE order_item (
     MaSP INT NOT NULL,
     SoLuong INT DEFAULT 1,
     GiaNiemYet DECIMAL(15, 0) NOT NULL,
+    GhiChu TEXT DEFAULT NULL,
     CONSTRAINT FK_OI_Order FOREIGN KEY (MaOrder) REFERENCES orders (MaOrder) ON DELETE CASCADE,
     CONSTRAINT FK_OI_SP FOREIGN KEY (MaSP) REFERENCES sanpham (MaSP)
 );

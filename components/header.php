@@ -49,12 +49,8 @@ $isLoggedIn = isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true;
 
 
 $canUseCart = true;
-if ($isLoggedIn && isset($_SESSION['user_role_name'])) {
-    $userRoleLower = strtolower($_SESSION['user_role_name']);
-
-    if ($userRoleLower === 'admin' || $userRoleLower === 'staff') {
-        $canUseCart = false;
-    }
+if ($isLoggedIn) {
+    $canUseCart = hasPermission('view_cart');
 }
 
 
@@ -94,8 +90,8 @@ if ($isLoggedIn && $canUseCart && isset($_SESSION['user']['mauser']) && !isset($
 
 
 $userRole = $isLoggedIn ? ($_SESSION['user_role_name'] ?? '') : '';
-$showManagement = $isLoggedIn && ($userRole === 'Staff' || $userRole === 'Admin');
-$isAdmin = $isLoggedIn && ($userRole === 'Admin');
+$showManagement = $isLoggedIn && hasPermission('manage_orders');
+$isAdmin = $isLoggedIn && hasPermission('manage_products');
 $userHo = $isLoggedIn ? ($_SESSION['user_ho'] ?? '') : '';
 $userTen = $isLoggedIn ? ($_SESSION['user_ten'] ?? '') : '';
 $userName = $isLoggedIn ? ($_SESSION['user_name'] ?? '') : '';

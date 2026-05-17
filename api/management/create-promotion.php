@@ -16,9 +16,8 @@ try {
     }
 
 
-    $userRole = $_SESSION['user_role_name'] ?? '';
-    if ($userRole !== 'Admin') {
-        throw new Exception('Chỉ Admin mới có quyền thêm khuyến mãi mới');
+    if (!hasPermission('manage_promotions')) {
+        throw new Exception('Bạn không có quyền truy cập trang này');
     }
 
 

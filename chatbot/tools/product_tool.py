@@ -30,20 +30,18 @@ def _format_product(p: dict) -> str:
 
 
 @tool
-def search_products_tool(query: str, category: str = "", is_specific_search: bool = False) -> str:
+def search_products_tool(query: str, category: str = "", is_specific_search: str = "false") -> str:
     """
-    Tìm kiếm sản phẩm trong menu. Hỗ trợ tìm kiếm mờ không dấu.
-    - Dùng khi khách muốn xem menu, tìm món chung chung (cà phê, trà, trà sữa) hoặc tìm món cụ thể.
-    - query: Mô tả món khách muốn (VD: "cà phê", "nước uống", "trà sữa dâu tây"). Nếu khách hỏi toàn bộ menu thì truyền "".
-    - is_specific_search: Bắt buộc truyền là True nếu khách hàng đang hỏi đích danh MỘT MÓN CỤ THỂ (VD: "Trà sữa Thái Đỏ", "Có bán cà phê muối không?"). Truyền là False nếu khách rủ rê, nhờ gợi ý (VD: "gợi ý đồ uống mát", "món nào ngon").
-    - Danh sách trả về đã tự động được sắp xếp giảm dần theo lượt bán (Đã bán/DaBan DESC) để gợi ý các món được yêu thích nhất.
-    Nếu khách hỏi "món nào bán chạy nhất", HÃY LẤY NGAY CÁC MÓN ĐẦU TIÊN mà tool trả về và tự tin giới thiệu với khách vì đó là số liệu bán chạy chính thức từ quán, kèm theo số lượng Đã bán!
-
+    Tìm kiếm sản phẩm trong menu.
+    - query: Mô tả món khách muốn (VD: "cà phê"). Nếu khách hỏi menu thì truyền "".
+    - is_specific_search: Truyền "true" nếu hỏi ĐÍCH DANH 1 MÓN. Truyền "false" nếu gợi ý.
+    
     Args:
-        query: Mô tả hoặc tên sản phẩm (vd: "trà sữa bán chạy nhất", "cà phê đá")
-        category: Danh mục tùy chọn để lọc thêm
-        Danh sách sản phẩm (đã được sắp xếp xếp hạng bán chạy nhất từ trên xuống dưới)
+        query: Mô tả hoặc tên sản phẩm
+        category: Danh mục tùy chọn
+        is_specific_search: "true" hoặc "false"
     """
+    _is_specific = (str(is_specific_search).lower() == "true")
     try:
         # Decode literal \u00e0-style escapes Groq may pass instead of real Unicode
         query = _decode_unicode_escapes(query)
@@ -57,7 +55,6 @@ def search_products_tool(query: str, category: str = "", is_specific_search: boo
                 headers={"X-Chatbot-Secret": CHATBOT_SECRET_KEY},
                 timeout=8.0
             )
-            print(f"[DEBUG] HTTP {r.status_code} | body[:300]: {r.text[:300]}")
             if r.status_code != 200 or not r.text.strip():
                 return f"Hệ thống sản phẩm đang bận (HTTP {r.status_code}). Vui lòng thử lại nhé! 🙏"
             mgmt_data = r.json()
@@ -184,7 +181,7 @@ def search_products_tool(query: str, category: str = "", is_specific_search: boo
             else:
                 lines.append(f"🔍 Mình tìm được **{len(products)} món** phù hợp nhất cho bạn:\n")
         else:
-            if is_specific_search:
+            if _is_specific:
                 lines.append(f"🥺 Dạ MeowTea Fresh hiện chưa có món '{query}'. Nhưng tụi mình có các món tương tự bán rất chạy, bạn tham khảo thử nha:\n")
             else:
                 lines.append("✨ Dưới đây là các món đỉnh nhất phù hợp với yêu cầu của bạn, bạn tham khảo nha:\n")

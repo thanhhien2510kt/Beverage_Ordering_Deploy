@@ -24,8 +24,8 @@ GROQ_MODEL: str = os.getenv("GROQ_MODEL", "llama-3.3-70b-versatile")
 # Validation
 def validate_config():
     missing = []
-    if not GROQ_API_KEY:
-        missing.append("GROQ_API_KEY")
+    if not GROQ_API_KEY and not GOOGLE_API_KEY:
+        missing.append("GROQ_API_KEY hoặc GOOGLE_API_KEY")
     if missing:
         raise EnvironmentError(
             f"Thiếu biến môi trường bắt buộc: {', '.join(missing)}. "

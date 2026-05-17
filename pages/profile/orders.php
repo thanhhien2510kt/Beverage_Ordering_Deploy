@@ -14,8 +14,7 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
 
 
 $userRole = $_SESSION['user_role_name'] ?? '';
-$userRoleLower = strtolower($userRole);
-if ($userRoleLower !== 'customer') {
+if (!hasPermission('view_cart')) {
     header('Location: ../../index.php');
     exit;
 }

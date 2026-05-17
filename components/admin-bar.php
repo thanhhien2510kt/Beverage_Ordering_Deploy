@@ -1,6 +1,6 @@
 <?php
 $userRoleAdminBar = $_SESSION['user_role_name'] ?? '';
-$showAdminBar = isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true && ($userRoleAdminBar === 'Staff' || $userRoleAdminBar === 'Admin');
+$showAdminBar = isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true && (hasPermission('manage_orders') || hasPermission('view_product_management'));
 
 if ($showAdminBar):
     // Ensure basePath is available

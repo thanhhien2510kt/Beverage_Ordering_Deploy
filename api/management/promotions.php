@@ -16,8 +16,7 @@ try {
     }
 
 
-    $userRole = $_SESSION['user_role_name'] ?? '';
-    if ($userRole !== 'Admin') {
+    if (!hasPermission('manage_promotions')) {
         throw new Exception('Bạn không có quyền truy cập trang này');
     }
 

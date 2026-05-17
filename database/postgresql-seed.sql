@@ -20,14 +20,42 @@ TRUNCATE
     orders, 
     order_item, 
     order_item_option, 
-    news 
+    news,
+    permission,
+    role_permission
 RESTART IDENTITY CASCADE;
 
 -- 1. Insert Role
 INSERT INTO role (TenRole) VALUES 
-('Admin'), 
-('Staff'), 
-('Customer');
+('Admin'),    -- MaRole = 1
+('Staff'),    -- MaRole = 2
+('Customer'); -- MaRole = 3
+
+-- 1b. Insert Permission
+INSERT INTO permission (TenPermission, MoTa) VALUES
+('add_to_cart',            'Thêm sản phẩm vào giỏ hàng'),
+('view_cart',              'Xem trang giỏ hàng'),
+('checkout',               'Thanh toán / đặt hàng'),
+('manage_orders',          'Xem và quản lý đơn hàng (Staff & Admin)'),
+('view_product_management','Xem trang quản lý sản phẩm (Staff & Admin)'),
+('manage_products',        'Thêm / sửa / xóa sản phẩm và topping (Admin only)'),
+('manage_promotions',      'Thêm / sửa / xóa khúyến mãi (Admin only)');
+
+-- 1c. Insert Role_Permission
+-- Customer (MaRole=3): quyền mua hàng
+INSERT INTO role_permission (MaRole, MaPermission)
+SELECT 3, MaPermission FROM permission
+WHERE TenPermission IN ('add_to_cart', 'view_cart', 'checkout');
+
+-- Staff (MaRole=2): quản lý đơn hàng + xem sản phẩm
+INSERT INTO role_permission (MaRole, MaPermission)
+SELECT 2, MaPermission FROM permission
+WHERE TenPermission IN ('manage_orders', 'view_product_management');
+
+-- Admin (MaRole=1): toàn quyền quản lý
+INSERT INTO role_permission (MaRole, MaPermission)
+SELECT 1, MaPermission FROM permission
+WHERE TenPermission IN ('manage_orders', 'view_product_management', 'manage_products', 'manage_promotions');
 
 -- 2. Insert Store (12 cửa hàng trải dài khắp Việt Nam)
 INSERT INTO store (TenStore, DiaChi, DienThoai, TrangThai) VALUES

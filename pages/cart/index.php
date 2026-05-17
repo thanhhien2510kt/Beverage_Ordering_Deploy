@@ -8,12 +8,9 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 
 
-if (isset($_SESSION['user_role_name'])) {
-    $userRoleLower = strtolower($_SESSION['user_role_name']);
-    if ($userRoleLower === 'admin' || $userRoleLower === 'staff') {
-        header('Location: ../../index.php');
-        exit;
-    }
+if (!hasPermission('view_cart') && isset($_SESSION['logged_in'])) {
+    header('Location: ../../index.php');
+    exit;
 }
 
 

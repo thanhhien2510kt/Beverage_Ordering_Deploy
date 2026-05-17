@@ -3,28 +3,30 @@ Tool: Lấy thông tin chi tiết sản phẩm và các tùy chọn (Size, Toppi
 Gọi PHP API api/product/get.php.
 """
 import httpx
+from typing import Any
 from langchain_core.tools import tool
 from config import PHP_BASE_URL, CHATBOT_SECRET_KEY
 
 @tool
-def get_product_details_tool(product_id: int) -> str:
+def get_product_details_tool(product_id: Any) -> str:
     """
-    Lấy thông tin chi tiết của một sản phẩm cụ thể bao gồm giá và các tùy chọn (options).
-    Dùng khi khách đã chọn một món nhưng chưa rõ size, topping, hoặc các yêu cầu khác.
+    Lấy thông tin chi tiết và tùy chọn của sản phẩm (Size, Topping...).
     
     Args:
         product_id: ID sản phẩm (MaSP)
-        
-    Returns:
-        JSON string chứa thông tin sản phẩm và danh sách các nhóm tùy chọn (Size, Đường, Đá, Topping).
     """
-    if product_id <= 0:
+    try:
+        product_id_int = int(product_id)
+    except (ValueError, TypeError):
+        return "Mã sản phẩm không hợp lệ (phải là số)."
+        
+    if product_id_int <= 0:
         return "Mã sản phẩm không hợp lệ."
         
     try:
         r = httpx.get(
             f"{PHP_BASE_URL}/api/product/get.php",
-            params={"id": product_id},
+            params={"id": product_id_int},
             headers={"X-Chatbot-Secret": CHATBOT_SECRET_KEY},
             timeout=5.0
         )

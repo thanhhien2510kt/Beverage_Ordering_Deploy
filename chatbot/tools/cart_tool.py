@@ -8,31 +8,32 @@ Tool này trả về instruction cho frontend thực hiện action.
 """
 import json
 import httpx
+from typing import Any
 from langchain_core.tools import tool
 from config import PHP_BASE_URL
 
 
 @tool
 def add_to_cart_tool(
-    product_id: int,
-    quantity: int = 1,
+    product_id: Any,
+    quantity: Any = 1,
     options: str = "[]",
     product_name: str = ""
 ) -> str:
     """
-    Thêm sản phẩm vào giỏ hàng của khách.
-    Dùng khi khách nói muốn mua, đặt, hoặc thêm sản phẩm vào giỏ.
-
+    Thêm sản phẩm vào giỏ hàng.
     Args:
-        product_id: ID sản phẩm (MaSP từ kết quả tìm kiếm)
-        quantity: Số lượng muốn mua (mặc định 1)
-        options: JSON string danh sách tùy chọn (đường, đá, topping). 
-                 Ví dụ: '[{"option_value_id": 1, "price": 0}]'
-        product_name: Tên sản phẩm (để hiển thị xác nhận)
-
-    Returns:
-        Xác nhận và instruction cho frontend thực hiện thêm vào giỏ
+        product_id: ID sản phẩm
+        quantity: Số lượng
+        options: JSON string tùy chọn '[{"option_value_id": 1, "price": 0}]'
+        product_name: Tên sản phẩm
     """
+    try:
+        product_id_int = int(product_id)
+        quantity_int = int(quantity)
+    except (ValueError, TypeError):
+        return "Mã sản phẩm hoặc số lượng không hợp lệ."
+
     # Validate options JSON
     try:
         options_list = json.loads(options) if isinstance(options, str) else options
@@ -45,7 +46,7 @@ def add_to_cart_tool(
     try:
         r = httpx.get(
             f"{PHP_BASE_URL}/api/product/get.php",
-            params={"id": product_id},
+            params={"id": product_id_int},
             timeout=5.0
         )
         data = r.json()
@@ -53,23 +54,23 @@ def add_to_cart_tool(
         product = (data.get("data") or {}).get("product") if data.get("success") else None
         if product:
             base_price = float(product.get("GiaCoBan", 0))
-            product_name = product_name or product.get("TenSP", f"Sản phẩm #{product_id}")
+            product_name = product_name or product.get("TenSP", f"Sản phẩm #{product_id_int}")
         else:
             base_price = 0
-            product_name = product_name or f"Sản phẩm #{product_id}"
+            product_name = product_name or f"Sản phẩm #{product_id_int}"
     except Exception:
         base_price = 0
-        product_name = product_name or f"Sản phẩm #{product_id}"
+        product_name = product_name or f"Sản phẩm #{product_id_int}"
 
     # Tính tổng giá
     options_price = sum(float(opt.get("price", 0)) for opt in options_list)
-    total_price = (base_price + options_price) * quantity
+    total_price = (base_price + options_price) * quantity_int
 
     # Trả về action payload cho frontend
     action_payload = {
         "__action": "add_to_cart",
-        "product_id": product_id,
-        "quantity": quantity,
+        "product_id": product_id_int,
+        "quantity": quantity_int,
         "base_price": base_price,
         "total_price": total_price,
         "options": json.dumps(options_list)
@@ -78,7 +79,7 @@ def add_to_cart_tool(
     price_str = f"{int(total_price):,}₫".replace(",", ".")
 
     return (
-        f"✅ Mình sẽ thêm **{quantity}x {product_name}** vào giỏ hàng cho bạn!\n"
+        f"✅ Mình sẽ thêm **{quantity_int}x {product_name}** vào giỏ hàng cho bạn!\n"
         f"💰 Tổng: **{price_str}**\n"
         f"__ACTION_PAYLOAD__: {json.dumps(action_payload, ensure_ascii=False)}"
     )

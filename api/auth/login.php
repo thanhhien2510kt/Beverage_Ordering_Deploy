@@ -64,16 +64,26 @@ try {
     $_SESSION['logged_in'] = true;
 
     $_SESSION['user'] = [
-        'MaUser' => $user['mauser'],
+        'MaUser'   => $user['mauser'],
         'Username' => $user['username'],
-        'Ho' => $user['ho'],
-        'Ten' => $user['ten'],
-        'Email' => $user['email'],
-        'DienThoai' => $user['dienthoai'],
-        'DiaChi' => $user['diachi'] ?? '',
-        'MaRole' => $user['marole'],
-        'TenRole' => $user['tenrole']
+        'Ho'       => $user['ho'],
+        'Ten'      => $user['ten'],
+        'Email'    => $user['email'],
+        'DienThoai'=> $user['dienthoai'],
+        'DiaChi'   => $user['diachi'] ?? '',
+        'MaRole'   => $user['marole'],
+        'TenRole'  => $user['tenrole']
     ];
+
+    // Load danh sách quyền từ DB vào session (cache để không query mỗi request)
+    $permSql = "SELECT p.TenPermission
+                FROM permission p
+                INNER JOIN role_permission rp ON p.MaPermission = rp.MaPermission
+                WHERE rp.MaRole = ?";
+    $permStmt = $pdo->prepare($permSql);
+    $permStmt->execute([$user['marole']]);
+    $_SESSION['permissions'] = $permStmt->fetchAll(PDO::FETCH_COLUMN);
+    // Ví dụ kết quả: ['add_to_cart', 'view_cart', 'checkout']
 
     require_once '../../functions.php';
     $storeId = isset($_SESSION['selected_store']) ? (int)$_SESSION['selected_store'] : 1;

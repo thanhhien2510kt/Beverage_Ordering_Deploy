@@ -64,12 +64,8 @@ $canAddToCart = true;
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
-if (isset($_SESSION['user_role_name'])) {
-    $userRoleLower = strtolower($_SESSION['user_role_name']);
-
-    if ($userRoleLower === 'admin' || $userRoleLower === 'staff') {
-        $canAddToCart = false;
-    }
+if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true) {
+    $canAddToCart = hasPermission('add_to_cart');
 }
 ?>
 <div class="product-card" data-product-id="<?php echo $productId; ?>">

@@ -14,7 +14,7 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
 
 
 $userRole = $_SESSION['user_role_name'] ?? '';
-if ($userRole !== 'Staff' && $userRole !== 'Admin') {
+if (!hasPermission('manage_orders')) {
     header('Location: ../../index.php');
     exit;
 }

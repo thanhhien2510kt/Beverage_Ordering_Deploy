@@ -148,11 +148,11 @@ try {
 
     try {
         $status = ($paymentMethod == 1) ? 'Payment_Received' : 'Pending';
-        $sql = "INSERT INTO Orders (MaUser, MaStore, MaPayment, DiaChiGiao, NguoiNhan, DienThoaiGiao, PhiVanChuyen, MaPromotion, GiamGia, TongTien, TrangThai) 
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        $sql = "INSERT INTO Orders (MaUser, MaStore, MaPayment, DiaChiGiao, NguoiNhan, DienThoaiGiao, PhiVanChuyen, MaPromotion, GiamGia, TongTien, GhiChu, TrangThai) 
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         $stmt = $pdo->prepare($sql);
         $promotionIdForDB = ($promotionId > 0 && !empty($promotionCode)) ? $promotionId : null;
-        $stmt->execute([$userId, $storeId, $paymentMethod, $deliveryAddress, $nguoiNhan, $dienThoaiGiao, $shippingFee, $promotionIdForDB, $promotionDiscount, $totalAmount, $status]);
+        $stmt->execute([$userId, $storeId, $paymentMethod, $deliveryAddress, $nguoiNhan, $dienThoaiGiao, $shippingFee, $promotionIdForDB, $promotionDiscount, $totalAmount, $orderNote, $status]);
         $orderId = $pdo->lastInsertId();
         $_SESSION['order_payment_' . $orderId] = $paymentMethod;
 

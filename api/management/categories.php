@@ -16,8 +16,7 @@ try {
     }
 
 
-    $userRole = $_SESSION['user_role_name'] ?? '';
-    if ($userRole !== 'Staff' && $userRole !== 'Admin') {
+    if (!hasPermission('view_product_management')) {
         throw new Exception('Bạn không có quyền truy cập trang này');
     }
 

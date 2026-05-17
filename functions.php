@@ -6,6 +6,21 @@ function e($string) {
     return htmlspecialchars($string, ENT_QUOTES, 'UTF-8');
 }
 
+/**
+ * Kiểm tra xem user hiện tại có quyền chỉ định không.
+ * Quyền được load từ DB sau đăng nhập và cache trong $_SESSION['permissions'].
+ *
+ * @param string $permission  Tên quyền, ví dụ: 'checkout', 'manage_orders'
+ * @return bool
+ */
+function hasPermission(string $permission): bool {
+    if (session_status() === PHP_SESSION_NONE) {
+        session_start();
+    }
+    $permissions = $_SESSION['permissions'] ?? [];
+    return in_array($permission, $permissions, true);
+}
+
 function formatCurrency($amount) {
     return number_format($amount, 0, ',', '.') . '₫';
 }

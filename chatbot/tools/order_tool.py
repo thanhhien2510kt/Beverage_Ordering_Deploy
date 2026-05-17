@@ -3,6 +3,7 @@ Tool: Tra cứu trạng thái đơn hàng
 Gọi PHP API api/order/get_one.php để lấy thông tin đơn hàng.
 """
 import httpx
+from typing import Any
 from langchain_core.tools import tool
 from config import PHP_BASE_URL
 
@@ -17,7 +18,7 @@ STATUS_MAP = {
 
 
 @tool
-def get_recent_orders_tool(user_id: int) -> str:
+def get_recent_orders_tool(user_id: Any) -> str:
     """
     Tra cứu danh sách 5 đơn hàng NHỎ NHẤT (GẦN NHẤT) mà khách đã đặt gần đây.
     DÙNG KHI: 
@@ -29,12 +30,17 @@ def get_recent_orders_tool(user_id: int) -> str:
     Args:
         user_id: ID khách hàng (Lấy từ context "User ID: X"). Bắt buộc > 0.
     """
-    if user_id <= 0:
+    try:
+        user_id_int = int(user_id)
+    except (ValueError, TypeError):
+        return "Để xem lịch sử đơn hàng, bạn vui lòng đăng nhập vào tài khoản MeowTea trước nha! 🐾"
+        
+    if user_id_int <= 0:
         return "Để xem lịch sử đơn hàng, bạn vui lòng đăng nhập vào tài khoản MeowTea trước nha! 🐾"
     try:
         r = httpx.get(
             f"{PHP_BASE_URL}/api/chatbot/orders.php",
-            params={"action": "recent", "user_id": user_id},
+            params={"action": "recent", "user_id": user_id_int},
             headers={"X-Chatbot-Secret": "MeowTea_Secret_2026_@abcxyz"},
             timeout=5.0
         )
@@ -64,7 +70,7 @@ def get_recent_orders_tool(user_id: int) -> str:
         return f"Lỗi: {str(e)}"
 
 @tool
-def get_order_status_tool(order_id: int, user_id: int = 0) -> str:
+def get_order_status_tool(order_id: Any, user_id: Any = 0) -> str:
     """
     Tra cứu trạng thái và CHI TIẾT CÁC MÓN bên trong 1 đơn hàng cụ thể.
     CHỈ dùng khi khách CUNG CẤP MÃ ĐƠN HÀNG cụ thể (số nguyên dương) HOẶC sau khi bạn đã lấy được danh sách đơn gần nhất và khách chọn 1 đơn.
@@ -78,12 +84,18 @@ def get_order_status_tool(order_id: int, user_id: int = 0) -> str:
     Returns:
         Thông tin chi tiết trạng thái đơn hàng
     """
-    if order_id <= 0:
+    try:
+        order_id_int = int(order_id)
+        user_id_int = int(user_id)
+    except (ValueError, TypeError):
+        return "Bạn vui lòng cung cấp mã đơn hàng cụ thể để mình tra cứu nhé! 🔍"
+
+    if order_id_int <= 0:
         return "Bạn vui lòng cung cấp mã đơn hàng cụ thể để mình tra cứu nhé! 🔍"
     try:
         r = httpx.get(
             f"{PHP_BASE_URL}/api/chatbot/orders.php",
-            params={"action": "detail", "order_id": order_id},
+            params={"action": "detail", "order_id": order_id_int},
             headers={"X-Chatbot-Secret": "MeowTea_Secret_2026_@abcxyz"},
             timeout=5.0
         )
@@ -96,7 +108,7 @@ def get_order_status_tool(order_id: int, user_id: int = 0) -> str:
 
         # Verify user ownership nếu có user_id
         db_user_id = int(order.get("MaUser") or order.get("mauser") or 0)
-        if user_id and db_user_id != user_id:
+        if user_id_int > 0 and db_user_id != user_id_int:
             return "Mình không thể xem đơn hàng này vì nó không thuộc về tài khoản của bạn. 🔒"
 
         status_raw = order.get("TrangThai") or order.get("trangthai") or "Unknown"

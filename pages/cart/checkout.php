@@ -14,12 +14,9 @@ if (!isLoggedIn()) {
 }
 
 
-if (isset($_SESSION['user_role_name'])) {
-    $userRoleLower = strtolower($_SESSION['user_role_name']);
-    if ($userRoleLower === 'admin' || $userRoleLower === 'staff') {
-        header('Location: ../../index.php');
-        exit;
-    }
+if (!hasPermission('checkout')) {
+    header('Location: ../../index.php');
+    exit;
 }
 
 
