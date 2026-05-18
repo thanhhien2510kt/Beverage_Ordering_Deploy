@@ -318,10 +318,13 @@ $basePath = '../../';
         include '../../components/back-to-top.php';
     ?>
 
+    <?php include '../../components/modal-box.php'; ?>
+
     <?php include '../../components/footer.php'; ?>
 
     <script src="../../assets/js/common.js"></script>
     <script src="../../assets/js/snack-bar.js"></script>
+    <script src="../../assets/js/modal-box.js"></script>
     <script src="../../assets/js/management.js"></script>
 </body>
 </html>
