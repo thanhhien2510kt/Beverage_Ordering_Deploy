@@ -68,6 +68,10 @@ $basePath = '../../';
             background-color: var(--light-green);
             color: var(--primary-green);
         }
+        .order-detail-content .search-input {
+            padding-left: 15px !important;
+            border-radius: 8px; /* Giảm độ bo góc cho form input */
+        }
     </style>
 </head>
 <body>
