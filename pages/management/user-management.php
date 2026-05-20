@@ -84,9 +84,9 @@ $basePath = '../../';
                 </div>
             </div>
 
-            <!-- Search Bar -->
-            <div class="orders-search-bar" style="margin-bottom: 30px;">
-                <div class="search-input-wrapper">
+            <!-- Search Bar and Add Button -->
+            <div class="orders-search-bar" style="margin-bottom: 30px; display: flex; gap: 15px; align-items: center;">
+                <div class="search-input-wrapper" style="flex: 1;">
                     <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <circle cx="11" cy="11" r="8"/>
                         <path d="m21 21-4.35-4.35"/>
@@ -98,6 +98,13 @@ $basePath = '../../';
                         placeholder="Tìm kiếm theo tên, email, số điện thoại..."
                     >
                 </div>
+                <button id="addUserBtn" class="btn btn-primary" style="white-space: nowrap; height: 100%; display: flex; align-items: center; gap: 8px;">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="12" y1="5" x2="12" y2="19"></line>
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                    </svg>
+                    Thêm người dùng
+                </button>
             </div>
 
             <!-- Users Container -->
@@ -119,6 +126,7 @@ $basePath = '../../';
                                 <th>Số điện thoại</th>
                                 <th>Vai trò</th>
                                 <th>Trạng thái</th>
+                                <th>Hành động</th>
                             </tr>
                         </thead>
                         <tbody id="manageUsersList">
@@ -129,6 +137,70 @@ $basePath = '../../';
             </div>
         </div>
         </section>
+    </div>
+
+    <!-- User Modal -->
+    <div id="userModal" class="order-detail-modal" role="dialog" aria-modal="true" style="display: none;">
+        <div class="order-detail-overlay" id="userModalOverlay"></div>
+        <div class="order-detail-content" style="max-width: 600px; max-height: 90vh; overflow-y: auto;">
+            <button type="button" class="order-detail-close" id="closeUserModal" aria-label="Đóng">&times;</button>
+            <h2 id="userModalTitle" style="margin-bottom: 20px;">Thêm/Sửa Người dùng</h2>
+            <form id="userForm">
+                <input type="hidden" id="userId" name="id" value="">
+                
+                <div style="display: flex; gap: 15px; margin-bottom: 15px;">
+                    <div style="flex: 1;">
+                        <label for="userHo" style="display: block; margin-bottom: 5px; font-weight: 500;">Họ</label>
+                        <input type="text" id="userHo" name="ho" class="search-input" required>
+                    </div>
+                    <div style="flex: 1;">
+                        <label for="userTen" style="display: block; margin-bottom: 5px; font-weight: 500;">Tên</label>
+                        <input type="text" id="userTen" name="ten" class="search-input" required>
+                    </div>
+                </div>
+
+                <div style="margin-bottom: 15px;">
+                    <label for="userUsername" style="display: block; margin-bottom: 5px; font-weight: 500;">Username</label>
+                    <input type="text" id="userUsername" name="username" class="search-input" required>
+                </div>
+
+                <div style="margin-bottom: 15px;">
+                    <label for="userEmail" style="display: block; margin-bottom: 5px; font-weight: 500;">Email</label>
+                    <input type="email" id="userEmail" name="email" class="search-input" required>
+                </div>
+
+                <div style="margin-bottom: 15px;">
+                    <label for="userPassword" style="display: block; margin-bottom: 5px; font-weight: 500;">Mật khẩu <span id="passwordHelp" style="font-size: 0.8rem; font-weight: normal; color: #666;">(Bỏ trống nếu không đổi)</span></label>
+                    <input type="password" id="userPassword" name="password" class="search-input">
+                </div>
+
+                <div style="display: flex; gap: 15px; margin-bottom: 15px;">
+                    <div style="flex: 1;">
+                        <label for="userPhone" style="display: block; margin-bottom: 5px; font-weight: 500;">Số điện thoại</label>
+                        <input type="tel" id="userPhone" name="dienthoai" class="search-input">
+                    </div>
+                    <div style="flex: 1;">
+                        <label for="userRole" style="display: block; margin-bottom: 5px; font-weight: 500;">Vai trò</label>
+                        <select id="userRole" name="role" class="search-input" style="width: 100%; height: 42px; padding: 0 15px;" required>
+                            <!-- Role options will be populated dynamically if possible, or static for now -->
+                            <option value="1">Admin</option>
+                            <option value="2">Quản lý cửa hàng</option>
+                            <option value="3">Khách hàng</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div style="margin-bottom: 25px;">
+                    <label for="userAddress" style="display: block; margin-bottom: 5px; font-weight: 500;">Địa chỉ</label>
+                    <input type="text" id="userAddress" name="diachi" class="search-input">
+                </div>
+
+                <div style="display: flex; justify-content: flex-end; gap: 10px;">
+                    <button type="button" class="btn" id="cancelUserBtn" style="background: #f0f0f0; color: #333;">Hủy</button>
+                    <button type="submit" class="btn btn-primary" id="saveUserBtn">Lưu thay đổi</button>
+                </div>
+            </form>
+        </div>
     </div>
 
     <?php 

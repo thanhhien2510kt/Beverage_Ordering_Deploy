@@ -31,6 +31,11 @@ try {
     $stmt->execute();
     $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+    // Convert keys to lowercase for consistency
+    foreach ($users as &$user) {
+        $user = array_change_key_case($user, CASE_LOWER);
+    }
+
     echo json_encode([
         'success' => true,
         'users' => $users
