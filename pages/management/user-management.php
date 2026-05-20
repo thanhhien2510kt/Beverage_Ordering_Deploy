@@ -155,33 +155,33 @@ $basePath = '../../';
                 <div style="display: flex; gap: 15px; margin-bottom: 15px;">
                     <div style="flex: 1;">
                         <label for="userHo" style="display: block; margin-bottom: 5px; font-weight: 500;">Họ</label>
-                        <input type="text" id="userHo" name="ho" class="search-input" required>
+                        <input type="text" id="userHo" name="ho" class="search-input" placeholder="Nhập họ..." required>
                     </div>
                     <div style="flex: 1;">
                         <label for="userTen" style="display: block; margin-bottom: 5px; font-weight: 500;">Tên</label>
-                        <input type="text" id="userTen" name="ten" class="search-input" required>
+                        <input type="text" id="userTen" name="ten" class="search-input" placeholder="Nhập tên..." required>
                     </div>
                 </div>
 
                 <div style="margin-bottom: 15px;">
                     <label for="userUsername" style="display: block; margin-bottom: 5px; font-weight: 500;">Username</label>
-                    <input type="text" id="userUsername" name="username" class="search-input" required>
+                    <input type="text" id="userUsername" name="username" class="search-input" placeholder="Nhập tên đăng nhập..." required>
                 </div>
 
                 <div style="margin-bottom: 15px;">
                     <label for="userEmail" style="display: block; margin-bottom: 5px; font-weight: 500;">Email</label>
-                    <input type="email" id="userEmail" name="email" class="search-input" required>
+                    <input type="email" id="userEmail" name="email" class="search-input" placeholder="example@email.com" required>
                 </div>
 
                 <div style="margin-bottom: 15px;">
                     <label for="userPassword" style="display: block; margin-bottom: 5px; font-weight: 500;">Mật khẩu <span id="passwordHelp" style="font-size: 0.8rem; font-weight: normal; color: #666;">(Bỏ trống nếu không đổi)</span></label>
-                    <input type="password" id="userPassword" name="password" class="search-input">
+                    <input type="password" id="userPassword" name="password" class="search-input" placeholder="Nhập mật khẩu...">
                 </div>
 
                 <div style="display: flex; gap: 15px; margin-bottom: 15px;">
                     <div style="flex: 1;">
                         <label for="userPhone" style="display: block; margin-bottom: 5px; font-weight: 500;">Số điện thoại</label>
-                        <input type="tel" id="userPhone" name="dienthoai" class="search-input">
+                        <input type="tel" id="userPhone" name="dienthoai" class="search-input" placeholder="Nhập số điện thoại...">
                     </div>
                     <div style="flex: 1;">
                         <label for="userRole" style="display: block; margin-bottom: 5px; font-weight: 500;">Vai trò</label>
@@ -196,7 +196,7 @@ $basePath = '../../';
 
                 <div style="margin-bottom: 25px;">
                     <label for="userAddress" style="display: block; margin-bottom: 5px; font-weight: 500;">Địa chỉ</label>
-                    <input type="text" id="userAddress" name="diachi" class="search-input">
+                    <input type="text" id="userAddress" name="diachi" class="search-input" placeholder="Nhập địa chỉ đầy đủ...">
                 </div>
 
                 <div style="display: flex; justify-content: flex-end; gap: 10px;">

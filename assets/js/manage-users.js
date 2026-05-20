@@ -53,10 +53,31 @@ document.addEventListener('DOMContentLoaded', () => {
                     <td>${user.dienthoai || 'N/A'}</td>
                     <td><span class="role-badge">${user.tenrole || 'N/A'}</span></td>
                     <td><span class="status-badge ${statusClass}">${statusText}</span></td>
-                    <td>
-                        <button class="btn btn-primary btn-sm edit-user-btn" data-id="${user.mauser}" style="padding: 5px 10px; font-size: 0.8rem; margin-right: 5px;">Sửa</button>
-                        <button class="btn btn-danger btn-sm toggle-status-btn" data-id="${user.mauser}" data-status="${user.trangthai}" style="padding: 5px 10px; font-size: 0.8rem;">
-                            ${user.trangthai == 1 ? 'Khóa' : 'Mở khóa'}
+                    <td style="white-space: nowrap;">
+                        <button class="btn btn-sm view-user-btn" data-id="${user.mauser}" style="padding: 6px; font-size: 0.8rem; margin-right: 5px; background: transparent; border: 1px solid var(--border-color); color: var(--text-dark);" title="Xem chi tiết">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                <circle cx="12" cy="12" r="3"></circle>
+                            </svg>
+                        </button>
+                        <button class="btn btn-primary btn-sm edit-user-btn" data-id="${user.mauser}" style="padding: 6px; font-size: 0.8rem; margin-right: 5px;" title="Sửa">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                            </svg>
+                        </button>
+                        <button class="btn btn-danger btn-sm toggle-status-btn" data-id="${user.mauser}" data-status="${user.trangthai}" style="padding: 6px; font-size: 0.8rem;" title="${user.trangthai == 1 ? 'Khóa' : 'Mở khóa'}">
+                            ${user.trangthai == 1 ? `
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                            </svg>
+                            ` : `
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                                <path d="M7 11V7a5 5 0 0 1 9.9-1"></path>
+                            </svg>
+                            `}
                         </button>
                     </td>
                 </tr>
@@ -64,11 +85,14 @@ document.addEventListener('DOMContentLoaded', () => {
         }).join('');
         
         // Add event listeners for new buttons
+        document.querySelectorAll('.view-user-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => openViewModal(e.currentTarget.dataset.id));
+        });
         document.querySelectorAll('.edit-user-btn').forEach(btn => {
-            btn.addEventListener('click', (e) => openEditModal(e.target.dataset.id));
+            btn.addEventListener('click', (e) => openEditModal(e.currentTarget.dataset.id));
         });
         document.querySelectorAll('.toggle-status-btn').forEach(btn => {
-            btn.addEventListener('click', (e) => toggleUserStatus(e.target.dataset.id, e.target.dataset.status));
+            btn.addEventListener('click', (e) => toggleUserStatus(e.currentTarget.dataset.id, e.currentTarget.dataset.status));
         });
     }
 
@@ -131,17 +155,74 @@ document.addEventListener('DOMContentLoaded', () => {
             userForm.reset();
             document.getElementById('userId').value = '';
             userModalTitle.textContent = 'Thêm Người dùng';
+            
+            // Enable all inputs and show save button
+            Array.from(userForm.elements).forEach(el => {
+                if (el.tagName !== 'BUTTON') {
+                    el.readOnly = false;
+                    if (el.tagName === 'SELECT') el.disabled = false;
+                }
+            });
+            document.getElementById('userPassword').closest('div').style.display = 'block';
+            document.getElementById('saveUserBtn').style.display = 'inline-block';
+            document.getElementById('cancelUserBtn').textContent = 'Hủy';
+
             passwordHelp.style.display = 'none';
             document.getElementById('userPassword').required = true;
             userModal.style.display = 'flex';
         });
     }
 
+    // Open modal to view user details
+    window.openViewModal = function(userId) {
+        const user = allUsers.find(u => u.mauser == userId);
+        if (!user) return;
+
+        populateUserModal(user);
+        
+        userModalTitle.textContent = 'Chi tiết Người dùng';
+        passwordHelp.style.display = 'none';
+        
+        // Disable all inputs and hide save button
+        Array.from(userForm.elements).forEach(el => {
+            if (el.tagName !== 'BUTTON') {
+                el.readOnly = true;
+                if (el.tagName === 'SELECT') el.disabled = true;
+            }
+        });
+        document.getElementById('userPassword').closest('div').style.display = 'none'; // Hide password field
+        document.getElementById('saveUserBtn').style.display = 'none';
+        document.getElementById('cancelUserBtn').textContent = 'Đóng';
+
+        userModal.style.display = 'flex';
+    };
+
     // Open modal to edit user
     window.openEditModal = function(userId) {
         const user = allUsers.find(u => u.mauser == userId);
         if (!user) return;
 
+        populateUserModal(user);
+
+        userModalTitle.textContent = 'Sửa Người dùng';
+        passwordHelp.style.display = 'inline';
+        
+        // Enable all inputs and show save button
+        Array.from(userForm.elements).forEach(el => {
+            if (el.tagName !== 'BUTTON') {
+                el.readOnly = false;
+                if (el.tagName === 'SELECT') el.disabled = false;
+            }
+        });
+        document.getElementById('userPassword').closest('div').style.display = 'block'; // Show password field
+        document.getElementById('userPassword').required = false;
+        document.getElementById('saveUserBtn').style.display = 'inline-block';
+        document.getElementById('cancelUserBtn').textContent = 'Hủy';
+
+        userModal.style.display = 'flex';
+    };
+
+    function populateUserModal(user) {
         userForm.reset();
         document.getElementById('userId').value = user.mauser;
         document.getElementById('userHo').value = user.ho || '';
@@ -159,12 +240,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 break;
             }
         }
-
-        userModalTitle.textContent = 'Sửa Người dùng';
-        passwordHelp.style.display = 'inline';
-        document.getElementById('userPassword').required = false;
-        userModal.style.display = 'flex';
-    };
+    }
 
     // Close modal
     function closeModal() {
