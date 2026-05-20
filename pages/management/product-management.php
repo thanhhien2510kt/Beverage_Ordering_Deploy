@@ -28,9 +28,11 @@ $basePath = '../../';
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quản lý sản phẩm & Topping - MeowTea Fresh</title>
+    <?php include $_SERVER['DOCUMENT_ROOT'] . '/components/head-favicon.php'; ?>
+
     <link rel="stylesheet" href="../../assets/css/main.css">
     <link rel="stylesheet" href="../../assets/css/management.css">
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="../../assets/js/jquery-3.6.0.min.js"></script>
 </head>
 <body>
     <?php include '../../components/header.php'; ?>

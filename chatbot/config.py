@@ -21,6 +21,11 @@ CHATBOT_SECRET_KEY: str = os.getenv("CHATBOT_SECRET_KEY", "changeme")
 GROQ_API_KEY: str = os.getenv("GROQ_API_KEY", "")
 GROQ_MODEL: str = os.getenv("GROQ_MODEL", "llama-3.3-70b-versatile")
 
+# --- Beeknoee (OpenAI-compatible fallback) ---
+BEEKNOEE_API_KEY: str = os.getenv("BEEKNOEE_API_KEY", "")
+BEEKNOEE_BASE_URL: str = os.getenv("BEEKNOEE_BASE_URL", "https://platform.beeknoee.com/api/v1")
+BEEKNOEE_MODEL: str = os.getenv("BEEKNOEE_MODEL", "glm-4.7-flash")
+
 # Validation
 def validate_config():
     missing = []

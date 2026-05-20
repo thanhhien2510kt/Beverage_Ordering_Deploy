@@ -1,0 +1,100 @@
+services:
+
+  # ── PHP + Apache ──────────────────────────────────────────────
+  app:
+    build: .
+    ports:
+      - "8080:80"              # 8080 on host — Nginx reverse proxy to this
+    environment:
+      DB_TYPE: pgsql
+      FASTAPI_URL: http://chatbot:8000
+    volumes:
+      - ./assets/img:/var/www/html/assets/img   # persist uploaded images
+    restart: unless-stopped
+
+  # ── MariaDB (thay MySQL 8.0 — MySQL 8 yêu cầu x86-64-v2 không tương thích KVM cũ)
+  db:
+    image: mariadb:10.6
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-root}
+      MYSQL_DATABASE: ${DB_NAME:-meowtea_schema}
+      MYSQL_USER: ${DB_USER:-meowtea}
+      MYSQL_PASSWORD: ${DB_PASS:-meowtea}
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./database/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql
+      - ./database/seed-data.sql:/docker-entrypoint-initdb.d/02-seed.sql
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  # ── FastAPI Chatbot ────────────────────────────────────────────
+  chatbot:
+    build: ./chatbot
+    ports:
+      - "8000:8000"
+    environment:
+      PHP_BASE_URL: http://app
+      CHATBOT_SECRET_KEY: ${CHATBOT_SECRET_KEY:-MeowTea_Secret_2026_@abcxyz}
+      GROQ_API_KEY: ${GROQ_API_KEY}
+      GROQ_MODEL: ${GROQ_MODEL:-llama3-groq-70b-8192-tool-use-preview}
+      GOOGLE_API_KEY: ${GOOGLE_API_KEY:-}
+      BEEKNOEE_API_KEY: ${BEEKNOEE_API_KEY:-sk-bee-554ab8984c454b23a968f7b1d341a940}
+      BEEKNOEE_BASE_URL: ${BEEKNOEE_BASE_URL:-https://platform.beeknoee.com/api/v1}
+      BEEKNOEE_MODEL: ${BEEKNOEE_MODEL:-glm-4.7-flash}
+      FASTAPI_RELOAD: "false"
+    depends_on:
+      - app
+    restart: unless-stopped
+
+  # ── Netdata — System + Docker Metrics ────────────────────────
+  netdata:
+    image: netdata/netdata:stable
+    container_name: netdata
+    hostname: meowteafresh-monitor
+    pid: host                         # read host process metrics
+    network_mode: host                # bind port 19999 directly on host
+    cap_add:
+      - SYS_PTRACE
+      - SYS_ADMIN
+    security_opt:
+      - apparmor:unconfined
+    volumes:
+      - netdataconfig:/etc/netdata
+      - netdatalib:/var/lib/netdata
+      - netdatacache:/var/cache/netdata
+      - /etc/passwd:/host/etc/passwd:ro
+      - /etc/group:/host/etc/group:ro
+      - /etc/localtime:/etc/localtime:ro
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /etc/os-release:/host/etc/os-release:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    environment:
+      - NETDATA_CLAIM_TOKEN=         # leave empty — no cloud
+      - DOCKER_HOST=unix:///var/run/docker.sock
+    restart: unless-stopped
+
+  # ── Dozzle — Docker Log Viewer ────────────────────────────────
+  dozzle:
+    image: amir20/dozzle:latest
+    container_name: dozzle
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    ports:
+      - "127.0.0.1:8888:8080"        # localhost only — Nginx proxies in
+    environment:
+      DOZZLE_LEVEL: info
+      DOZZLE_TAILSIZE: 300
+    restart: unless-stopped
+
+volumes:
+  db_data:
+  netdataconfig:
+  netdatalib:
+  netdatacache:

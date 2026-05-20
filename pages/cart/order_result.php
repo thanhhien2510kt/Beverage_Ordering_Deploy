@@ -46,9 +46,11 @@ if (!$order) {
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Đơn hàng không tồn tại - MeowTea Fresh</title>
+    <?php include $_SERVER['DOCUMENT_ROOT'] . '/components/head-favicon.php'; ?>
+
         <link rel="stylesheet" href="<?php echo $basePath; ?>assets/css/main.css">
         <link rel="stylesheet" href="<?php echo $basePath; ?>assets/css/cart.css">
-        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script src="../../assets/js/jquery-3.6.0.min.js"></script>
     </head>
     <body>
         <?php include '../../components/header.php'; ?>
@@ -178,7 +180,7 @@ $iconPath = $basePath . 'assets/img/cart/order_result/';
     <title>Đặt hàng thành công - MeowTea Fresh</title>
     <link rel="stylesheet" href="<?php echo $basePath; ?>assets/css/main.css">
     <link rel="stylesheet" href="<?php echo $basePath; ?>assets/css/cart.css">
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="../../assets/js/jquery-3.6.0.min.js"></script>
 </head>
 <body>
     <?php include '../../components/header.php'; ?>

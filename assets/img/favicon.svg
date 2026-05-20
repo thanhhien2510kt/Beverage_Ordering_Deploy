@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <!-- Background: dark green rounded square -->
+  <rect width="512" height="512" rx="96" fill="#11331e"/>
+
+  <!-- Cat ears (left) -->
+  <polygon points="108,240 88,120 188,200" fill="#ff6b35"/>
+  <polygon points="108,238 100,148 172,200" fill="#ff9b70"/>
+
+  <!-- Cat ears (right) -->
+  <polygon points="404,240 424,120 324,200" fill="#ff6b35"/>
+  <polygon points="404,238 412,148 340,200" fill="#ff9b70"/>
+
+  <!-- Cat head (orange circle) -->
+  <circle cx="256" cy="260" r="155" fill="#ff6b35"/>
+
+  <!-- Eyes: white base -->
+  <ellipse cx="200" cy="240" rx="32" ry="36" fill="white"/>
+  <ellipse cx="312" cy="240" rx="32" ry="36" fill="white"/>
+  <!-- Pupils -->
+  <ellipse cx="204" cy="246" rx="18" ry="26" fill="#11331e"/>
+  <ellipse cx="316" cy="246" rx="18" ry="26" fill="#11331e"/>
+  <!-- Eye shine -->
+  <circle cx="210" cy="236" r="6" fill="white"/>
+  <circle cx="322" cy="236" r="6" fill="white"/>
+
+  <!-- Nose -->
+  <path d="M246,290 L256,304 L266,290 Q256,282 246,290 Z" fill="#11331e"/>
+
+  <!-- Mouth -->
+  <path d="M228,312 Q256,335 284,312" stroke="#11331e" stroke-width="5" fill="none" stroke-linecap="round"/>
+
+  <!-- Whiskers left -->
+  <line x1="130" y1="286" x2="228" y2="296" stroke="#11331e" stroke-width="5" stroke-linecap="round" opacity="0.6"/>
+  <line x1="130" y1="310" x2="228" y2="308" stroke="#11331e" stroke-width="5" stroke-linecap="round" opacity="0.6"/>
+
+  <!-- Whiskers right -->
+  <line x1="284" y1="296" x2="382" y2="286" stroke="#11331e" stroke-width="5" stroke-linecap="round" opacity="0.6"/>
+  <line x1="284" y1="308" x2="382" y2="310" stroke="#11331e" stroke-width="5" stroke-linecap="round" opacity="0.6"/>
+
+  <!-- Tea cup at bottom of head -->
+  <!-- Cup base saucer -->
+  <ellipse cx="256" cy="390" rx="56" ry="10" fill="#fff" opacity="0.25"/>
+  <!-- Cup body -->
+  <rect x="220" y="348" width="72" height="44" rx="10" fill="white" opacity="0.92"/>
+  <!-- Tea inside cup -->
+  <rect x="226" y="354" width="60" height="20" rx="6" fill="#c8a96e" opacity="0.85"/>
+  <!-- Steam wisps -->
+  <path d="M240,344 Q237,330 240,316" stroke="white" stroke-width="5" fill="none" stroke-linecap="round" opacity="0.6"/>
+  <path d="M256,340 Q253,326 256,312" stroke="white" stroke-width="5" fill="none" stroke-linecap="round" opacity="0.6"/>
+  <path d="M272,344 Q275,330 272,316" stroke="white" stroke-width="5" fill="none" stroke-linecap="round" opacity="0.6"/>
+  <!-- Cup handle -->
+  <path d="M292,358 Q318,358 318,376 Q318,394 292,394" stroke="white" stroke-width="7" fill="none" stroke-linecap="round" opacity="0.92"/>
+</svg>

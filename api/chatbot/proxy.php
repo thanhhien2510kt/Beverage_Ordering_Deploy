@@ -46,11 +46,11 @@ try {
     // Bỏ qua lỗi DB để không làm gián đoạn chatbot, có thể ghi log nếu cần
 }
 
-// FastAPI endpoint
-$fastapiUrl = 'http://localhost:8000/chat';
+// FastAPI endpoint — đọc từ env var (Docker: http://chatbot:8000), fallback localhost
+$fastapiUrl = rtrim(getenv('FASTAPI_URL') ?: 'http://localhost:8000', '/') . '/chat';
 
-// Secret key để xác thực với FastAPI (phải khớp với .env CHATBOT_SECRET_KEY)
-$secretKey = 'MeowTea_Secret_2026_@abcxyz'; // TODO: Đọc từ config nếu muốn
+// Secret key để xác thực với FastAPI
+$secretKey = getenv('CHATBOT_SECRET_KEY') ?: 'MeowTea_Secret_2026_@abcxyz';
 
 // ĐÓNG SESSION LẠI TRƯỚC KHI CALL CURL ĐỂ TRÁNH LOCKING
 session_write_close();

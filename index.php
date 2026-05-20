@@ -31,8 +31,10 @@ $stores = getStores(1);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MeowTea Fresh - Trang Chủ</title>
+    <?php include $_SERVER['DOCUMENT_ROOT'] . '/components/head-favicon.php'; ?>
+
     <link rel="stylesheet" href="assets/css/main.css">
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="assets/js/jquery-3.6.0.min.js"></script>
 </head>
 <body>
     <?php include 'components/header.php'; ?>
@@ -218,6 +220,11 @@ $stores = getStores(1);
     <?php include 'components/back-to-top.php'; ?>
 
     <?php include 'components/footer.php'; ?>
+
+    <?php
+    $cartPath = 'pages/cart/index.php';
+    include 'components/product-customize-modal.php';
+    ?>
 
     <script src="assets/js/common.js"></script>
     <script src="assets/js/snack-bar.js"></script>

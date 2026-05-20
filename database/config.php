@@ -1,16 +1,13 @@
 <?php
 
 // --- Database Configuration ---
-// Switch between 'mysql' or 'pgsql'
-define('DB_TYPE', 'pgsql');
-
-
-// MySQL Config (Local/XAMPP)
-define('DB_HOST', 'localhost');
-define('DB_USER', 'root');
-define('DB_PASS', '');
-define('DB_NAME', 'meowtea_schema');
-define('DB_CHARSET', 'utf8mb4');
+// Đọc từ env var (Docker), fallback về giá trị XAMPP local
+define('DB_TYPE',    getenv('DB_TYPE')    ?: 'mysql');
+define('DB_HOST',    getenv('DB_HOST')    ?: 'localhost');
+define('DB_USER',    getenv('DB_USER')    ?: 'root');
+define('DB_PASS',    getenv('DB_PASS')    ?: '');
+define('DB_NAME',    getenv('DB_NAME')    ?: 'meowtea_schema');
+define('DB_CHARSET', getenv('DB_CHARSET') ?: 'utf8mb4');
 
 // PostgreSQL / Supabase Config
 define('PG_HOST', 'aws-1-ap-southeast-1.pooler.supabase.com');
@@ -40,6 +37,7 @@ function getDBConnection()
                 PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
                 PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
                 PDO::ATTR_EMULATE_PREPARES => false,
+                PDO::ATTR_CASE => PDO::CASE_LOWER,  // normalize all column names to lowercase
             ];
 
             $pdo = new PDO($dsn, $user, $pass, $options);

@@ -53,8 +53,8 @@ try {
     $_SESSION['cart'][] = $cartItem;
 
 
-    if (isset($_SESSION['user']) && isset($_SESSION['user']['mauser'])) {
-        $userId = $_SESSION['user']['mauser'];
+    if (isset($_SESSION['user']) && (isset($_SESSION['user']['MaUser']) || isset($_SESSION['user']['mauser']))) {
+        $userId = $_SESSION['user']['MaUser'] ?? $_SESSION['user']['mauser'];
         $storeId = isset($_SESSION['selected_store']) ? (int)$_SESSION['selected_store'] : 1;
         
 
