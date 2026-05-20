@@ -3,9 +3,7 @@ $currentScript = basename($_SERVER['PHP_SELF']);
 $isAdminSidebar = ($userRole === 'Admin');
 ?>
 <aside class="admin-sidebar">
-    <div class="sidebar-header">
-        <h2 style="margin: 0; font-size: 1.2rem; color: var(--primary-green);">Admin Panel</h2>
-    </div>
+
     <ul class="sidebar-menu">
         <li class="<?php echo $currentScript == 'order-management.php' ? 'active' : ''; ?>">
             <a href="order-management.php">
@@ -86,5 +84,40 @@ $isAdminSidebar = ($userRole === 'Admin');
 .sidebar-menu li.active a {
     font-weight: 600;
     border-left: 4px solid var(--primary-green);
+}
+
+@media (max-width: 768px) {
+    .management-layout {
+        flex-direction: column !important;
+    }
+    .admin-sidebar {
+        width: 100% !important;
+        border-right: none;
+        border-bottom: 1px solid var(--border-color);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+    }
+    .sidebar-menu {
+        display: flex;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+    .sidebar-menu li {
+        border-bottom: none;
+        flex-shrink: 0;
+    }
+    .sidebar-menu li a {
+        padding: 12px 15px;
+        white-space: nowrap;
+    }
+    .sidebar-menu li.active a {
+        border-left: none;
+        border-bottom: 3px solid var(--primary-green);
+        background-color: transparent;
+    }
+    .management-section {
+        padding: 15px !important;
+    }
 }
 </style>

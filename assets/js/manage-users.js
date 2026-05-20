@@ -281,35 +281,90 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Toggle user status
-    window.toggleUserStatus = async function(userId, currentStatus) {
+    // Toggle user status using Custom Modal
+    const confirmStatusModal = document.getElementById('confirmStatusModal');
+    const confirmStatusOverlay = document.getElementById('confirmStatusOverlay');
+    const cancelConfirmBtn = document.getElementById('cancelConfirmBtn');
+    const acceptConfirmBtn = document.getElementById('acceptConfirmBtn');
+    const confirmStatusTitle = document.getElementById('confirmStatusTitle');
+    const confirmStatusMessage = document.getElementById('confirmStatusMessage');
+    const confirmIconContainer = document.getElementById('confirmIconContainer');
+    
+    let currentUserIdToToggle = null;
+    let currentUserStatusToToggle = null;
+
+    function closeConfirmModal() {
+        confirmStatusModal.style.display = 'none';
+        currentUserIdToToggle = null;
+        currentUserStatusToToggle = null;
+    }
+
+    if (cancelConfirmBtn) cancelConfirmBtn.addEventListener('click', closeConfirmModal);
+    if (confirmStatusOverlay) confirmStatusOverlay.addEventListener('click', closeConfirmModal);
+
+    window.toggleUserStatus = function(userId, currentStatus) {
         const newStatus = currentStatus == 1 ? 0 : 1;
-        const confirmMsg = newStatus == 1 ? 'Bạn có chắc chắn muốn mở khóa người dùng này?' : 'Bạn có chắc chắn muốn khóa người dùng này?';
         
-        if (!confirm(confirmMsg)) return;
-
-        try {
-            const formData = new FormData();
-            formData.append('id', userId);
-            formData.append('status', newStatus);
-
-            const response = await fetch('../../api/management/update-user-status.php', {
-                method: 'POST',
-                body: formData
-            });
-            const data = await response.json();
-
-            if (data.success) {
-                showSnackBar('Cập nhật trạng thái thành công', 'success');
-                loadUsers();
-            } else {
-                showSnackBar(data.message || 'Có lỗi xảy ra', 'error');
-            }
-        } catch (error) {
-            console.error('Error toggling status:', error);
-            showSnackBar('Đã xảy ra lỗi', 'error');
+        currentUserIdToToggle = userId;
+        currentUserStatusToToggle = newStatus;
+        
+        if (newStatus == 1) {
+            confirmStatusTitle.textContent = 'Mở khóa người dùng';
+            confirmStatusMessage.textContent = 'Bạn có chắc chắn muốn mở khóa người dùng này không?';
+            confirmIconContainer.style.background = 'rgba(76, 175, 80, 0.1)';
+            confirmIconContainer.style.color = '#4CAF50';
+            confirmIconContainer.innerHTML = `
+                <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                    <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                </svg>
+            `;
+            acceptConfirmBtn.className = 'btn btn-primary';
+        } else {
+            confirmStatusTitle.textContent = 'Khóa người dùng';
+            confirmStatusMessage.textContent = 'Bạn có chắc chắn muốn khóa người dùng này không?';
+            confirmIconContainer.style.background = 'rgba(244, 67, 54, 0.1)';
+            confirmIconContainer.style.color = '#F44336';
+            confirmIconContainer.innerHTML = `
+                <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                    <path d="M7 11V7a5 5 0 0 1 9.9-1"></path>
+                </svg>
+            `;
+            acceptConfirmBtn.className = 'btn btn-danger';
         }
+
+        confirmStatusModal.style.display = 'flex';
     };
+
+    if (acceptConfirmBtn) {
+        acceptConfirmBtn.addEventListener('click', async () => {
+            if (!currentUserIdToToggle) return;
+            
+            try {
+                const formData = new FormData();
+                formData.append('id', currentUserIdToToggle);
+                formData.append('status', currentUserStatusToToggle);
+
+                const response = await fetch('../../api/management/update-user-status.php', {
+                    method: 'POST',
+                    body: formData
+                });
+                const data = await response.json();
+
+                if (data.success) {
+                    showSnackBar('Cập nhật trạng thái thành công', 'success');
+                    closeConfirmModal();
+                    loadUsers();
+                } else {
+                    showSnackBar(data.message || 'Có lỗi xảy ra', 'error');
+                }
+            } catch (error) {
+                console.error('Error toggling status:', error);
+                showSnackBar('Đã xảy ra lỗi', 'error');
+            }
+        });
+    }
 
     // Initial load
     loadUsers();

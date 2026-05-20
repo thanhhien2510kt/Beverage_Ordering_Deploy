@@ -89,7 +89,7 @@ $basePath = '../../';
             </div>
 
             <!-- Search Bar and Add Button -->
-            <div class="orders-search-bar" style="margin-bottom: 30px; display: flex; gap: 15px; align-items: center;">
+            <div class="orders-search-bar" style="margin-bottom: 30px; display: flex; gap: 15px; align-items: center; flex-wrap: wrap;">
                 <div class="search-input-wrapper" style="flex: 1;">
                     <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <circle cx="11" cy="11" r="8"/>
@@ -204,6 +204,22 @@ $basePath = '../../';
                     <button type="submit" class="btn btn-primary" id="saveUserBtn">Lưu thay đổi</button>
                 </div>
             </form>
+        </div>
+    </div>
+
+    <!-- Confirm Modal -->
+    <div id="confirmStatusModal" class="order-detail-modal" role="dialog" aria-modal="true" style="display: none; align-items: center; justify-content: center; z-index: 9999;">
+        <div class="order-detail-overlay" id="confirmStatusOverlay"></div>
+        <div class="order-detail-content" style="max-width: 400px; padding: 30px; text-align: center; border-radius: 16px;">
+            <div id="confirmIconContainer" style="width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;">
+                <!-- Icon will be inserted here -->
+            </div>
+            <h3 id="confirmStatusTitle" style="margin-bottom: 15px; font-size: 1.2rem;">Xác nhận</h3>
+            <p id="confirmStatusMessage" style="color: #666; margin-bottom: 25px;"></p>
+            <div style="display: flex; gap: 10px; justify-content: center;">
+                <button type="button" class="btn" id="cancelConfirmBtn" style="background: #f0f0f0; color: #333; padding: 10px 20px; border-radius: 8px;">Hủy</button>
+                <button type="button" class="btn btn-primary" id="acceptConfirmBtn" style="padding: 10px 20px; border-radius: 8px;">Đồng ý</button>
+            </div>
         </div>
     </div>
 
